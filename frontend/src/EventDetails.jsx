@@ -54,7 +54,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete }) => {
       </div>
       
       <div className="event-details-content">
-        <EventCard event={event} />
+        <EventCard event={event} hideParticipants={true} />
         <EventParticipationTable eventId={event.id} eventName={event.name} />
       </div>
 

@@ -30,7 +30,7 @@
 
 .participation-table th,
 .participation-table td {
-  padding: 12px 15px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom: 1px solid #eee;
   vertical-align: top;
@@ -47,6 +47,87 @@
 
 .participation-table tbody tr:last-child td {
   border-bottom: none;
+}
+
+.participant-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.participant-info strong {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.participant-info small {
+  color: #6c757d;
+  font-size: 11px;
+}
+
+.hours-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timespan-count {
+  color: #6c757d;
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.action-buttons-compact {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.btn-mini {
+  padding: 4px 6px;
+  font-size: 11px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-details {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-details:hover {
+  background-color: #5a6268;
+}
+
+.timespan-details-row {
+  background-color: #f8f9fa;
+}
+
+.timespan-details {
+  padding: 15px;
+  border: 1px solid #e9ecef;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+.timespan-details h5 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.timespan-details .time-spans-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .unresponsive-person {
@@ -335,7 +416,7 @@
   }
 
   .participation-table table {
-    min-width: 800px;
+    min-width: 500px;
   }
 
   .timespan-form {
@@ -352,7 +433,16 @@
     align-items: center;
   }
 
-  .action-buttons {
-    min-width: 100px;
+  .action-buttons-compact {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .btn-mini {
+    width: 100%;
+  }
+
+  .participant-info small {
+    display: none;
   }
 }

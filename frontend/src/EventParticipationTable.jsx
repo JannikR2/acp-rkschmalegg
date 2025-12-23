@@ -7,6 +7,7 @@ const EventParticipationTable = ({ eventId, eventName }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showTimeSpanForm, setShowTimeSpanForm] = useState(null);
+  const [expandedParticipant, setExpandedParticipant] = useState(null);
   const [newTimeSpan, setNewTimeSpan] = useState({
     date: '',
     timeFrom: '',
@@ -167,115 +168,151 @@ const EventParticipationTable = ({ eventId, eventName }) => {
           <thead>
             <tr>
               <th>Teilnehmer</th>
-              <th>E-Mail</th>
               <th>Status</th>
               <th>Stunden</th>
-              <th>Zeitspannen</th>
               <th>Aktionen</th>
             </tr>
           </thead>
           <tbody>
             {participation.map((participant) => (
-              <tr key={participant.personId}>
-                <td>
-                  <strong>{participant.person}</strong>
-                </td>
-                <td>{participant.email}</td>
-                <td>
-                  <span className={`status-badge ${getStatusBadgeClass(participant.status)}`}>
-                    {getStatusText(participant.status)}
-                  </span>
-                </td>
-                <td>
-                  <span className="hours-display">
-                    {participant.totalHours.toFixed(1)}h
-                  </span>
-                </td>
-                <td>
-                  <div className="time-spans-cell">
-                    {participant.timeSpans.map((timeSpan, index) => (
-                      <div key={index} className="time-span-item">
-                        <div className="time-span-info">
-                          <span className="time-span-date">
-                            {new Date(timeSpan.date).toLocaleDateString()}
-                          </span>
-                          <span className="time-span-time">
-                            {timeSpan.timeFrom} - {timeSpan.timeTo}
-                          </span>
-                          {timeSpan.description && (
-                            <span className="time-span-desc">{timeSpan.description}</span>
-                          )}
-                        </div>
+              <React.Fragment key={participant.personId}>
+                <tr>
+                  <td>
+                    <div className="participant-info">
+                      <strong>{participant.person}</strong>
+                      <small>{participant.email}</small>
+                    </div>
+                  </td>
+                  <td>
+                    <span className={`status-badge ${getStatusBadgeClass(participant.status)}`}>
+                      {getStatusText(participant.status)}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="hours-column">
+                      <span className="hours-display">
+                        {participant.totalHours.toFixed(1)}h
+                      </span>
+                      {participant.timeSpans.length > 0 && (
+                        <small className="timespan-count">
+                          {participant.timeSpans.length} Einträg{participant.timeSpans.length === 1 ? '' : 'e'}
+                        </small>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="action-buttons-compact">
+                      {participant.status !== 'accepted' && (
                         <button 
-                          className="btn-remove-timespan"
-                          onClick={() => removeTimeSpan(participant.personId, index)}
-                          title="Zeitspanne löschen"
+                          className="btn-mini btn-accept"
+                          onClick={() => updateParticipationStatus(participant.personId, 'accepted')}
+                          title="Zusagen"
                         >
-                          ✕
+                          ✓
                         </button>
+                      )}
+                      {participant.status !== 'declined' && (
+                        <button 
+                          className="btn-mini btn-decline"
+                          onClick={() => updateParticipationStatus(participant.personId, 'declined')}
+                          title="Absagen"
+                        >
+                          ✗
+                        </button>
+                      )}
+                      {participant.status === 'accepted' && (
+                        <>
+                          <button 
+                            className="btn-mini btn-primary"
+                            onClick={() => setShowTimeSpanForm(participant.personId)}
+                            title="Zeit hinzufügen"
+                          >
+                            +
+                          </button>
+                          {participant.timeSpans.length > 0 && (
+                            <button 
+                              className="btn-mini btn-details"
+                              onClick={() => setExpandedParticipant(
+                                expandedParticipant === participant.personId ? null : participant.personId
+                              )}
+                              title="Details anzeigen"
+                            >
+                              {expandedParticipant === participant.personId ? '▲' : '▼'}
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+                
+                {/* Expandable row for time spans */}
+                {expandedParticipant === participant.personId && participant.timeSpans.length > 0 && (
+                  <tr className="timespan-details-row">
+                    <td colSpan="4">
+                      <div className="timespan-details">
+                        <h5>Zeitspannen für {participant.person}</h5>
+                        <div className="time-spans-list">
+                          {participant.timeSpans.map((timeSpan, index) => (
+                            <div key={index} className="time-span-item">
+                              <div className="time-span-info">
+                                <span className="time-span-date">
+                                  {new Date(timeSpan.date).toLocaleDateString()}
+                                </span>
+                                <span className="time-span-time">
+                                  {timeSpan.timeFrom} - {timeSpan.timeTo}
+                                </span>
+                                {timeSpan.description && (
+                                  <span className="time-span-desc">{timeSpan.description}</span>
+                                )}
+                              </div>
+                              <button 
+                                className="btn-remove-timespan"
+                                onClick={() => removeTimeSpan(participant.personId, index)}
+                                title="Zeitspanne löschen"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
-                    {participant.timeSpans.length === 0 && (
-                      <span className="no-timespans">Keine Zeiten erfasst</span>
-                    )}
-                  </div>
-                </td>
-                <td>
-                  <div className="action-buttons">
-                    {participant.status !== 'accepted' && (
-                      <button 
-                        className="btn-small btn-accept"
-                        onClick={() => updateParticipationStatus(participant.personId, 'accepted')}
-                      >
-                        Zusagen
-                      </button>
-                    )}
-                    {participant.status !== 'declined' && (
-                      <button 
-                        className="btn-small btn-decline"
-                        onClick={() => updateParticipationStatus(participant.personId, 'declined')}
-                      >
-                        Absagen
-                      </button>
-                    )}
-                    {participant.status === 'accepted' && (
-                      <button 
-                        className="btn-small btn-primary"
-                        onClick={() => setShowTimeSpanForm(participant.personId)}
-                      >
-                        + Zeit
-                      </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
 
             {/* Show unresponsive persons */}
             {getUnresponsivePersons().map((person) => (
               <tr key={`unresponsive-${person.id}`} className="unresponsive-person">
-                <td><strong>{person.fullName}</strong></td>
-                <td>{person.email}</td>
+                <td>
+                  <div className="participant-info">
+                    <strong>{person.fullName}</strong>
+                    <small>{person.email}</small>
+                  </div>
+                </td>
                 <td>
                   <span className="status-badge status-pending">
                     Nicht geantwortet
                   </span>
                 </td>
                 <td>-</td>
-                <td>-</td>
                 <td>
-                  <div className="action-buttons">
+                  <div className="action-buttons-compact">
                     <button 
-                      className="btn-small btn-accept"
+                      className="btn-mini btn-accept"
                       onClick={() => updateParticipationStatus(person.id, 'accepted')}
+                      title="Zusagen"
                     >
-                      Zusagen
+                      ✓
                     </button>
                     <button 
-                      className="btn-small btn-decline"
+                      className="btn-mini btn-decline"
                       onClick={() => updateParticipationStatus(person.id, 'declined')}
+                      title="Absagen"
                     >
-                      Absagen
+                      ✗
                     </button>
                   </div>
                 </td>
