@@ -15,7 +15,7 @@ function initializeSampleData() {
   // Create participants for "Aufbau Reitplatz"
   const participant1Event1 = new Participant(person1, [
     new TimeSpan({ 
-      date: '2024-03-15', 
+      date: '2024-12-15', 
       timeFrom: '08:00', 
       timeTo: '12:00', 
       description: 'Hindernisse aufgebaut und Platz vorbereitet' 
@@ -24,7 +24,7 @@ function initializeSampleData() {
 
   const participant2Event1 = new Participant(person2, [
     new TimeSpan({ 
-      date: '2024-03-15', 
+      date: '2024-12-15', 
       timeFrom: '08:30', 
       timeTo: '11:30', 
       description: 'Absperrungen gesetzt und Boden geebnet' 
@@ -33,7 +33,7 @@ function initializeSampleData() {
 
   const participant3Event1 = new Participant(person3, [
     new TimeSpan({ 
-      date: '2024-03-15', 
+      date: '2024-12-15', 
       timeFrom: '09:00', 
       timeTo: '12:00', 
       description: 'Equipment sortiert und Richterstand aufgebaut' 
@@ -104,13 +104,13 @@ function initializeSampleData() {
   // Create participants for "Reitturnier Frühjahr"
   const participant1Event3 = new Participant(person1, [
     new TimeSpan({ 
-      date: '2024-04-12', 
+      date: '2025-01-12', 
       timeFrom: '06:00', 
       timeTo: '08:00', 
       description: 'Parcours aufgebaut und vermessen' 
     }),
     new TimeSpan({ 
-      date: '2024-04-12', 
+      date: '2025-01-12', 
       timeFrom: '08:00', 
       timeTo: '17:00', 
       description: 'Turnierleitung und Protokollführung' 
@@ -119,7 +119,7 @@ function initializeSampleData() {
 
   const participant2Event3 = new Participant(person2, [
     new TimeSpan({ 
-      date: '2024-04-12', 
+      date: '2025-01-12', 
       timeFrom: '07:00', 
       timeTo: '18:00', 
       description: 'Richtertätigkeit Dressur und Springen' 
@@ -128,13 +128,13 @@ function initializeSampleData() {
 
   const participant3Event3 = new Participant(person3, [
     new TimeSpan({ 
-      date: '2024-04-12', 
+      date: '2025-01-12', 
       timeFrom: '06:30', 
       timeTo: '12:00', 
       description: 'Anmeldung und Startnummernvergabe' 
     }),
     new TimeSpan({ 
-      date: '2024-04-12', 
+      date: '2025-01-12', 
       timeFrom: '15:00', 
       timeTo: '17:30', 
       description: 'Siegerehrung organisiert' 
@@ -143,7 +143,7 @@ function initializeSampleData() {
 
   const participant4Event3 = new Participant(person4, [
     new TimeSpan({ 
-      date: '2024-04-12', 
+      date: '2025-01-12', 
       timeFrom: '08:00', 
       timeTo: '17:00', 
       description: 'Zeitnahme und Ergebnisdokumentation' 
@@ -151,17 +151,6 @@ function initializeSampleData() {
   ]);
 
   const events = [
-    new Event({
-      id: nextEventId++,
-      name: 'Aufbau Reitplatz',
-      description: 'Vorbereitung des Reitplatzes für das kommende Turnier mit Hindernisaufbau und Platzvorbereitung',
-      dateFrom: '2024-03-15',
-      dateTo: '2024-03-15',
-      timeFrom: '08:00',
-      timeTo: '12:00',
-      location: 'Reitanlage RK Schmalegg',
-      participants: [participant1Event1, participant2Event1, participant3Event1]
-    }),
     new Event({
       id: nextEventId++,
       name: 'Sommerfest',
@@ -177,12 +166,23 @@ function initializeSampleData() {
       id: nextEventId++,
       name: 'Reitturnier Frühjahr',
       description: 'Traditionelles Frühjahrsturnier mit Dressur- und Springprüfungen für alle Altersklassen',
-      dateFrom: '2024-04-12',
-      dateTo: '2024-04-12',
+      dateFrom: '2025-01-12',
+      dateTo: '2025-01-12',
       timeFrom: '08:00',
       timeTo: '18:00',
       location: 'Reitplatz und Reithalle',
       participants: [participant1Event3, participant2Event3, participant3Event3, participant4Event3]
+    }),
+    new Event({
+      id: nextEventId++,
+      name: 'Aufbau Reitplatz',
+      description: 'Vorbereitung des Reitplatzes für das kommende Turnier mit Hindernisaufbau und Platzvorbereitung',
+      dateFrom: '2024-12-15',
+      dateTo: '2024-12-15',
+      timeFrom: '08:00',
+      timeTo: '12:00',
+      location: 'Reitanlage RK Schmalegg',
+      participants: [participant1Event1, participant2Event1, participant3Event1]
     })
   ];
 
@@ -191,7 +191,12 @@ function initializeSampleData() {
 
 // Data access functions
 export function getAllEvents() {
-  return eventsData.map(event => event.toJSON());
+  // Sort events by dateFrom in descending order (newest first)
+  const sortedEvents = eventsData
+    .slice() // Create a copy to avoid mutating the original array
+    .sort((a, b) => new Date(b.dateFrom) - new Date(a.dateFrom));
+  
+  return sortedEvents.map(event => event.toJSON());
 }
 
 export function getEventById(id) {
@@ -212,10 +217,27 @@ export function updateEvent(id, eventData) {
   const index = eventsData.findIndex(e => e.id === parseInt(id));
   if (index === -1) return null;
   
+  // Get the existing event to preserve participants if not provided
+  const existingEvent = eventsData[index];
+  
+  // Convert participants if they're provided as JSON
+  let participants = existingEvent.participants || [];
+  if (eventData.participants) {
+    participants = eventData.participants.map(p => {
+      if (p instanceof Participant) {
+        return p;
+      }
+      // Convert from JSON to Participant instance
+      return Participant.fromJSON(p);
+    });
+  }
+  
   const updatedEvent = new Event({
     id: parseInt(id),
-    ...eventData
+    ...eventData,
+    participants: participants
   });
+  
   eventsData[index] = updatedEvent;
   return updatedEvent.toJSON();
 }

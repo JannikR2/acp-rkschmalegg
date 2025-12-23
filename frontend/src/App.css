@@ -76,6 +76,26 @@
   font-size: 1.1em;
 }
 
+.add-event-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 600;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.add-event-button:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+}
+
 .events-list {
   display: flex;
   flex-direction: column;
@@ -94,5 +114,10 @@
   
   .total-hours {
     align-self: flex-end;
+  }
+
+  .add-event-button {
+    align-self: flex-end;
+    width: auto;
   }
 }

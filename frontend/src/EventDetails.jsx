@@ -1,8 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import EventCard from './EventCard';
 import './EventDetails.css';
 
-const EventDetails = ({ event, onBack }) => {
+const EventDetails = ({ event, onBack, onUpdate, onDelete }) => {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const handleUpdateClick = () => {
+    onUpdate(event);
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    onDelete(event.id);
+    setShowDeleteConfirm(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+  };
+
   if (!event) {
     return (
       <div className="event-details-page">
@@ -24,11 +43,37 @@ const EventDetails = ({ event, onBack }) => {
           ← Zurück zur Übersicht
         </button>
         <h2>Event Details</h2>
+        <div className="action-buttons">
+          <button className="update-button" onClick={handleUpdateClick}>
+            ✏️ Bearbeiten
+          </button>
+          <button className="delete-button" onClick={handleDeleteClick}>
+            🗑️ Löschen
+          </button>
+        </div>
       </div>
       
       <div className="event-details-content">
         <EventCard event={event} />
       </div>
+
+      {showDeleteConfirm && (
+        <div className="delete-confirmation-overlay">
+          <div className="delete-confirmation-dialog">
+            <h3>Event löschen</h3>
+            <p>Sind Sie sicher, dass Sie das Event "<strong>{event.name}</strong>" löschen möchten?</p>
+            <p className="warning-text">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <div className="confirmation-actions">
+              <button className="cancel-confirm-button" onClick={handleCancelDelete}>
+                Abbrechen
+              </button>
+              <button className="confirm-delete-button" onClick={handleConfirmDelete}>
+                Löschen bestätigen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
