@@ -23,7 +23,7 @@ const EventCard = ({ event }) => {
         </div>
         
         <div className="event-detail">
-          <span className="detail-label">🕐 Zeit (geplant):</span>
+          <span className="detail-label">🕐 Zeit:</span>
           <span>{EventUtils.getTimeRange(event.timeFrom, event.timeTo)} ({plannedDuration}h)</span>
         </div>
         
@@ -34,7 +34,8 @@ const EventCard = ({ event }) => {
       </div>
 
       <div className="participants-section">
-        <h4 className="participants-title">👥 Teilnehmer & Zeiterfassung</h4>
+        <h4 className="participants-title">Teilnehmer
+        </h4>
         {participantsWithHours.length > 0 ? (
           <div className="participants-list">
             {participantsWithHours.map((participant, index) => (

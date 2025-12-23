@@ -5,13 +5,18 @@ import apiService, { EventUtils } from './apiService'
 import EventListItem from './EventListItem'
 import EventDetails from './EventDetails'
 import EventForm from './EventForm'
+import PersonsTable from './PersonsTable'
+import UserLogin from './UserLogin'
+import UserDashboard from './UserDashboard'
 
 function App() {  
   const [message, setMessage] = useState('')
   const [events, setEvents] = useState([])
   const [totalHours, setTotalHours] = useState(0)
   const [selectedEvent, setSelectedEvent] = useState(null)
-  const [currentView, setCurrentView] = useState('list') // 'list', 'details', 'create', or 'edit'
+  const [selectedPerson, setSelectedPerson] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null)
+  const [currentView, setCurrentView] = useState('list') // 'list', 'details', 'create', 'edit', or 'persons'
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -52,6 +57,33 @@ function App() {
   const handleEventClick = (event) => {
     setSelectedEvent(event)
     setCurrentView('details')
+  }
+
+  const handleUserLogin = (user) => {
+    setCurrentUser(user);
+    if (user.isAdmin) {
+      setCurrentView('list');
+    }
+  };
+
+  const handleUserLogout = () => {
+    setCurrentUser(null);
+    setCurrentView('list');
+    setSelectedEvent(null);
+    setSelectedPerson(null);
+    setError(null);
+  };
+
+  const handlePersonSelect = (person) => {
+    setSelectedPerson(person)
+    setCurrentView('personEvents')
+  }
+
+  const handleNavigationClick = (view) => {
+    setCurrentView(view)
+    setSelectedEvent(null)
+    setSelectedPerson(null)
+    setError(null)
   }
 
   const handleBackToList = () => {
@@ -119,6 +151,17 @@ function App() {
     }
   }
 
+  // Show login screen if no user is logged in
+  if (!currentUser) {
+    return <UserLogin onUserSelect={handleUserLogin} />;
+  }
+
+  // Show user dashboard for non-admin users
+  if (!currentUser.isAdmin) {
+    return <UserDashboard user={currentUser} onLogout={handleUserLogout} />;
+  }
+
+  // Admin interface continues below
   if (loading) {
     return (
       <>
@@ -145,6 +188,41 @@ function App() {
             onUpdate={handleUpdateEvent}
             onDelete={handleDeleteEvent}
           />
+        </main>
+      </>
+    )
+  }
+
+  // Render Persons view
+  if (currentView === 'persons') {
+    return (
+      <>
+        <header className="App-header">
+          <div className="header-content">
+            <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+            <div className="header-actions">
+              <nav className="main-nav">
+                <button 
+                  className={`nav-button ${currentView === 'list' ? 'active' : ''}`}
+                  onClick={() => handleNavigationClick('list')}
+                >
+                  📅 Events
+                </button>
+                <button 
+                  className={`nav-button ${currentView === 'persons' ? 'active' : ''}`}
+                  onClick={() => handleNavigationClick('persons')}
+                >
+                  👥 Personen
+                </button>
+              </nav>
+              <button className="logout-button" onClick={handleUserLogout}>
+                Abmelden
+              </button>
+            </div>
+          </div>
+        </header>
+        <main className="App-main">
+          <PersonsTable onPersonSelect={handlePersonSelect} />
         </main>
       </>
     )
@@ -187,7 +265,28 @@ function App() {
   return (
     <>
       <header className="App-header">
-        <h1>Zeiterfassung RK Schmalegg</h1>
+        <div className="header-content">
+          <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+          <div className="header-actions">
+            <nav className="main-nav">
+              <button 
+                className={`nav-button ${currentView === 'list' ? 'active' : ''}`}
+                onClick={() => handleNavigationClick('list')}
+              >
+                📅 Events
+              </button>
+              <button 
+                className={`nav-button ${currentView === 'persons' ? 'active' : ''}`}
+                onClick={() => handleNavigationClick('persons')}
+              >
+                👥 Personen
+              </button>
+            </nav>
+            <button className="logout-button" onClick={handleUserLogout}>
+              Abmelden
+            </button>
+          </div>
+        </div>
       </header>
       <main className="App-main">
         <div className="server-message">{message}</div>
@@ -200,7 +299,7 @@ function App() {
         
         <section className="events-section">
           <div className="section-header">
-            <h2>Termine & Zeiterfassung</h2>
+            <h2>Termine</h2>
             <button className="add-event-button" onClick={() => setCurrentView('create')}>
               + Neues Event
             </button>

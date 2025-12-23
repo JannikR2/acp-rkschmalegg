@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import EventCard from './EventCard';
+import EventParticipationTable from './EventParticipationTable';
 import './EventDetails.css';
 
 const EventDetails = ({ event, onBack, onUpdate, onDelete }) => {
@@ -42,7 +43,6 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete }) => {
         <button className="back-button" onClick={onBack}>
           ← Zurück zur Übersicht
         </button>
-        <h2>Event Details</h2>
         <div className="action-buttons">
           <button className="update-button" onClick={handleUpdateClick}>
             ✏️ Bearbeiten
@@ -55,6 +55,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete }) => {
       
       <div className="event-details-content">
         <EventCard event={event} />
+        <EventParticipationTable eventId={event.id} eventName={event.name} />
       </div>
 
       {showDeleteConfirm && (
