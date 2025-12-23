@@ -1,0 +1,19 @@
+.App {
+  text-align: center;
+  justify-items: center;
+  align-items: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App-main {
+  padding: 20px;
+}
