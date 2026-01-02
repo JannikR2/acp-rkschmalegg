@@ -5,6 +5,7 @@ import EventListItem from '../EventListItem';
 import EventDetails from '../EventDetails';
 import EventForm from '../EventForm';
 import PersonsTable from '../PersonsTable';
+import TimeSlotManager from '../TimeSlotManager';
 import '../App.css';
 
 const AdminPage = () => {
@@ -64,6 +65,11 @@ const AdminPage = () => {
   const handlePersonSelect = (person) => {
     setSelectedPerson(person);
     setCurrentView('personEvents');
+  };
+
+  const handleManageTimeSlots = (event) => {
+    setSelectedEvent(event);
+    setCurrentView('timeSlots');
   };
 
   const handleCreateEvent = async (eventData) => {
@@ -147,6 +153,24 @@ const AdminPage = () => {
             onBack={handleBackToList}
             onUpdate={handleUpdateEvent}
             onDelete={handleDeleteEvent}
+            onManageTimeSlots={handleManageTimeSlots}
+          />
+        </main>
+      </>
+    );
+  }
+
+  if (currentView === 'timeSlots') {
+    return (
+      <>
+        <header className="App-header">
+          <h1>Zeiterfassung RK Schmalegg</h1>
+        </header>
+        <main className="App-main">
+          <TimeSlotManager 
+            event={selectedEvent}
+            onBack={handleBackToList}
+            onUpdate={loadEvents}
           />
         </main>
       </>

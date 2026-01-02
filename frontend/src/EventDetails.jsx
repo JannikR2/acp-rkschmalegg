@@ -3,7 +3,7 @@ import EventCard from './EventCard';
 import EventParticipationTable from './EventParticipationTable';
 import './EventDetails.css';
 
-const EventDetails = ({ event, onBack, onUpdate, onDelete }) => {
+const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleUpdateClick = () => {
@@ -44,6 +44,9 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete }) => {
           ← Zurück zur Übersicht
         </button>
         <div className="action-buttons">
+          <button className="timeslots-button" onClick={() => onManageTimeSlots && onManageTimeSlots(event)}>
+            🕐 Time Slots verwalten
+          </button>
           <button className="update-button" onClick={handleUpdateClick}>
             ✏️ Bearbeiten
           </button>

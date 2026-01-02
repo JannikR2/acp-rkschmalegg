@@ -69,6 +69,47 @@ class ApiService {
       throw error;
     }
   }
+
+  // Time Slot Management
+  async getTimeSlots(eventId) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/events/${eventId}/timeslots`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching time slots:', error);
+      throw error;
+    }
+  }
+
+  async createTimeSlot(eventId, timeSlotData) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/events/${eventId}/timeslots`, timeSlotData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating time slot:', error);
+      throw error;
+    }
+  }
+
+  async updateTimeSlot(eventId, timeSlotId, timeSlotData) {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/events/${eventId}/timeslots/${timeSlotId}`, timeSlotData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating time slot:', error);
+      throw error;
+    }
+  }
+
+  async deleteTimeSlot(eventId, timeSlotId) {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/events/${eventId}/timeslots/${timeSlotId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting time slot:', error);
+      throw error;
+    }
+  }
 }
 
 // Helper functions for working with plain event objects

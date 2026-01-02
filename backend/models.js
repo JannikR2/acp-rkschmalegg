@@ -45,6 +45,84 @@ export class Participant {
   }
 }
 
+// TimeSlot within an event
+export class TimeSlot {
+  constructor({
+    id,
+    name,
+    timeFrom,
+    timeTo,
+    maxParticipants,
+    participants = []
+  }) {
+    this.id = id;
+    this.name = name;
+    this.timeFrom = timeFrom; // Time string (e.g., "10:00")
+    this.timeTo = timeTo;     // Time string (e.g., "11:00")
+    this.maxParticipants = maxParticipants || 0;
+    this.participants = participants; // Array of Participant objects
+  }
+
+  // Get available spots
+  getAvailableSpots() {
+    return Math.max(0, this.maxParticipants - this.getAcceptedCount());
+  }
+
+  // Get count of accepted participants
+  getAcceptedCount() {
+    return this.participants.filter(p => p.status === 'accepted').length;
+  }
+
+  // Check if slot is full
+  isFull() {
+    return this.getAcceptedCount() >= this.maxParticipants;
+  }
+
+  // Add participant to time slot
+  addParticipant(participant) {
+    if (participant instanceof Participant && !this.isFull()) {
+      this.participants.push(participant);
+    }
+  }
+
+  // Remove participant from time slot
+  removeParticipant(participant) {
+    this.participants = this.participants.filter(p => 
+      p.person.firstName !== participant.person.firstName || 
+      p.person.lastName !== participant.person.lastName
+    );
+  }
+
+  // Format time range
+  getTimeRange() {
+    if (!this.timeFrom || !this.timeTo) return '';
+    return `${this.timeFrom} - ${this.timeTo}`;
+  }
+
+  // Convert to JSON-serializable object
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      timeFrom: this.timeFrom,
+      timeTo: this.timeTo,
+      maxParticipants: this.maxParticipants,
+      participants: this.participants.map(p => p.toJSON()),
+      availableSpots: this.getAvailableSpots(),
+      isFull: this.isFull()
+    };
+  }
+
+  // Create from JSON object
+  static fromJSON(json) {
+    const participants = (json.participants || []).map(p => Participant.fromJSON(p));
+    return new TimeSlot({
+      ...json,
+      participants
+    });
+  }
+}
+
 // Event object type
 export class Event {
   constructor({
@@ -56,7 +134,8 @@ export class Event {
     timeFrom,
     timeTo,
     location,
-    participants = [] // Array of Participant objects
+    participants = [], // Array of Participant objects
+    timeSlots = [] // Array of TimeSlot objects
   }) {
     this.id = id;
     this.name = name;
@@ -67,6 +146,7 @@ export class Event {
     this.timeTo = timeTo;     // Time string (e.g., "17:00")
     this.location = location;
     this.participants = participants; // Array of Participant objects
+    this.timeSlots = timeSlots; // Array of TimeSlot objects
   }
 
   // Calculate planned duration in hours
@@ -139,6 +219,23 @@ export class Event {
     return `${this.timeFrom} - ${this.timeTo}`;
   }
 
+  // Add time slot to event
+  addTimeSlot(timeSlot) {
+    if (timeSlot instanceof TimeSlot) {
+      this.timeSlots.push(timeSlot);
+    }
+  }
+
+  // Remove time slot from event
+  removeTimeSlot(timeSlotId) {
+    this.timeSlots = this.timeSlots.filter(ts => ts.id !== timeSlotId);
+  }
+
+  // Get time slot by ID
+  getTimeSlotById(timeSlotId) {
+    return this.timeSlots.find(ts => ts.id === timeSlotId);
+  }
+
   // Convert to JSON-serializable object
   toJSON() {
     return {
@@ -150,16 +247,19 @@ export class Event {
       timeFrom: this.timeFrom,
       timeTo: this.timeTo,
       location: this.location,
-      participants: this.participants.map(p => p.toJSON())
+      participants: this.participants.map(p => p.toJSON()),
+      timeSlots: this.timeSlots.map(ts => ts.toJSON())
     };
   }
 
   // Create from JSON object
   static fromJSON(json) {
     const participants = (json.participants || []).map(p => Participant.fromJSON(p));
+    const timeSlots = (json.timeSlots || []).map(ts => TimeSlot.fromJSON(ts));
     return new Event({
       ...json,
-      participants
+      participants,
+      timeSlots
     });
   }
 }

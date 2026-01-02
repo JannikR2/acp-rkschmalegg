@@ -67,6 +67,25 @@
   background: #1976D2;
 }
 
+.timeslots-button {
+  background: #FF9800;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 500;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeslots-button:hover {
+  background: #F57C00;
+}
+
 .delete-button {
   background: #f44336;
   color: white;

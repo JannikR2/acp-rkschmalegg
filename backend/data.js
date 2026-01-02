@@ -1,8 +1,9 @@
-import { Person, Participant, Event } from './models.js';
+import { Person, Participant, Event, TimeSlot } from './models.js';
 
 // In-memory data store (in a real app, this would be a database)
 let eventsData = [];
 let nextEventId = 1;
+let nextTimeSlotId = 1;
 
 // Initialize with sample data
 function initializeSampleData() {
@@ -125,6 +126,54 @@ export function deleteEvent(id) {
   
   eventsData.splice(index, 1);
   return true;
+}
+
+// Time Slot Management Functions
+
+export function addTimeSlot(eventId, timeSlotData) {
+  const event = eventsData.find(e => e.id === parseInt(eventId));
+  if (!event) return null;
+
+  const timeSlot = new TimeSlot({
+    id: nextTimeSlotId++,
+    ...timeSlotData
+  });
+
+  event.addTimeSlot(timeSlot);
+  return timeSlot.toJSON();
+}
+
+export function updateTimeSlot(eventId, timeSlotId, timeSlotData) {
+  const event = eventsData.find(e => e.id === parseInt(eventId));
+  if (!event) return null;
+
+  const timeSlotIndex = event.timeSlots.findIndex(ts => ts.id === parseInt(timeSlotId));
+  if (timeSlotIndex === -1) return null;
+
+  const updatedTimeSlot = new TimeSlot({
+    id: parseInt(timeSlotId),
+    ...timeSlotData
+  });
+
+  event.timeSlots[timeSlotIndex] = updatedTimeSlot;
+  return updatedTimeSlot.toJSON();
+}
+
+export function deleteTimeSlot(eventId, timeSlotId) {
+  const event = eventsData.find(e => e.id === parseInt(eventId));
+  if (!event) return false;
+
+  const initialLength = event.timeSlots.length;
+  event.removeTimeSlot(parseInt(timeSlotId));
+  return event.timeSlots.length < initialLength;
+}
+
+export function getTimeSlotById(eventId, timeSlotId) {
+  const event = eventsData.find(e => e.id === parseInt(eventId));
+  if (!event) return null;
+
+  const timeSlot = event.getTimeSlotById(parseInt(timeSlotId));
+  return timeSlot ? timeSlot.toJSON() : null;
 }
 
 // Initialize the data when the module is loaded

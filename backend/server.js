@@ -227,6 +227,103 @@ app.put('/api/events/:eventId/participation/:personId/status', (req, res) => {
   }
 })
 
+// Time Slot Management API Routes
+
+// Get all time slots for an event
+app.get('/api/events/:eventId/timeslots', (req, res) => {
+  try {
+    const event = dataService.getEventById(req.params.eventId)
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event nicht gefunden'
+      })
+    }
+    res.json({
+      success: true,
+      data: event.timeSlots || [],
+      eventId: event.id
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Fehler beim Laden der Time Slots',
+      error: error.message
+    })
+  }
+})
+
+// Add time slot to event
+app.post('/api/events/:eventId/timeslots', (req, res) => {
+  try {
+    const timeSlot = dataService.addTimeSlot(req.params.eventId, req.body)
+    if (!timeSlot) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event nicht gefunden'
+      })
+    }
+    res.json({
+      success: true,
+      data: timeSlot,
+      message: 'Time Slot erfolgreich erstellt'
+    })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: 'Fehler beim Erstellen des Time Slots',
+      error: error.message
+    })
+  }
+})
+
+// Update time slot
+app.put('/api/events/:eventId/timeslots/:timeSlotId', (req, res) => {
+  try {
+    const timeSlot = dataService.updateTimeSlot(req.params.eventId, req.params.timeSlotId, req.body)
+    if (!timeSlot) {
+      return res.status(404).json({
+        success: false,
+        message: 'Time Slot nicht gefunden'
+      })
+    }
+    res.json({
+      success: true,
+      data: timeSlot,
+      message: 'Time Slot erfolgreich aktualisiert'
+    })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: 'Fehler beim Aktualisieren des Time Slots',
+      error: error.message
+    })
+  }
+})
+
+// Delete time slot
+app.delete('/api/events/:eventId/timeslots/:timeSlotId', (req, res) => {
+  try {
+    const success = dataService.deleteTimeSlot(req.params.eventId, req.params.timeSlotId)
+    if (!success) {
+      return res.status(404).json({
+        success: false,
+        message: 'Time Slot nicht gefunden'
+      })
+    }
+    res.json({
+      success: true,
+      message: 'Time Slot erfolgreich gelöscht'
+    })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: 'Fehler beim Löschen des Time Slots',
+      error: error.message
+    })
+  }
+})
+
 app.listen(3000, () => {
   console.log('Server running on port 3000')
   console.log('API Endpoints:')
@@ -243,4 +340,9 @@ app.listen(3000, () => {
   console.log('  Participation:')
   console.log('    GET    /api/events/:eventId/participation              - Teilnahmedaten abrufen')
   console.log('    PUT    /api/events/:eventId/participation/:personId/status - Teilnahmestatus aktualisieren')
+  console.log('  Time Slots:')
+  console.log('    GET    /api/events/:eventId/timeslots                   - Time Slots für Event abrufen')
+  console.log('    POST   /api/events/:eventId/timeslots                   - Time Slot erstellen')
+  console.log('    PUT    /api/events/:eventId/timeslots/:timeSlotId      - Time Slot aktualisieren')
+  console.log('    DELETE /api/events/:eventId/timeslots/:timeSlotId      - Time Slot löschen')
 })

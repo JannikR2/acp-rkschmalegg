@@ -1,0 +1,204 @@
+.timeslot-manager {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.timeslot-header {
+  margin-bottom: 24px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.header-content h2 {
+  margin: 0;
+  color: #333;
+}
+
+.add-timeslot-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.add-timeslot-btn:hover {
+  background: #218838;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.no-timeslots {
+  text-align: center;
+  padding: 40px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #666;
+}
+
+.timeslots-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeslot-item {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.3s;
+}
+
+.timeslot-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.timeslot-info {
+  flex: 1;
+}
+
+.timeslot-name {
+  margin: 0 0 12px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.timeslot-details {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: #666;
+}
+
+.timeslot-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.timeslot-participants {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.timeslot-available {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.full-badge {
+  background: #dc3545;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.timeslot-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #545b62;
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .timeslot-manager {
+    padding: 16px;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .timeslot-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .timeslot-details {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .timeslot-actions {
+    align-self: flex-end;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
