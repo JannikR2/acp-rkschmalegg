@@ -11,6 +11,7 @@ const AdminPage = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedPerson, setSelectedPerson] = useState(null);
   const [currentView, setCurrentView] = useState('list');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,12 +51,19 @@ const AdminPage = () => {
   const handleNavigationClick = (view) => {
     setCurrentView(view);
     setSelectedEvent(null);
+    setSelectedPerson(null);
     setError(null);
   };
 
   const handleBackToList = () => {
     setSelectedEvent(null);
+    setSelectedPerson(null);
     setCurrentView('list');
+  };
+
+  const handlePersonSelect = (person) => {
+    setSelectedPerson(person);
+    setCurrentView('personEvents');
   };
 
   const handleCreateEvent = async (eventData) => {
@@ -173,7 +181,79 @@ const AdminPage = () => {
           </div>
         </header>
         <main className="App-main">
-          <PersonsTable />
+          <PersonsTable onPersonSelect={handlePersonSelect} />
+        </main>
+      </>
+    );
+  }
+
+  if (currentView === 'personEvents') {
+    return (
+      <>
+        <header className="App-header">
+          <div className="header-content">
+            <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+            <div className="header-actions">
+              <nav className="main-nav">
+                <button 
+                  className={`nav-button ${currentView === 'list' ? 'active' : ''}`}
+                  onClick={() => handleNavigationClick('list')}
+                >
+                  📅 Events
+                </button>
+                <button 
+                  className={`nav-button ${currentView === 'persons' ? 'active' : ''}`}
+                  onClick={() => handleNavigationClick('persons')}
+                >
+                  👥 Personen
+                </button>
+              </nav>
+              <button className="logout-button" onClick={handleLogout}>
+                Abmelden
+              </button>
+            </div>
+          </div>
+        </header>
+        <main className="App-main">
+          <div className="person-events-view">
+            <div className="section-header">
+              <button className="back-button" onClick={() => handleNavigationClick('persons')}>
+                ← Zurück zu Personen
+              </button>
+              <h2>Events für {selectedPerson?.fullName}</h2>
+            </div>
+            
+            <div className="events-list-simple">
+              {events.length > 0 ? (
+                events.map((event) => {
+                  const participation = event.participants?.find(p => p.person.firstName === selectedPerson?.firstName && p.person.lastName === selectedPerson?.lastName);
+                  const status = participation ? participation.status : 'nicht eingetragen';
+                  
+                  return (
+                    <div key={event.id} className="event-status-item">
+                      <div className="event-info">
+                        <h3 className="event-name">{event.name}</h3>
+                        <div className="event-meta">
+                          <span className="event-date">{event.dateFrom}</span>
+                          <span className="event-time">{event.timeFrom} - {event.timeTo}</span>
+                        </div>
+                      </div>
+                      <div className="participation-status">
+                        <span className={`status-badge ${status.replace(' ', '-')}`}>
+                          {status === 'accepted' && '✅ Zugesagt'}
+                          {status === 'declined' && '❌ Abgesagt'}
+                          {status === 'pending' && '⏳ Ausstehend'}
+                          {status === 'nicht eingetragen' && '➖ Nicht eingetragen'}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>Keine Events vorhanden</p>
+              )}
+            </div>
+          </div>
         </main>
       </>
     );

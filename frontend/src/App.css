@@ -209,3 +209,97 @@
     width: auto;
   }
 }
+
+/* Person Events View */
+.person-events-view {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.back-button {
+  background: #f0f0f0 !important;
+  border: 1px solid #ddd !important;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+  margin-bottom: 20px;
+  color: #333 !important;
+  text-decoration: none;
+}
+
+.back-button:hover {
+  background: #e0e0e0 !important;
+  color: #333 !important;
+}
+
+.events-list-simple {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.event-status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  transition: box-shadow 0.3s;
+}
+
+.event-status-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-info {
+  flex: 1;
+}
+
+.event-name {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.event-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #666;
+}
+
+.participation-status {
+  flex-shrink: 0;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-badge.accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.declined {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.status-badge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.nicht-eingetragen {
+  background: #f8f9fa;
+  color: #6c757d;
+}

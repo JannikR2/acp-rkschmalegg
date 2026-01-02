@@ -17,17 +17,17 @@ const EventCard = ({ event, hideParticipants = false }) => {
       <p className="event-description">{event.description}</p>
       <div className="event-details">
         <div className="event-detail">
-          <span className="detail-label">📅 Datum:</span>
+          <span className="detail-label">Datum:</span>
           <span>{EventUtils.getDateRange(event.dateFrom, event.dateTo)}</span>
         </div>
         
         <div className="event-detail">
-          <span className="detail-label">🕐 Zeit:</span>
+          <span className="detail-label">Zeit:</span>
           <span>{EventUtils.getTimeRange(event.timeFrom, event.timeTo)} ({plannedDuration}h)</span>
         </div>
         
         <div className="event-detail">
-          <span className="detail-label">�� Ort:</span>
+          <span className="detail-label">Ort:</span>
           <span>{event.location}</span>
         </div>
       </div>
