@@ -3,9 +3,11 @@ import { EventUtils } from './apiService';
 import './EventCard.css';
 
 const EventCard = ({ event, hideParticipants = false }) => {
-  const participantsWithHours = EventUtils.getParticipantsWithHours(event);
-  const totalTrackedHours = EventUtils.getTotalTrackedHours(event);
   const plannedDuration = EventUtils.calculatePlannedDuration(event);
+
+  // Count participants by status
+  const acceptedCount = event.participants ? event.participants.filter(p => p.status === 'accepted').length : 0;
+  const declinedCount = event.participants ? event.participants.filter(p => p.status === 'declined').length : 0;
 
   return (
     <div className="event-card">
@@ -25,51 +27,24 @@ const EventCard = ({ event, hideParticipants = false }) => {
         </div>
         
         <div className="event-detail">
-          <span className="detail-label">📍 Ort:</span>
+          <span className="detail-label">�� Ort:</span>
           <span>{event.location}</span>
         </div>
       </div>
 
       {!hideParticipants && (
         <div className="participants-section">
-          <h4 className="participants-title">Teilnehmer
-          </h4>
-          {participantsWithHours.length > 0 ? (
-            <div className="participants-list">
-              {participantsWithHours.map((participant, index) => (
-                <div key={index} className="participant-card">
-                  <div className="participant-header">
-                    <span className="participant-name">{participant.name}</span>
-                    <span className="participant-hours">{participant.hours.toFixed(1)}h</span>
-                  </div>
-                  
-                  {participant.timeSpans.length > 0 && (
-                    <div className="time-spans">
-                      {participant.timeSpans.map((timeSpan, spanIndex) => (
-                        <div key={spanIndex} className="time-span">
-                          <div className="time-span-header">
-                            <span className="time-span-date">
-                              {new Date(timeSpan.date).toLocaleDateString()}
-                            </span>
-                            <span className="time-span-time">
-                              {EventUtils.getTimeRange(timeSpan.timeFrom, timeSpan.timeTo)} ({EventUtils.getFormattedDuration(timeSpan)})
-                            </span>
-                          </div>
-                          {timeSpan.description && (
-                            <div className="time-span-description">
-                              {timeSpan.description}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+          <h4 className="participants-title">Teilnahme-Status</h4>
+          <div className="participation-stats">
+            <div className="stat-item">
+              <span className="stat-number accepted">{acceptedCount}</span>
+              <span className="stat-label">Zugesagt</span>
             </div>
-          ) : (
-            <p className="no-participants">Keine Teilnehmer</p>
-          )}
+            <div className="stat-item">
+              <span className="stat-number declined">{declinedCount}</span>
+              <span className="stat-label">Abgesagt</span>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { Person, TimeSpan, Participant } from './models.js';
+import { Person, Participant } from './models.js';
 
 // In-memory data store for persons and their event participation
 let personsData = [];
@@ -32,55 +32,28 @@ function initializeSamplePersons() {
 }
 
 function initializeSampleParticipation() {
-  // Sample participation for event ID 1 (will be mapped to actual events)
+  // Sample participation - only status, no time tracking
   const sampleParticipation = [
-    { personId: 1, eventId: 1, status: 'accepted', timeSpans: [
-      { date: '2024-12-15', timeFrom: '08:00', timeTo: '12:00', description: 'Hindernisse aufgebaut und Platz vorbereitet' }
-    ]},
-    { personId: 2, eventId: 1, status: 'accepted', timeSpans: [
-      { date: '2024-12-15', timeFrom: '08:30', timeTo: '11:30', description: 'Absperrungen gesetzt und Boden geebnet' }
-    ]},
-    { personId: 3, eventId: 1, status: 'accepted', timeSpans: [
-      { date: '2024-12-15', timeFrom: '09:00', timeTo: '12:00', description: 'Equipment sortiert und Richterstand aufgebaut' }
-    ]},
-    { personId: 4, eventId: 1, status: 'pending', timeSpans: [] },
-    { personId: 5, eventId: 1, status: 'declined', timeSpans: [] },
+    // Event 1
+    { personId: 1, eventId: 1, status: 'accepted' },
+    { personId: 2, eventId: 1, status: 'accepted' },
+    { personId: 3, eventId: 1, status: 'accepted' },
+    { personId: 4, eventId: 1, status: 'pending' },
+    { personId: 5, eventId: 1, status: 'declined' },
 
-    // Sample participation for event ID 2
-    { personId: 1, eventId: 2, status: 'accepted', timeSpans: [
-      { date: '2024-06-20', timeFrom: '06:00', timeTo: '10:00', description: 'Zelte aufgebaut und Dekoration angebracht' },
-      { date: '2024-06-20', timeFrom: '14:00', timeTo: '18:00', description: 'Gästebetreuung und Festorganisation' },
-      { date: '2024-06-20', timeFrom: '20:00', timeTo: '22:00', description: 'Aufräumarbeiten und Abbau' }
-    ]},
-    { personId: 2, eventId: 2, status: 'accepted', timeSpans: [
-      { date: '2024-06-20', timeFrom: '07:00', timeTo: '11:00', description: 'Grillstation vorbereitet und Getränke organisiert' },
-      { date: '2024-06-20', timeFrom: '15:00', timeTo: '19:00', description: 'Bewirtung der Gäste' }
-    ]},
-    { personId: 4, eventId: 2, status: 'accepted', timeSpans: [
-      { date: '2024-06-19', timeFrom: '16:00', timeTo: '19:00', description: 'Vorbereitungen und Einkäufe' },
-      { date: '2024-06-20', timeFrom: '12:00', timeTo: '20:00', description: 'Festleitung und Koordination' }
-    ]},
-    { personId: 5, eventId: 2, status: 'accepted', timeSpans: [
-      { date: '2024-06-20', timeFrom: '13:00', timeTo: '17:00', description: 'Kinderbetreuung und Ponyreiten organisiert' }
-    ]},
+    // Event 2
+    { personId: 1, eventId: 2, status: 'accepted' },
+    { personId: 2, eventId: 2, status: 'accepted' },
+    { personId: 4, eventId: 2, status: 'accepted' },
+    { personId: 5, eventId: 2, status: 'accepted' },
 
-    // Sample participation for event ID 3
-    { personId: 1, eventId: 3, status: 'accepted', timeSpans: [
-      { date: '2025-01-12', timeFrom: '06:00', timeTo: '08:00', description: 'Parcours aufgebaut und vermessen' },
-      { date: '2025-01-12', timeFrom: '08:00', timeTo: '17:00', description: 'Turnierleitung und Protokollführung' }
-    ]},
-    { personId: 2, eventId: 3, status: 'accepted', timeSpans: [
-      { date: '2025-01-12', timeFrom: '07:00', timeTo: '18:00', description: 'Richtertätigkeit Dressur und Springen' }
-    ]},
-    { personId: 3, eventId: 3, status: 'accepted', timeSpans: [
-      { date: '2025-01-12', timeFrom: '06:30', timeTo: '12:00', description: 'Anmeldung und Startnummernvergabe' },
-      { date: '2025-01-12', timeFrom: '15:00', timeTo: '17:30', description: 'Siegerehrung organisiert' }
-    ]},
-    { personId: 4, eventId: 3, status: 'accepted', timeSpans: [
-      { date: '2025-01-12', timeFrom: '08:00', timeTo: '17:00', description: 'Zeitnahme und Ergebnisdokumentation' }
-    ]},
-    { personId: 6, eventId: 3, status: 'pending', timeSpans: [] },
-    { personId: 7, eventId: 3, status: 'declined', timeSpans: [] }
+    // Event 3
+    { personId: 1, eventId: 3, status: 'accepted' },
+    { personId: 2, eventId: 3, status: 'accepted' },
+    { personId: 3, eventId: 3, status: 'accepted' },
+    { personId: 4, eventId: 3, status: 'accepted' },
+    { personId: 6, eventId: 3, status: 'pending' },
+    { personId: 7, eventId: 3, status: 'declined' }
   ];
 
   eventParticipationData = sampleParticipation;
@@ -101,123 +74,87 @@ export function getAllPersons() {
 export function getPersonById(id) {
   const person = personsData.find(p => p.id === parseInt(id));
   if (!person) return null;
-  
+
   return {
     id: person.id,
     firstName: person.firstName,
     lastName: person.lastName,
     fullName: person.getFullName(),
     email: person.email,
-    phone: person.phone
+    phone: person.phone,
+    isAdmin: false // Regular users are not admin by default
   };
 }
 
 export function createPerson(personData) {
-  const person = new Person(personData.firstName, personData.lastName);
-  person.id = nextPersonId++;
-  person.email = personData.email || `${personData.firstName.toLowerCase()}.${personData.lastName.toLowerCase()}@rk-schmalegg.de`;
-  person.phone = personData.phone || '';
+  const newPerson = new Person(personData.firstName, personData.lastName);
+  newPerson.id = nextPersonId++;
+  newPerson.email = personData.email || `${personData.firstName.toLowerCase()}.${personData.lastName.toLowerCase()}@rk-schmalegg.de`;
+  newPerson.phone = personData.phone || '';
   
-  personsData.push(person);
+  personsData.push(newPerson);
+  
   return {
-    id: person.id,
-    firstName: person.firstName,
-    lastName: person.lastName,
-    fullName: person.getFullName(),
-    email: person.email,
-    phone: person.phone
+    id: newPerson.id,
+    firstName: newPerson.firstName,
+    lastName: newPerson.lastName,
+    fullName: newPerson.getFullName(),
+    email: newPerson.email,
+    phone: newPerson.phone
   };
 }
 
-// Event participation functions
+// Participation management functions
 export function getEventParticipation(eventId) {
-  return eventParticipationData
-    .filter(p => p.eventId === parseInt(eventId))
-    .map(participation => {
-      const person = personsData.find(p => p.id === participation.personId);
-      const totalHours = participation.timeSpans.reduce((total, timeSpan) => {
-        return total + calculateTimeSpanDuration(timeSpan);
-      }, 0);
+  const participations = eventParticipationData.filter(p => p.eventId === parseInt(eventId));
+  
+  return participations.map(participation => {
+    const person = personsData.find(p => p.id === participation.personId);
+    if (!person) return null;
 
-      return {
-        personId: participation.personId,
-        person: person ? person.getFullName() : 'Unknown',
-        email: person ? person.email : '',
-        status: participation.status,
-        timeSpans: participation.timeSpans,
-        totalHours: totalHours
-      };
-    });
+    return {
+      personId: participation.personId,
+      person: person.getFullName(),
+      email: person.email,
+      status: participation.status
+    };
+  }).filter(p => p !== null);
 }
 
 export function updateParticipationStatus(eventId, personId, status) {
-  const participation = eventParticipationData.find(
+  // Valid statuses: 'accepted', 'declined', 'pending', 'not_responded'
+  const validStatuses = ['accepted', 'declined', 'pending', 'not_responded'];
+  if (!validStatuses.includes(status)) {
+    throw new Error('Invalid status');
+  }
+
+  const participationIndex = eventParticipationData.findIndex(
     p => p.eventId === parseInt(eventId) && p.personId === parseInt(personId)
   );
-  
-  if (participation) {
-    participation.status = status;
-    
-    // If status is declined, clear all time spans
-    if (status === 'declined') {
-      participation.timeSpans = [];
-    }
+
+  if (participationIndex >= 0) {
+    // Update existing participation
+    eventParticipationData[participationIndex].status = status;
   } else {
-    // Create new participation record
+    // Create new participation entry
     eventParticipationData.push({
       personId: parseInt(personId),
       eventId: parseInt(eventId),
-      status: status,
-      timeSpans: []
+      status: status
     });
   }
-  
+
   return true;
 }
 
-export function addTimeSpan(eventId, personId, timeSpanData) {
-  let participation = eventParticipationData.find(
-    p => p.eventId === parseInt(eventId) && p.personId === parseInt(personId)
-  );
-  
-  if (!participation) {
-    participation = {
-      personId: parseInt(personId),
-      eventId: parseInt(eventId),
-      status: 'accepted',
-      timeSpans: []
-    };
-    eventParticipationData.push(participation);
-  }
-  
-  participation.timeSpans.push(timeSpanData);
-  return true;
-}
-
-export function removeTimeSpan(eventId, personId, timeSpanIndex) {
-  const participation = eventParticipationData.find(
-    p => p.eventId === parseInt(eventId) && p.personId === parseInt(personId)
-  );
-  
-  if (participation && participation.timeSpans[timeSpanIndex]) {
-    participation.timeSpans.splice(timeSpanIndex, 1);
-    return true;
-  }
-  
-  return false;
-}
-
-function calculateTimeSpanDuration(timeSpan) {
-  if (!timeSpan.timeFrom || !timeSpan.timeTo) return 0;
-  
-  const [fromHour, fromMin] = timeSpan.timeFrom.split(':').map(Number);
-  const [toHour, toMin] = timeSpan.timeTo.split(':').map(Number);
-  
-  const fromMinutes = fromHour * 60 + fromMin;
-  const toMinutes = toHour * 60 + toMin;
-  
-  return (toMinutes - fromMinutes) / 60;
-}
-
-// Initialize the data when the module is loaded
+// Initialize on module load
 initializeSamplePersons();
+
+// Export the service object
+export default {
+  getAllPersons,
+  getPersonById,
+  createPerson,
+  getEventParticipation,
+  updateParticipationStatus
+};

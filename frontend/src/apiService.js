@@ -59,10 +59,10 @@ class ApiService {
     }
   }
 
-  // Get total hours statistics
+  // Get participation statistics
   async getStats() {
     try {
-      const response = await axios.get(`${API_BASE_URL}/stats/hours`);
+      const response = await axios.get(`${API_BASE_URL}/stats/participation`);
       return response.data;
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -86,43 +86,40 @@ export const EventUtils = {
     return (toMinutes - fromMinutes) / 60;
   },
 
-  // Get total hours tracked by all participants
-  getTotalTrackedHours(event) {
-    return event.participants.reduce((total, participant) => {
-      return total + this.getParticipantTotalHours(participant);
-    }, 0);
+  // Get total number of participants
+  getTotalParticipants(event) {
+    return event.participants.length;
   },
 
-  // Get participant total hours
-  getParticipantTotalHours(participant) {
-    return participant.timeSpans.reduce((total, timeSpan) => {
-      return total + this.getTimeSpanDuration(timeSpan);
-    }, 0);
+  // Get number of accepted participants
+  getAcceptedParticipants(event) {
+    return event.participants.filter(participant => participant.status === 'accepted').length;
   },
 
-  // Get duration of a time span
-  getTimeSpanDuration(timeSpan) {
-    if (!timeSpan.timeFrom || !timeSpan.timeTo) return 0;
-    
-    const [fromHour, fromMin] = timeSpan.timeFrom.split(':').map(Number);
-    const [toHour, toMin] = timeSpan.timeTo.split(':').map(Number);
-    
-    const fromMinutes = fromHour * 60 + fromMin;
-    const toMinutes = toHour * 60 + toMin;
-    
-    return (toMinutes - fromMinutes) / 60;
+  // Get number of declined participants
+  getDeclinedParticipants(event) {
+    return event.participants.filter(participant => participant.status === 'declined').length;
   },
 
-  // Format time span duration
-  getFormattedDuration(timeSpan) {
-    const duration = this.getTimeSpanDuration(timeSpan);
-    const hours = Math.floor(duration);
-    const minutes = Math.round((duration - hours) * 60);
+  // Get number of pending participants
+  getPendingParticipants(event) {
+    return event.participants.filter(participant => participant.status === 'pending').length;
+  },
+
+  // Get participation statistics
+  getParticipationStats(event) {
+    const total = this.getTotalParticipants(event);
+    const accepted = this.getAcceptedParticipants(event);
+    const declined = this.getDeclinedParticipants(event);
+    const pending = this.getPendingParticipants(event);
     
-    if (minutes === 0) {
-      return `${hours}h`;
-    }
-    return `${hours}h ${minutes}min`;
+    return {
+      total,
+      accepted,
+      declined,
+      pending,
+      acceptanceRate: total > 0 ? (accepted / total * 100).toFixed(1) : 0
+    };
   },
 
   // Get time range string
@@ -149,13 +146,33 @@ export const EventUtils = {
     return event.participants.map(p => `${p.person.firstName} ${p.person.lastName}`).join(', ');
   },
 
-  // Get participants with their tracked hours
-  getParticipantsWithHours(event) {
-    return event.participants.map(participant => ({
-      name: `${participant.person.firstName} ${participant.person.lastName}`,
-      hours: this.getParticipantTotalHours(participant),
-      timeSpans: participant.timeSpans
-    }));
+  // Get participants grouped by status
+  getParticipantsByStatus(event) {
+    const accepted = [];
+    const declined = [];
+    const pending = [];
+
+    event.participants.forEach(participant => {
+      const participantInfo = {
+        name: `${participant.person.firstName} ${participant.person.lastName}`,
+        status: participant.status
+      };
+
+      switch (participant.status) {
+        case 'accepted':
+          accepted.push(participantInfo);
+          break;
+        case 'declined':
+          declined.push(participantInfo);
+          break;
+        case 'pending':
+        default:
+          pending.push(participantInfo);
+          break;
+      }
+    });
+
+    return { accepted, declined, pending };
   }
 };
 

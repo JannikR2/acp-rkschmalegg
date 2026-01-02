@@ -25,8 +25,7 @@ app.get('/api/events', (req, res) => {
     res.json({
       success: true,
       data: events,
-      totalEvents: events.length,
-      totalHours: dataService.getTotalTrackedHours()
+      totalEvents: events.length
     })
   } catch (error) {
     res.status(500).json({
@@ -120,26 +119,6 @@ app.delete('/api/events/:id', (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Fehler beim Löschen des Events',
-      error: error.message
-    })
-  }
-})
-
-// Get total tracked hours across all events
-app.get('/api/stats/hours', (req, res) => {
-  try {
-    const totalHours = dataService.getTotalTrackedHours()
-    res.json({
-      success: true,
-      data: {
-        totalHours: totalHours,
-        totalEvents: dataService.getAllEvents().length
-      }
-    })
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Fehler beim Laden der Statistiken',
       error: error.message
     })
   }
@@ -248,52 +227,6 @@ app.put('/api/events/:eventId/participation/:personId/status', (req, res) => {
   }
 })
 
-// Add time span for participant
-app.post('/api/events/:eventId/participation/:personId/timespans', (req, res) => {
-  try {
-    const added = userService.addTimeSpan(req.params.eventId, req.params.personId, req.body)
-    if (!added) {
-      return res.status(400).json({
-        success: false,
-        message: 'Zeitspanne konnte nicht hinzugefügt werden'
-      })
-    }
-    res.status(201).json({
-      success: true,
-      message: 'Zeitspanne erfolgreich hinzugefügt'
-    })
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Fehler beim Hinzufügen der Zeitspanne',
-      error: error.message
-    })
-  }
-})
-
-// Remove time span for participant
-app.delete('/api/events/:eventId/participation/:personId/timespans/:index', (req, res) => {
-  try {
-    const removed = userService.removeTimeSpan(req.params.eventId, req.params.personId, parseInt(req.params.index))
-    if (!removed) {
-      return res.status(404).json({
-        success: false,
-        message: 'Zeitspanne nicht gefunden'
-      })
-    }
-    res.json({
-      success: true,
-      message: 'Zeitspanne erfolgreich entfernt'
-    })
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Fehler beim Entfernen der Zeitspanne',
-      error: error.message
-    })
-  }
-})
-
 app.listen(3000, () => {
   console.log('Server running on port 3000')
   console.log('API Endpoints:')
@@ -303,7 +236,6 @@ app.listen(3000, () => {
   console.log('    POST   /api/events         - Neues Event erstellen')
   console.log('    PUT    /api/events/:id     - Event aktualisieren')
   console.log('    DELETE /api/events/:id     - Event löschen')
-  console.log('    GET    /api/stats/hours    - Gesamtstunden abrufen')
   console.log('  Persons:')
   console.log('    GET    /api/persons        - Alle Personen abrufen')
   console.log('    GET    /api/persons/:id    - Einzelne Person abrufen')
@@ -311,6 +243,4 @@ app.listen(3000, () => {
   console.log('  Participation:')
   console.log('    GET    /api/events/:eventId/participation              - Teilnahmedaten abrufen')
   console.log('    PUT    /api/events/:eventId/participation/:personId/status - Teilnahmestatus aktualisieren')
-  console.log('    POST   /api/events/:eventId/participation/:personId/timespans - Zeitspanne hinzufügen')
-  console.log('    DELETE /api/events/:eventId/participation/:personId/timespans/:index - Zeitspanne entfernen')
 })

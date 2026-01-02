@@ -23,96 +23,25 @@ export class Person {
   }
 }
 
-// TimeSpan object for tracking individual work periods
-export class TimeSpan {
-  constructor({
-    date,
-    timeFrom,
-    timeTo,
-    description = ''
-  }) {
-    this.date = date; // Date when the work was done
-    this.timeFrom = timeFrom; // Start time (e.g., "09:00")
-    this.timeTo = timeTo; // End time (e.g., "12:30")
-    this.description = description; // Optional description of what was done
-  }
-
-  getDuration() {
-    if (!this.timeFrom || !this.timeTo) return 0;
-    
-    const [fromHour, fromMin] = this.timeFrom.split(':').map(Number);
-    const [toHour, toMin] = this.timeTo.split(':').map(Number);
-    
-    const fromMinutes = fromHour * 60 + fromMin;
-    const toMinutes = toHour * 60 + toMin;
-    
-    return (toMinutes - fromMinutes) / 60;
-  }
-
-  getFormattedDuration() {
-    const duration = this.getDuration();
-    const hours = Math.floor(duration);
-    const minutes = Math.round((duration - hours) * 60);
-    
-    if (minutes === 0) {
-      return `${hours}h`;
-    }
-    return `${hours}h ${minutes}min`;
-  }
-
-  getTimeRange() {
-    if (!this.timeFrom || !this.timeTo) return '';
-    return `${this.timeFrom} - ${this.timeTo}`;
-  }
-
-  // Convert to JSON-serializable object
-  toJSON() {
-    return {
-      date: this.date,
-      timeFrom: this.timeFrom,
-      timeTo: this.timeTo,
-      description: this.description
-    };
-  }
-
-  // Create from JSON object
-  static fromJSON(json) {
-    return new TimeSpan(json);
-  }
-}
-
-// Participant with individual time tracking
+// Participant with status (no time tracking)
 export class Participant {
-  constructor(person, timeSpans = []) {
+  constructor(person, status = 'pending') {
     this.person = person; // Person object
-    this.timeSpans = timeSpans; // Array of TimeSpan objects
-  }
-
-  addTimeSpan(timeSpan) {
-    this.timeSpans.push(timeSpan);
-  }
-
-  removeTimeSpan(index) {
-    this.timeSpans.splice(index, 1);
-  }
-
-  getTotalHours() {
-    return this.timeSpans.reduce((total, timeSpan) => total + timeSpan.getDuration(), 0);
+    this.status = status; // 'accepted', 'declined', 'pending', 'not_responded'
   }
 
   // Convert to JSON-serializable object
   toJSON() {
     return {
       person: this.person.toJSON(),
-      timeSpans: this.timeSpans.map(ts => ts.toJSON())
+      status: this.status
     };
   }
 
   // Create from JSON object
   static fromJSON(json) {
     const person = Person.fromJSON(json.person);
-    const timeSpans = json.timeSpans.map(ts => TimeSpan.fromJSON(ts));
-    return new Participant(person, timeSpans);
+    return new Participant(person, json.status || 'pending');
   }
 }
 
@@ -153,9 +82,14 @@ export class Event {
     return (toMinutes - fromMinutes) / 60;
   }
 
-  // Get total hours tracked by all participants
-  getTotalTrackedHours() {
-    return this.participants.reduce((total, participant) => total + participant.getTotalHours(), 0);
+  // Get count of accepted participants
+  getAcceptedCount() {
+    return this.participants.filter(p => p.status === 'accepted').length;
+  }
+
+  // Get count of declined participants
+  getDeclinedCount() {
+    return this.participants.filter(p => p.status === 'declined').length;
   }
 
   // Add participant to event
@@ -178,12 +112,11 @@ export class Event {
     return this.participants.map(p => p.person.getFullName()).join(', ');
   }
 
-  // Get participant with their tracked hours
-  getParticipantsWithHours() {
+  // Get participants with their status
+  getParticipantsWithStatus() {
     return this.participants.map(participant => ({
       name: participant.person.getFullName(),
-      hours: participant.getTotalHours(),
-      timeSpans: participant.timeSpans
+      status: participant.status
     }));
   }
 
@@ -223,7 +156,7 @@ export class Event {
 
   // Create from JSON object
   static fromJSON(json) {
-    const participants = json.participants.map(p => Participant.fromJSON(p));
+    const participants = (json.participants || []).map(p => Participant.fromJSON(p));
     return new Event({
       ...json,
       participants
