@@ -12,6 +12,7 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
     location: ''
   });
 
+  const [timeSlots, setTimeSlots] = useState([]);
   const [errors, setErrors] = useState({});
 
   // Initialize form data when editing
@@ -26,6 +27,9 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
         timeTo: event.timeTo || '',
         location: event.location || ''
       });
+      
+      // Load existing time slots
+      setTimeSlots(event.timeSlots || []);
     }
   }, [isEditing, event]);
 
@@ -86,8 +90,78 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
       }
     }
 
+    // Validate time slots
+    timeSlots.forEach((timeSlot, index) => {
+      const slotPrefix = `timeSlot_${index}`;
+      
+      if (!timeSlot.name || !timeSlot.name.trim()) {
+        newErrors[`${slotPrefix}_name`] = 'Zeitslot Name ist erforderlich';
+      }
+      
+      if (!timeSlot.timeFrom) {
+        newErrors[`${slotPrefix}_timeFrom`] = 'Startzeit ist erforderlich';
+      }
+      
+      if (!timeSlot.timeTo) {
+        newErrors[`${slotPrefix}_timeTo`] = 'Endzeit ist erforderlich';
+      }
+      
+      if (!timeSlot.maxParticipants || timeSlot.maxParticipants < 1) {
+        newErrors[`${slotPrefix}_maxParticipants`] = 'Mindestens 1 Teilnehmer erforderlich';
+      }
+      
+      // Validate time slot time range
+      if (timeSlot.timeFrom && timeSlot.timeTo) {
+        const [slotFromHour, slotFromMin] = timeSlot.timeFrom.split(':').map(Number);
+        const [slotToHour, slotToMin] = timeSlot.timeTo.split(':').map(Number);
+        
+        const slotFromMinutes = slotFromHour * 60 + slotFromMin;
+        const slotToMinutes = slotToHour * 60 + slotToMin;
+        
+        if (slotToMinutes <= slotFromMinutes) {
+          newErrors[`${slotPrefix}_timeTo`] = 'Endzeit muss nach der Startzeit liegen';
+        }
+      }
+    });
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Time Slot Management Functions
+  const addTimeSlot = () => {
+    const newTimeSlot = {
+      id: Date.now(), // Temporary ID for new slots
+      name: '',
+      timeFrom: '',
+      timeTo: '',
+      maxParticipants: 1,
+      participants: []
+    };
+    setTimeSlots([...timeSlots, newTimeSlot]);
+  };
+
+  const updateTimeSlot = (index, field, value) => {
+    const updatedTimeSlots = [...timeSlots];
+    updatedTimeSlots[index] = {
+      ...updatedTimeSlots[index],
+      [field]: value
+    };
+    setTimeSlots(updatedTimeSlots);
+    
+    // Clear related errors when user starts typing
+    const errorKey = `timeSlot_${index}_${field}`;
+    if (errors[errorKey]) {
+      setErrors(prev => ({
+        ...prev,
+        [errorKey]: ''
+      }));
+    }
+  };
+
+  const removeTimeSlot = (index) => {
+    const updatedTimeSlots = timeSlots.filter((_, i) => i !== index);
+    setTimeSlots(updatedTimeSlots);
   };
 
   const handleSubmit = (e) => {
@@ -97,6 +171,7 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
       const eventData = {
         ...formData,
         dateTo: formData.dateTo || formData.dateFrom,
+        timeSlots: timeSlots,
         // Preserve existing participants when editing, start with empty array when creating
         participants: isEditing ? (event.participants || []) : []
       };
@@ -209,6 +284,91 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
             placeholder="z.B. Reitanlage RK Schmalegg"
           />
           {errors.location && <span className="error-text">{errors.location}</span>}
+        </div>
+
+        {/* Zeitslots Section */}
+        <div className="timeslots-section">
+          <div className="timeslots-header">
+            <h3>Zeitslots (Optional)</h3>
+            <button 
+              type="button" 
+              className="add-timeslot-button"
+              onClick={addTimeSlot}
+            >
+              + Zeitslot hinzufügen
+            </button>
+          </div>
+          
+          {timeSlots.length > 0 && (
+            <div className="timeslots-list">
+              {timeSlots.map((timeSlot, index) => (
+                <div key={timeSlot.id || index} className="timeslot-form-item">
+                  <div className="timeslot-form-row">
+                    <div className="form-group-small">
+                      <label>Name *</label>
+                      <input
+                        type="text"
+                        value={timeSlot.name}
+                        onChange={(e) => updateTimeSlot(index, 'name', e.target.value)}
+                        placeholder="z.B. Putzen, Aufbau"
+                        className={errors[`timeSlot_${index}_name`] ? 'error' : ''}
+                      />
+                      {errors[`timeSlot_${index}_name`] && <span className="error-text">{errors[`timeSlot_${index}_name`]}</span>}
+                    </div>
+                    
+                    <div className="form-group-small">
+                      <label>Von *</label>
+                      <input
+                        type="time"
+                        value={timeSlot.timeFrom}
+                        onChange={(e) => updateTimeSlot(index, 'timeFrom', e.target.value)}
+                        className={errors[`timeSlot_${index}_timeFrom`] ? 'error' : ''}
+                      />
+                      {errors[`timeSlot_${index}_timeFrom`] && <span className="error-text">{errors[`timeSlot_${index}_timeFrom`]}</span>}
+                    </div>
+                    
+                    <div className="form-group-small">
+                      <label>Bis *</label>
+                      <input
+                        type="time"
+                        value={timeSlot.timeTo}
+                        onChange={(e) => updateTimeSlot(index, 'timeTo', e.target.value)}
+                        className={errors[`timeSlot_${index}_timeTo`] ? 'error' : ''}
+                      />
+                      {errors[`timeSlot_${index}_timeTo`] && <span className="error-text">{errors[`timeSlot_${index}_timeTo`]}</span>}
+                    </div>
+                    
+                    <div className="form-group-small">
+                      <label>Max. Teilnehmer *</label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={timeSlot.maxParticipants}
+                        className={errors[`timeSlot_${index}_maxParticipants`] ? 'error' : ''}
+                        onChange={(e) => updateTimeSlot(index, 'maxParticipants', parseInt(e.target.value) || 1)}
+                      />
+                      {errors[`timeSlot_${index}_maxParticipants`] && <span className="error-text">{errors[`timeSlot_${index}_maxParticipants`]}</span>}
+                    </div>
+                    
+                    <button 
+                      type="button" 
+                      className="remove-timeslot-button"
+                      onClick={() => removeTimeSlot(index)}
+                      title="Zeitslot entfernen"
+                    >
+                      ✗
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {timeSlots.length === 0 && (
+            <p className="no-timeslots-hint">
+              Keine Zeitslots definiert. Fügen Sie welche hinzu, um das Event in spezifische Zeitbereiche aufzuteilen.
+            </p>
+          )}
         </div>
 
         <div className="form-actions">

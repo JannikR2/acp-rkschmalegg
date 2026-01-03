@@ -117,7 +117,6 @@ const EventParticipationTable = ({ eventId, eventName }) => {
                 <td>
                   <div className="participant-info">
                     <strong>{participant.person}</strong>
-                    <small>{participant.email}</small>
                   </div>
                 </td>
                 <td>
@@ -155,7 +154,6 @@ const EventParticipationTable = ({ eventId, eventName }) => {
                 <td>
                   <div className="participant-info">
                     <strong>{person.fullName}</strong>
-                    <small>{person.email}</small>
                   </div>
                 </td>
                 <td>

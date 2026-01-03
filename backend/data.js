@@ -1,4 +1,5 @@
 import { Person, Participant, Event, TimeSlot } from './models.js';
+import * as userService from './userManagement.js';
 
 // In-memory data store (in a real app, this would be a database)
 let eventsData = [];
@@ -83,9 +84,19 @@ export function getEventById(id) {
 }
 
 export function createEvent(eventData) {
+  // Handle timeSlots if provided
+  let timeSlots = [];
+  if (eventData.timeSlots && Array.isArray(eventData.timeSlots)) {
+    timeSlots = eventData.timeSlots.map(tsData => new TimeSlot({
+      id: nextTimeSlotId++,
+      ...tsData
+    }));
+  }
+
   const event = new Event({
     id: nextEventId++,
-    ...eventData
+    ...eventData,
+    timeSlots: timeSlots
   });
   eventsData.push(event);
   return event.toJSON();
@@ -109,11 +120,25 @@ export function updateEvent(id, eventData) {
       return Participant.fromJSON(p);
     });
   }
+
+  // Handle timeSlots if provided
+  let timeSlots = existingEvent.timeSlots || [];
+  if (eventData.timeSlots && Array.isArray(eventData.timeSlots)) {
+    timeSlots = eventData.timeSlots.map(tsData => {
+      // If it has an existing ID, preserve it, otherwise create new one
+      const id = (tsData.id && typeof tsData.id === 'number' && tsData.id > 0) ? tsData.id : nextTimeSlotId++;
+      return new TimeSlot({
+        id: id,
+        ...tsData
+      });
+    });
+  }
   
   const updatedEvent = new Event({
     id: parseInt(id),
     ...eventData,
-    participants: participants
+    participants: participants,
+    timeSlots: timeSlots
   });
   
   eventsData[index] = updatedEvent;
@@ -174,6 +199,67 @@ export function getTimeSlotById(eventId, timeSlotId) {
 
   const timeSlot = event.getTimeSlotById(parseInt(timeSlotId));
   return timeSlot ? timeSlot.toJSON() : null;
+}
+
+// Time slot participation functions
+export function getTimeSlotParticipation(eventId, timeSlotId) {
+  const event = eventsData.find(e => e.id === parseInt(eventId));
+  if (!event) throw new Error('Event nicht gefunden');
+
+  const timeSlot = event.getTimeSlotById(parseInt(timeSlotId));
+  if (!timeSlot) throw new Error('Zeitslot nicht gefunden');
+
+  return timeSlot.participants.map(participant => ({
+    person: participant.person,
+    status: participant.status
+  }));
+}
+
+export function setTimeSlotParticipation(eventId, timeSlotId, personId, status) {
+  const event = eventsData.find(e => e.id === parseInt(eventId));
+  if (!event) throw new Error('Event nicht gefunden');
+
+  const timeSlot = event.getTimeSlotById(parseInt(timeSlotId));
+  if (!timeSlot) throw new Error('Zeitslot nicht gefunden');
+
+  // Find the person
+  const personsData = userService.getAllPersons();
+  const person = personsData.find(p => p.id === parseInt(personId));
+  if (!person) throw new Error('Person nicht gefunden');
+
+  // Check if already participating
+  const existingParticipantIndex = timeSlot.participants.findIndex(p => p.person.id === parseInt(personId));
+  
+  if (existingParticipantIndex >= 0) {
+    // Update existing participation
+    timeSlot.participants[existingParticipantIndex].status = status;
+  } else {
+    // Add new participation - but check capacity for 'accepted' status
+    if (status === 'accepted' && timeSlot.isFull()) {
+      throw new Error('Zeitslot ist bereits voll');
+    }
+    
+    const newParticipant = new Participant(person, status);
+    timeSlot.participants.push(newParticipant);
+  }
+
+  return {
+    person: person,
+    status: status
+  };
+}
+
+export function removeTimeSlotParticipation(eventId, timeSlotId, personId) {
+  const event = eventsData.find(e => e.id === parseInt(eventId));
+  if (!event) throw new Error('Event nicht gefunden');
+
+  const timeSlot = event.getTimeSlotById(parseInt(timeSlotId));
+  if (!timeSlot) throw new Error('Zeitslot nicht gefunden');
+
+  const initialLength = timeSlot.participants.length;
+  timeSlot.participants = timeSlot.participants.filter(p => p.person.id !== parseInt(personId));
+  
+  return timeSlot.participants.length < initialLength;
 }
 
 // Initialize the data when the module is loaded

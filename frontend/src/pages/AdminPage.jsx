@@ -67,11 +67,6 @@ const AdminPage = () => {
     setCurrentView('personEvents');
   };
 
-  const handleManageTimeSlots = (event) => {
-    setSelectedEvent(event);
-    setCurrentView('timeSlots');
-  };
-
   const handleCreateEvent = async (eventData) => {
     try {
       setError(null);
@@ -128,6 +123,15 @@ const AdminPage = () => {
     }
   };
 
+  const handleManageTimeSlots = (event) => {
+    setSelectedEvent(event);
+    setCurrentView('timeslots');
+  };
+
+  const handleBackFromTimeSlots = () => {
+    setCurrentView('details');
+  };
+
   if (loading) {
     return (
       <>
@@ -153,14 +157,14 @@ const AdminPage = () => {
             onBack={handleBackToList}
             onUpdate={handleUpdateEvent}
             onDelete={handleDeleteEvent}
-            onManageTimeSlots={handleManageTimeSlots}
+            onManageTimeSlots={() => handleManageTimeSlots(selectedEvent)}
           />
         </main>
       </>
     );
   }
 
-  if (currentView === 'timeSlots') {
+  if (currentView === 'timeslots') {
     return (
       <>
         <header className="App-header">
@@ -169,7 +173,7 @@ const AdminPage = () => {
         <main className="App-main">
           <TimeSlotManager 
             event={selectedEvent}
-            onBack={handleBackToList}
+            onBack={handleBackFromTimeSlots}
             onUpdate={loadEvents}
           />
         </main>

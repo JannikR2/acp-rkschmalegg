@@ -105,6 +105,78 @@
   background: #d32f2f;
 }
 
+/* Zeitslots Display */
+.timeslots-display {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.timeslots-display h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 1.3em;
+}
+
+.timeslots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.timeslot-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 16px;
+  transition: box-shadow 0.2s;
+}
+
+.timeslot-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.timeslot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.timeslot-header h4 {
+  margin: 0;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.timeslot-time {
+  font-size: 0.9em;
+  color: #666;
+  font-weight: 500;
+}
+
+.timeslot-participants {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.participant-count {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.full-badge {
+  background: #dc3545;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
 .delete-confirmation-overlay {
   position: fixed;
   top: 0;

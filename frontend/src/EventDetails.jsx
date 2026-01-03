@@ -44,8 +44,8 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) 
           ← Zurück zur Übersicht
         </button>
         <div className="action-buttons">
-          <button className="timeslots-button" onClick={() => onManageTimeSlots && onManageTimeSlots(event)}>
-            🕐 Time Slots verwalten
+          <button className="timeslots-button" onClick={onManageTimeSlots}>
+            ⏰ Zeitslots verwalten
           </button>
           <button className="update-button" onClick={handleUpdateClick}>
             ✏️ Bearbeiten
@@ -58,6 +58,30 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) 
       
       <div className="event-details-content">
         <EventCard event={event} hideParticipants={true} />
+        
+        {/* Zeitslots Display */}
+        {event.timeSlots && event.timeSlots.length > 0 && (
+          <div className="timeslots-display">
+            <h3>Zeitslots</h3>
+            <div className="timeslots-grid">
+              {event.timeSlots.map((timeSlot) => (
+                <div key={timeSlot.id} className="timeslot-card">
+                  <div className="timeslot-header">
+                    <h4>{timeSlot.name}</h4>
+                    <span className="timeslot-time">{timeSlot.timeFrom} - {timeSlot.timeTo}</span>
+                  </div>
+                  <div className="timeslot-participants">
+                    <span className="participant-count">
+                      {timeSlot.participants?.length || 0} / {timeSlot.maxParticipants} Teilnehmer
+                    </span>
+                    {timeSlot.isFull && <span className="full-badge">Voll</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
         <EventParticipationTable eventId={event.id} eventName={event.name} />
       </div>
 

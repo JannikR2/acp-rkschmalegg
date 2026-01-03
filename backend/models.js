@@ -33,7 +33,7 @@ export class Participant {
   // Convert to JSON-serializable object
   toJSON() {
     return {
-      person: this.person.toJSON(),
+      person: this.person.toJSON ? this.person.toJSON() : this.person,
       status: this.status
     };
   }

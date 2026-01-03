@@ -57,7 +57,7 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false }) => {
   return (
     <div className="timeslot-form-container">
       <div className="timeslot-form-header">
-        <h3>{isEditing ? 'Time Slot bearbeiten' : 'Neuen Time Slot hinzufügen'}</h3>
+        <h3>{isEditing ? 'Zeitslot bearbeiten' : 'Neuen Zeitslot hinzufügen'}</h3>
       </div>
 
       <form className="timeslot-form" onSubmit={handleSubmit}>

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import apiService from './apiService';
 import TimeSlotForm from './TimeSlotForm';
+import TimeSlotParticipationTable from './TimeSlotParticipationTable';
 import './TimeSlotManager.css';
 
 const TimeSlotManager = ({ event, onBack, onUpdate }) => {
   const [timeSlots, setTimeSlots] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingTimeSlot, setEditingTimeSlot] = useState(null);
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -22,13 +25,29 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
       if (response.success) {
         setTimeSlots(response.data);
       } else {
-        setError('Fehler beim Laden der Time Slots');
+        setError('Fehler beim Laden der Zeitslots');
       }
     } catch (error) {
-      setError('Verbindungsfehler');
       console.error('Error loading time slots:', error);
+      if (error.code === 'ECONNREFUSED' || error.message.includes('Network Error')) {
+        setError('Verbindung zum Server fehlgeschlagen. Bitte prüfen Sie, ob der Server läuft.');
+      } else {
+        setError('Verbindungsfehler beim Laden der Zeitslots');
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const reloadTimeSlotsQuietly = async () => {
+    try {
+      const response = await apiService.getTimeSlots(event.id);
+      if (response.success) {
+        setTimeSlots(response.data);
+      }
+    } catch (error) {
+      console.error('Error reloading time slots quietly:', error);
+      // Don't set error state - just log the error
     }
   };
 
@@ -37,11 +56,11 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
       const response = await apiService.createTimeSlot(event.id, timeSlotData);
       
       if (response.success) {
-        await loadTimeSlots();
+        await reloadTimeSlotsQuietly();
         setShowForm(false);
         setError('');
       } else {
-        setError(response.message || 'Fehler beim Erstellen des Time Slots');
+        setError(response.message || 'Fehler beim Erstellen des Zeitslots');
       }
     } catch (error) {
       setError('Verbindungsfehler');
@@ -54,12 +73,12 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
       const response = await apiService.updateTimeSlot(event.id, editingTimeSlot.id, timeSlotData);
       
       if (response.success) {
-        await loadTimeSlots();
+        await reloadTimeSlotsQuietly();
         setEditingTimeSlot(null);
         setShowForm(false);
         setError('');
       } else {
-        setError(response.message || 'Fehler beim Aktualisieren des Time Slots');
+        setError(response.message || 'Fehler beim Aktualisieren des Zeitslots');
       }
     } catch (error) {
       setError('Verbindungsfehler');
@@ -68,7 +87,7 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
   };
 
   const handleDeleteTimeSlot = async (timeSlotId) => {
-    if (!window.confirm('Möchten Sie diesen Time Slot wirklich löschen?')) {
+    if (!window.confirm('Möchten Sie diesen Zeitslot wirklich löschen?')) {
       return;
     }
 
@@ -76,10 +95,10 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
       const response = await apiService.deleteTimeSlot(event.id, timeSlotId);
       
       if (response.success) {
-        await loadTimeSlots();
+        await reloadTimeSlotsQuietly();
         setError('');
       } else {
-        setError(response.message || 'Fehler beim Löschen des Time Slots');
+        setError(response.message || 'Fehler beim Löschen des Zeitslots');
       }
     } catch (error) {
       setError('Verbindungsfehler');
@@ -98,10 +117,45 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
     setError('');
   };
 
+  const handleManageParticipants = (timeSlot) => {
+    setSelectedTimeSlot(timeSlot);
+    setShowParticipants(true);
+  };
+
+  const handleBackFromParticipants = () => {
+    setShowParticipants(false);
+    setSelectedTimeSlot(null);
+    setError(''); // Clear any existing errors
+    // Reload time slots quietly to get updated participant counts
+    reloadTimeSlotsQuietly();
+  };
+
+  const handleParticipationChange = () => {
+    // When participation changes, reload the timeslots to get updated counts
+    reloadTimeSlotsQuietly();
+  };
+
   if (loading) {
     return (
       <div className="timeslot-manager">
-        <div className="loading">Lade Time Slots...</div>
+        <div className="loading">Lade Zeitslots...</div>
+      </div>
+    );
+  }
+
+  if (showParticipants && selectedTimeSlot) {
+    return (
+      <div className="timeslot-manager">
+        <button className="back-button" onClick={handleBackFromParticipants}>
+          ← Zurück zur Zeitslot Liste
+        </button>
+        <TimeSlotParticipationTable 
+          eventId={event.id}
+          timeSlotId={selectedTimeSlot.id}
+          timeSlotName={selectedTimeSlot.name}
+          maxParticipants={selectedTimeSlot.maxParticipants}
+          onParticipationChange={handleParticipationChange}
+        />
       </div>
     );
   }
@@ -110,7 +164,7 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
     return (
       <div className="timeslot-manager">
         <button className="back-button" onClick={handleCancelForm}>
-          ← Zurück zur Time Slot Liste
+          ← Zurück zur Zeitslot Liste
         </button>
         <TimeSlotForm 
           onSave={editingTimeSlot ? handleUpdateTimeSlot : handleAddTimeSlot}
@@ -129,12 +183,12 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
           ← Zurück zum Event
         </button>
         <div className="header-content">
-          <h2>Time Slots für "{event.name}"</h2>
+          <h2>Zeitslots für "{event.name}"</h2>
           <button 
             className="btn-primary add-timeslot-btn"
             onClick={() => setShowForm(true)}
           >
-            + Time Slot hinzufügen
+            + Zeitslot hinzufügen
           </button>
         </div>
       </div>
@@ -147,7 +201,7 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
 
       {timeSlots.length === 0 ? (
         <div className="no-timeslots">
-          <p>Keine Time Slots vorhanden. Fügen Sie den ersten hinzu!</p>
+          <p>Keine Zeitslots vorhanden. Fügen Sie den ersten hinzu!</p>
         </div>
       ) : (
         <div className="timeslots-list">
@@ -169,6 +223,12 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
                 </div>
               </div>
               <div className="timeslot-actions">
+                <button 
+                  className="btn-small btn-primary"
+                  onClick={() => handleManageParticipants(timeSlot)}
+                >
+                  👥 Teilnehmer verwalten
+                </button>
                 <button 
                   className="btn-small btn-secondary"
                   onClick={() => handleEditTimeSlot(timeSlot)}

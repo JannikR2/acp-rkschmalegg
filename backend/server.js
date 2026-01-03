@@ -324,6 +324,65 @@ app.delete('/api/events/:eventId/timeslots/:timeSlotId', (req, res) => {
   }
 })
 
+// Get time slot participation
+app.get('/api/events/:eventId/timeslots/:timeSlotId/participation', (req, res) => {
+  try {
+    const participation = dataService.getTimeSlotParticipation(req.params.eventId, req.params.timeSlotId)
+    res.json({
+      success: true,
+      data: participation
+    })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: 'Fehler beim Laden der Teilnahmedaten',
+      error: error.message
+    })
+  }
+})
+
+// Manage time slot participation
+app.post('/api/events/:eventId/timeslots/:timeSlotId/participation', (req, res) => {
+  try {
+    const { personId, status } = req.body
+    
+    if (status === 'remove') {
+      const success = dataService.removeTimeSlotParticipation(req.params.eventId, req.params.timeSlotId, personId)
+      if (success) {
+        res.json({
+          success: true,
+          message: 'Teilnahme erfolgreich entfernt'
+        })
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'Teilnahme nicht gefunden'
+        })
+      }
+    } else {
+      const participation = dataService.setTimeSlotParticipation(req.params.eventId, req.params.timeSlotId, personId, status)
+      if (participation) {
+        res.json({
+          success: true,
+          data: participation,
+          message: `Teilnahmestatus erfolgreich auf '${status}' gesetzt`
+        })
+      } else {
+        res.status(400).json({
+          success: false,
+          message: 'Fehler beim Setzen des Teilnahmestatus'
+        })
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: 'Fehler beim Verwalten der Teilnahme',
+      error: error.message
+    })
+  }
+})
+
 app.listen(3000, () => {
   console.log('Server running on port 3000')
   console.log('API Endpoints:')
@@ -340,9 +399,12 @@ app.listen(3000, () => {
   console.log('  Participation:')
   console.log('    GET    /api/events/:eventId/participation              - Teilnahmedaten abrufen')
   console.log('    PUT    /api/events/:eventId/participation/:personId/status - Teilnahmestatus aktualisieren')
-  console.log('  Time Slots:')
-  console.log('    GET    /api/events/:eventId/timeslots                   - Time Slots für Event abrufen')
-  console.log('    POST   /api/events/:eventId/timeslots                   - Time Slot erstellen')
-  console.log('    PUT    /api/events/:eventId/timeslots/:timeSlotId      - Time Slot aktualisieren')
-  console.log('    DELETE /api/events/:eventId/timeslots/:timeSlotId      - Time Slot löschen')
+  console.log('  Zeitslots:')
+  console.log('    GET    /api/events/:eventId/timeslots                   - Zeitslots für Event abrufen')
+  console.log('    POST   /api/events/:eventId/timeslots                   - Zeitslot erstellen')
+  console.log('    PUT    /api/events/:eventId/timeslots/:timeSlotId      - Zeitslot aktualisieren')
+  console.log('    DELETE /api/events/:eventId/timeslots/:timeSlotId      - Zeitslot löschen')
+  console.log('  Zeitslot Teilnahme:')
+  console.log('    GET    /api/events/:eventId/timeslots/:timeSlotId/participation - Zeitslot Teilnahmedaten abrufen')
+  console.log('    POST   /api/events/:eventId/timeslots/:timeSlotId/participation - Zeitslot Teilnahme verwalten')
 })

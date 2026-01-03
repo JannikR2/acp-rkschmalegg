@@ -1,3 +1,8 @@
+/* Modern Font Stack */
+* {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
 .event-form-page {
   max-width: 800px;
   margin: 0 auto;
@@ -169,5 +174,129 @@
   .cancel-button,
   .save-button {
     width: 100%;
+  }
+}
+
+/* Zeitslots Section */
+.timeslots-section {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.timeslots-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.timeslots-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.add-timeslot-button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.add-timeslot-button:hover {
+  background: #218838;
+}
+
+.timeslots-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeslot-form-item {
+  background: white;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.timeslot-form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.form-group-small {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-small label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.form-group-small input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group-small input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.remove-timeslot-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.3s;
+  height: fit-content;
+}
+
+.remove-timeslot-button:hover {
+  background: #c82333;
+}
+
+.no-timeslots-hint {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .timeslots-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .timeslot-form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .remove-timeslot-button {
+    justify-self: end;
   }
 }

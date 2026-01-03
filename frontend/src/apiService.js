@@ -110,6 +110,30 @@ class ApiService {
       throw error;
     }
   }
+
+  // Time Slot Participation Management
+  async getTimeSlotParticipation(eventId, timeSlotId) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/events/${eventId}/timeslots/${timeSlotId}/participation`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching time slot participation:', error);
+      throw error;
+    }
+  }
+
+  async setTimeSlotParticipation(eventId, timeSlotId, personId, status) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/events/${eventId}/timeslots/${timeSlotId}/participation`, {
+        personId,
+        status
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error setting time slot participation:', error);
+      throw error;
+    }
+  }
 }
 
 // Helper functions for working with plain event objects
