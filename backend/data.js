@@ -39,7 +39,33 @@ function initializeSampleData() {
       timeFrom: '12:00',
       timeTo: '22:00',
       location: 'Festplatz bei der Reithalle',
-      participants: [participant1Event2, participant2Event2, participant4Event2, participant5Event2]
+      participants: [participant1Event2, participant2Event2, participant4Event2, participant5Event2],
+      timeSlots: [
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Aufbau Vormittag',
+          timeFrom: '08:00',
+          timeTo: '12:00',
+          maxParticipants: 5,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Bewirtung Nachmittag',
+          timeFrom: '14:00',
+          timeTo: '18:00',
+          maxParticipants: 3,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Aufräumen Abend',
+          timeFrom: '20:00',
+          timeTo: '23:00',
+          maxParticipants: 4,
+          participants: []
+        })
+      ]
     }),
     new Event({
       id: nextEventId++,
@@ -50,7 +76,41 @@ function initializeSampleData() {
       timeFrom: '08:00',
       timeTo: '18:00',
       location: 'Reitplatz und Reithalle',
-      participants: [participant1Event3, participant2Event3, participant3Event3, participant4Event3]
+      participants: [participant1Event3, participant2Event3, participant3Event3, participant4Event3],
+      timeSlots: [
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Parcours Aufbau',
+          timeFrom: '07:00',
+          timeTo: '08:00',
+          maxParticipants: 6,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Dressurrichter Assistenz',
+          timeFrom: '08:00',
+          timeTo: '12:00',
+          maxParticipants: 2,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Springrichter Assistenz',
+          timeFrom: '13:00',
+          timeTo: '17:00',
+          maxParticipants: 2,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Siegerehrung',
+          timeFrom: '17:00',
+          timeTo: '18:00',
+          maxParticipants: 3,
+          participants: []
+        })
+      ]
     }),
     new Event({
       id: nextEventId++,
@@ -61,7 +121,25 @@ function initializeSampleData() {
       timeFrom: '08:00',
       timeTo: '12:00',
       location: 'Reitanlage RK Schmalegg',
-      participants: [participant1Event1, participant2Event1, participant3Event1]
+      participants: [participant1Event1, participant2Event1, participant3Event1],
+      timeSlots: [
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Hindernisse aufbauen',
+          timeFrom: '08:00',
+          timeTo: '10:00',
+          maxParticipants: 4,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Platz vorbereiten',
+          timeFrom: '10:00',
+          timeTo: '12:00',
+          maxParticipants: 3,
+          participants: []
+        })
+      ]
     })
   ];
 

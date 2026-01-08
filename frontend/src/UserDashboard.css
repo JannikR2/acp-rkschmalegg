@@ -444,3 +444,185 @@
     flex-direction: column;
   }
 }
+
+/* Timeslots Styling */
+.timeslots-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.timeslots-section h4 {
+  margin: 0 0 15px 0;
+  color: #495057;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.timeslots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.timeslot-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timeslot-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.timeslot-card.signed-up {
+  border-color: #28a745;
+  background: #f8fff9;
+}
+
+.timeslot-card.full {
+  border-color: #dc3545;
+  background: #fff5f5;
+  opacity: 0.8;
+}
+
+.timeslot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.timeslot-header h5 {
+  margin: 0;
+  color: #495057;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.timeslot-time {
+  font-size: 12px;
+  color: #6c757d;
+  background: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.timeslot-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 12px;
+}
+
+.capacity {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.capacity.full {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.status-signed-up {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.status-full {
+  color: #dc3545;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.status-available {
+  color: #17a2b8;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.timeslot-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-timeslot-signup {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.btn-timeslot-signup:hover {
+  background: linear-gradient(135deg, #218838, #1e7e34);
+  transform: translateY(-1px);
+}
+
+.btn-timeslot-cancel {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.btn-timeslot-cancel:hover {
+  background: linear-gradient(135deg, #c82333, #a71e2a);
+  transform: translateY(-1px);
+}
+
+.timeslots-locked {
+  margin-top: 15px;
+  padding: 15px;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.timeslots-locked p {
+  margin: 0;
+  color: #856404;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Mobile responsiveness for timeslots */
+@media (max-width: 768px) {
+  .timeslots-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .timeslot-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .timeslot-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
