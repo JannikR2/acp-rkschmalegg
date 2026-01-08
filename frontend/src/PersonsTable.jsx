@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PersonsTable.css';
 
-const PersonsTable = ({ onPersonSelect }) => {
+const PersonsTable = () => {
   const [persons, setPersons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -142,7 +142,6 @@ const PersonsTable = ({ onPersonSelect }) => {
               <th>Name</th>
               <th>E-Mail</th>
               <th>Telefon</th>
-              <th>Aktionen</th>
             </tr>
           </thead>
           <tbody>
@@ -156,14 +155,6 @@ const PersonsTable = ({ onPersonSelect }) => {
                 </td>
                 <td>{person.email}</td>
                 <td>{person.phone}</td>
-                <td>
-                  <button 
-                    className="btn-small btn-primary"
-                    onClick={() => onPersonSelect && onPersonSelect(person)}
-                  >
-                    Events anzeigen
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>

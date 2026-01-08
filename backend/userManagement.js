@@ -1,8 +1,7 @@
 import { Person, Participant } from './models.js';
 
-// In-memory data store for persons and their event participation
+// In-memory data store for persons
 let personsData = [];
-let eventParticipationData = []; // Stores participation status for each person-event combination
 let nextPersonId = 1;
 
 // Initialize with sample persons
@@ -26,37 +25,6 @@ function initializeSamplePersons() {
   });
 
   personsData = persons;
-
-  // Initialize some sample participation data
-  initializeSampleParticipation();
-}
-
-function initializeSampleParticipation() {
-  // Sample participation - only status, no time tracking
-  const sampleParticipation = [
-    // Event 1
-    { personId: 1, eventId: 1, status: 'accepted' },
-    { personId: 2, eventId: 1, status: 'accepted' },
-    { personId: 3, eventId: 1, status: 'accepted' },
-    { personId: 4, eventId: 1, status: 'pending' },
-    { personId: 5, eventId: 1, status: 'declined' },
-
-    // Event 2
-    { personId: 1, eventId: 2, status: 'accepted' },
-    { personId: 2, eventId: 2, status: 'accepted' },
-    { personId: 4, eventId: 2, status: 'accepted' },
-    { personId: 5, eventId: 2, status: 'accepted' },
-
-    // Event 3
-    { personId: 1, eventId: 3, status: 'accepted' },
-    { personId: 2, eventId: 3, status: 'accepted' },
-    { personId: 3, eventId: 3, status: 'accepted' },
-    { personId: 4, eventId: 3, status: 'accepted' },
-    { personId: 6, eventId: 3, status: 'pending' },
-    { personId: 7, eventId: 3, status: 'declined' }
-  ];
-
-  eventParticipationData = sampleParticipation;
 }
 
 // Person management functions
@@ -104,49 +72,6 @@ export function createPerson(personData) {
   };
 }
 
-// Participation management functions
-export function getEventParticipation(eventId) {
-  const participations = eventParticipationData.filter(p => p.eventId === parseInt(eventId));
-  
-  return participations.map(participation => {
-    const person = personsData.find(p => p.id === participation.personId);
-    if (!person) return null;
-
-    return {
-      personId: participation.personId,
-      person: person.getFullName(),
-      email: person.email,
-      status: participation.status
-    };
-  }).filter(p => p !== null);
-}
-
-export function updateParticipationStatus(eventId, personId, status) {
-  // Valid statuses: 'accepted', 'declined', 'pending', 'not_responded'
-  const validStatuses = ['accepted', 'declined', 'pending', 'not_responded'];
-  if (!validStatuses.includes(status)) {
-    throw new Error('Invalid status');
-  }
-
-  const participationIndex = eventParticipationData.findIndex(
-    p => p.eventId === parseInt(eventId) && p.personId === parseInt(personId)
-  );
-
-  if (participationIndex >= 0) {
-    // Update existing participation
-    eventParticipationData[participationIndex].status = status;
-  } else {
-    // Create new participation entry
-    eventParticipationData.push({
-      personId: parseInt(personId),
-      eventId: parseInt(eventId),
-      status: status
-    });
-  }
-
-  return true;
-}
-
 // Initialize on module load
 initializeSamplePersons();
 
@@ -154,7 +79,5 @@ initializeSamplePersons();
 export default {
   getAllPersons,
   getPersonById,
-  createPerson,
-  getEventParticipation,
-  updateParticipationStatus
+  createPerson
 };

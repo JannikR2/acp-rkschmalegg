@@ -3,7 +3,6 @@ import './UserDashboard.css';
 
 const UserDashboard = ({ user, onLogout }) => {
   const [events, setEvents] = useState([]);
-  const [myParticipation, setMyParticipation] = useState([]);
   const [timeSlotParticipation, setTimeSlotParticipation] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -22,7 +21,6 @@ const UserDashboard = ({ user, onLogout }) => {
       
       if (eventsResult.success) {
         setEvents(eventsResult.data);
-        await fetchMyParticipation(eventsResult.data);
         await fetchTimeSlotParticipation(eventsResult.data);
       } else {
         setError('Fehler beim Laden der Events');
@@ -33,30 +31,6 @@ const UserDashboard = ({ user, onLogout }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchMyParticipation = async (eventsList) => {
-    const participationPromises = eventsList.map(async (event) => {
-      try {
-        const response = await fetch(`http://localhost:3000/api/events/${event.id}/participation`);
-        const result = await response.json();
-        
-        if (result.success) {
-          const myParticipation = result.data.find(p => p.personId === user.id);
-          return {
-            eventId: event.id,
-            participation: myParticipation || { status: 'not_responded' }
-          };
-        }
-        return { eventId: event.id, participation: { status: 'not_responded' } };
-      } catch (error) {
-        console.error(`Error fetching participation for event ${event.id}:`, error);
-        return { eventId: event.id, participation: { status: 'not_responded' } };
-      }
-    });
-
-    const participationResults = await Promise.all(participationPromises);
-    setMyParticipation(participationResults);
   };
 
   const fetchTimeSlotParticipation = async (eventsList) => {
@@ -103,30 +77,6 @@ const UserDashboard = ({ user, onLogout }) => {
     setTimeSlotParticipation(timeSlotParticipationData);
   };
 
-  const updateParticipationStatus = async (eventId, status) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/events/${eventId}/participation/${user.id}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status })
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        await fetchMyParticipation(events);
-        setError('');
-      } else {
-        setError(result.message || 'Fehler beim Aktualisieren des Status');
-      }
-    } catch (error) {
-      setError('Verbindungsfehler');
-      console.error('Error updating participation status:', error);
-    }
-  };
-
   const updateTimeSlotParticipation = async (eventId, timeSlotId, status) => {
     try {
       const response = await fetch(`http://localhost:3000/api/events/${eventId}/timeslots/${timeSlotId}/participation`, {
@@ -154,11 +104,6 @@ const UserDashboard = ({ user, onLogout }) => {
     }
   };
 
-  const getParticipationForEvent = (eventId) => {
-    const participation = myParticipation.find(p => p.eventId === eventId);
-    return participation ? participation.participation : { status: 'not_responded' };
-  };
-
   const getTimeSlotParticipation = (eventId, timeSlotId) => {
     const participation = timeSlotParticipation.find(
       p => p.eventId === eventId && p.timeSlotId === timeSlotId
@@ -170,26 +115,6 @@ const UserDashboard = ({ user, onLogout }) => {
     return timeSlotParticipation
       .filter(p => p.eventId === eventId)
       .map(p => p.timeSlot);
-  };
-
-  const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case 'accepted': return 'status-accepted';
-      case 'declined': return 'status-declined';
-      case 'pending': return 'status-pending';
-      case 'not_responded': return 'status-not-responded';
-      default: return 'status-not-responded';
-    }
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'accepted': return 'Zugesagt';
-      case 'declined': return 'Abgesagt';
-      case 'pending': return 'Ausstehend';
-      case 'not_responded': return 'Noch nicht geantwortet';
-      default: return 'Noch nicht geantwortet';
-    }
   };
 
   const formatDate = (dateString) => {
@@ -220,7 +145,7 @@ const UserDashboard = ({ user, onLogout }) => {
       <div className="dashboard-header">
         <div className="user-info">
           <h1>Willkommen, {user.fullName}!</h1>
-          <p>Hier können Sie Events zusagen oder absagen</p>
+          <p>Hier können Sie sich für Zeitslots anmelden</p>
         </div>
         <button className="logout-button" onClick={onLogout}>
           Abmelden
@@ -231,31 +156,27 @@ const UserDashboard = ({ user, onLogout }) => {
 
       <div className="dashboard-stats">
         <div className="stat-card">
-          <div className="stat-number">{myParticipation.filter(p => p.participation.status === 'accepted').length}</div>
-          <div className="stat-label">Zugesagte Events</div>
-        </div>
-        <div className="stat-card">
           <div className="stat-number">{timeSlotParticipation.filter(p => p.participation.status === 'accepted').length}</div>
           <div className="stat-label">Gebuchte Zeitslots</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">{myParticipation.filter(p => p.participation.status === 'not_responded').length}</div>
-          <div className="stat-label">Noch zu bearbeiten</div>
+          <div className="stat-number">{getTimeSlotsForEvent ? timeSlotParticipation.length : 0}</div>
+          <div className="stat-label">Verfügbare Zeitslots</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{events.length}</div>
+          <div className="stat-label">Aktive Events</div>
         </div>
       </div>
 
       <div className="events-grid">
         {events.map((event) => {
-          const participation = getParticipationForEvent(event.id);
           const eventTimeSlots = getTimeSlotsForEvent(event.id);
           
           return (
             <div key={event.id} className="event-card">
               <div className="event-header">
                 <h3>{event.name}</h3>
-                <span className={`status-badge ${getStatusBadgeClass(participation.status)}`}>
-                  {getStatusText(participation.status)}
-                </span>
               </div>
               
               <div className="event-details">
@@ -273,27 +194,8 @@ const UserDashboard = ({ user, onLogout }) => {
                 </div>
               </div>
 
-              <div className="participation-actions">
-                {participation.status !== 'accepted' && (
-                  <button 
-                    className="btn-accept"
-                    onClick={() => updateParticipationStatus(event.id, 'accepted')}
-                  >
-                    ✓ Zusagen
-                  </button>
-                )}
-                {participation.status !== 'declined' && (
-                  <button 
-                    className="btn-decline"
-                    onClick={() => updateParticipationStatus(event.id, 'declined')}
-                  >
-                    ✗ Absagen
-                  </button>
-                )}
-              </div>
-
-              {/* Show timeslots if they exist and user has accepted the event */}
-              {eventTimeSlots.length > 0 && participation.status === 'accepted' && (
+              {/* Show timeslots if they exist */}
+              {eventTimeSlots.length > 0 && (
                 <div className="timeslots-section">
                   <h4>📅 Verfügbare Zeitslots</h4>
                   <div className="timeslots-grid">
@@ -353,13 +255,6 @@ const UserDashboard = ({ user, onLogout }) => {
                       );
                     })}
                   </div>
-                </div>
-              )}
-
-              {/* Show message if there are timeslots but user hasn't accepted event yet */}
-              {eventTimeSlots.length > 0 && participation.status !== 'accepted' && (
-                <div className="timeslots-locked">
-                  <p>💡 Sagen Sie dem Event zu, um sich für Zeitslots anzumelden</p>
                 </div>
               )}
             </div>

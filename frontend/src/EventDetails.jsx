@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import EventCard from './EventCard';
-import EventParticipationTable from './EventParticipationTable';
 import './EventDetails.css';
 
 const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) => {
@@ -81,8 +80,6 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) 
             </div>
           </div>
         )}
-        
-        <EventParticipationTable eventId={event.id} eventName={event.name} />
       </div>
 
       {showDeleteConfirm && (

@@ -8,27 +8,6 @@ let nextTimeSlotId = 1;
 
 // Initialize with sample data
 function initializeSampleData() {
-  const person1 = new Person('Maria', 'Weber');
-  const person2 = new Person('Stefan', 'Müller');
-  const person3 = new Person('Anna', 'Schmidt');
-  const person4 = new Person('Thomas', 'Fischer');
-  const person5 = new Person('Lisa', 'Wagner');
-
-  // Create participants with only status (no time tracking)
-  const participant1Event1 = new Participant(person1, 'accepted');
-  const participant2Event1 = new Participant(person2, 'accepted');
-  const participant3Event1 = new Participant(person3, 'accepted');
-
-  const participant1Event2 = new Participant(person1, 'accepted');
-  const participant2Event2 = new Participant(person2, 'accepted');
-  const participant4Event2 = new Participant(person4, 'accepted');
-  const participant5Event2 = new Participant(person5, 'accepted');
-
-  const participant1Event3 = new Participant(person1, 'accepted');
-  const participant2Event3 = new Participant(person2, 'accepted');
-  const participant3Event3 = new Participant(person3, 'accepted');
-  const participant4Event3 = new Participant(person4, 'accepted');
-
   const events = [
     new Event({
       id: nextEventId++,
@@ -39,7 +18,7 @@ function initializeSampleData() {
       timeFrom: '12:00',
       timeTo: '22:00',
       location: 'Festplatz bei der Reithalle',
-      participants: [participant1Event2, participant2Event2, participant4Event2, participant5Event2],
+      participants: [], // Event participation removed
       timeSlots: [
         new TimeSlot({
           id: nextTimeSlotId++,
@@ -76,7 +55,7 @@ function initializeSampleData() {
       timeFrom: '08:00',
       timeTo: '18:00',
       location: 'Reitplatz und Reithalle',
-      participants: [participant1Event3, participant2Event3, participant3Event3, participant4Event3],
+      participants: [], // Event participation removed
       timeSlots: [
         new TimeSlot({
           id: nextTimeSlotId++,
@@ -121,7 +100,7 @@ function initializeSampleData() {
       timeFrom: '08:00',
       timeTo: '12:00',
       location: 'Reitanlage RK Schmalegg',
-      participants: [participant1Event1, participant2Event1, participant3Event1],
+      participants: [], // Event participation removed
       timeSlots: [
         new TimeSlot({
           id: nextTimeSlotId++,
@@ -184,20 +163,8 @@ export function updateEvent(id, eventData) {
   const index = eventsData.findIndex(e => e.id === parseInt(id));
   if (index === -1) return null;
   
-  // Get the existing event to preserve participants if not provided
+  // Get the existing event to preserve timeslots if not provided
   const existingEvent = eventsData[index];
-  
-  // Convert participants if they're provided as JSON
-  let participants = existingEvent.participants || [];
-  if (eventData.participants) {
-    participants = eventData.participants.map(p => {
-      if (p instanceof Participant) {
-        return p;
-      }
-      // Convert from JSON to Participant instance
-      return Participant.fromJSON(p);
-    });
-  }
 
   // Handle timeSlots if provided
   let timeSlots = existingEvent.timeSlots || [];
@@ -215,7 +182,7 @@ export function updateEvent(id, eventData) {
   const updatedEvent = new Event({
     id: parseInt(id),
     ...eventData,
-    participants: participants,
+    participants: [], // Event participation removed
     timeSlots: timeSlots
   });
   

@@ -184,49 +184,6 @@ app.post('/api/persons', (req, res) => {
   }
 })
 
-// Event Participation Endpoints
-
-// Get event participation data
-app.get('/api/events/:eventId/participation', (req, res) => {
-  try {
-    const participation = userService.getEventParticipation(req.params.eventId)
-    res.json({
-      success: true,
-      data: participation
-    })
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Fehler beim Laden der Teilnahmedaten',
-      error: error.message
-    })
-  }
-})
-
-// Update participation status
-app.put('/api/events/:eventId/participation/:personId/status', (req, res) => {
-  try {
-    const { status } = req.body
-    const updated = userService.updateParticipationStatus(req.params.eventId, req.params.personId, status)
-    if (!updated) {
-      return res.status(404).json({
-        success: false,
-        message: 'Teilnahme nicht gefunden'
-      })
-    }
-    res.json({
-      success: true,
-      message: 'Teilnahmestatus aktualisiert'
-    })
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Fehler beim Aktualisieren des Teilnahmestatus',
-      error: error.message
-    })
-  }
-})
-
 // Time Slot Management API Routes
 
 // Get all time slots for an event
@@ -396,9 +353,6 @@ app.listen(3000, () => {
   console.log('    GET    /api/persons        - Alle Personen abrufen')
   console.log('    GET    /api/persons/:id    - Einzelne Person abrufen')
   console.log('    POST   /api/persons        - Neue Person erstellen')
-  console.log('  Participation:')
-  console.log('    GET    /api/events/:eventId/participation              - Teilnahmedaten abrufen')
-  console.log('    PUT    /api/events/:eventId/participation/:personId/status - Teilnahmestatus aktualisieren')
   console.log('  Zeitslots:')
   console.log('    GET    /api/events/:eventId/timeslots                   - Zeitslots für Event abrufen')
   console.log('    POST   /api/events/:eventId/timeslots                   - Zeitslot erstellen')
