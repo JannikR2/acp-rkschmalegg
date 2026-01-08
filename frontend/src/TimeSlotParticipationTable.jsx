@@ -148,7 +148,6 @@ const TimeSlotParticipationTable = ({ eventId, timeSlotId, timeSlotName, maxPart
                     <span className={`status-badge ${status || 'none'}`}>
                       {status === 'accepted' && '✅ Teilnahme bestätigt'}
                       {status === 'declined' && '❌ Abgelehnt'}
-                      {status === 'pending' && '⏳ Ausstehend'}
                       {!status && '➖ Nicht angemeldet'}
                     </span>
                   </td>
@@ -169,14 +168,6 @@ const TimeSlotParticipationTable = ({ eventId, timeSlotId, timeSlotName, maxPart
                           onClick={() => updateParticipationStatus(person.id, 'declined')}
                         >
                           ❌ Ablehnen
-                        </button>
-                      )}
-                      {status !== 'pending' && status !== null && (
-                        <button
-                          className="btn-small btn-pending"
-                          onClick={() => updateParticipationStatus(person.id, 'pending')}
-                        >
-                          ⏳ Ausstehend
                         </button>
                       )}
                       {status !== null && (

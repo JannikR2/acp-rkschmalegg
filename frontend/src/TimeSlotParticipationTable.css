@@ -110,10 +110,6 @@
   background: rgba(244, 67, 54, 0.05);
 }
 
-.participation-row.pending {
-  background: rgba(255, 193, 7, 0.05);
-}
-
 .person-name {
   font-weight: 600;
   color: #333;
@@ -137,11 +133,6 @@
 .status-badge.declined {
   background: #f8d7da;
   color: #721c24;
-}
-
-.status-badge.pending {
-  background: #fff3cd;
-  color: #856404;
 }
 
 .status-badge.none {
@@ -200,15 +191,6 @@
 
 .btn-decline:hover {
   background: #c82333;
-}
-
-.btn-pending {
-  background: #ffc107;
-  color: #212529;
-}
-
-.btn-pending:hover {
-  background: #e0a800;
 }
 
 .btn-remove {

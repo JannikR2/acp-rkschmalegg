@@ -25,9 +25,9 @@ export class Person {
 
 // Participant with status (no time tracking)
 export class Participant {
-  constructor(person, status = 'pending') {
+  constructor(person, status = 'declined') {
     this.person = person; // Person object
-    this.status = status; // 'accepted', 'declined', 'pending', 'not_responded'
+    this.status = status; // 'accepted', 'declined'
   }
 
   // Convert to JSON-serializable object
@@ -41,7 +41,7 @@ export class Participant {
   // Create from JSON object
   static fromJSON(json) {
     const person = Person.fromJSON(json.person);
-    return new Participant(person, json.status || 'pending');
+    return new Participant(person, json.status || 'declined');
   }
 }
 

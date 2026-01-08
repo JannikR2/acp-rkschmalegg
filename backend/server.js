@@ -357,6 +357,15 @@ app.post('/api/events/:eventId/timeslots/:timeSlotId/participation', (req, res) 
         })
       }
     } else {
+      // Validate status
+      const validStatuses = ['accepted', 'declined'];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: `Ungültiger Status. Erlaubte Werte: ${validStatuses.join(', ')}`
+        });
+      }
+
       const participation = dataService.setTimeSlotParticipation(req.params.eventId, req.params.timeSlotId, personId, status)
       if (participation) {
         res.json({

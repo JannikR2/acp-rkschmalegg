@@ -294,11 +294,6 @@
   color: #721c24;
 }
 
-.status-badge.pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
 .status-badge.nicht-eingetragen {
   background: #f8f9fa;
   color: #6c757d;
