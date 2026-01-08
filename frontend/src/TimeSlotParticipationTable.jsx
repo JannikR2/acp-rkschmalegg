@@ -110,9 +110,6 @@ const TimeSlotParticipationTable = ({ eventId, timeSlotId, timeSlotName, maxPart
           <span className="stat-item">
             👥 {getAcceptedCount()} / {maxParticipants} Teilnehmer
           </span>
-          <span className="stat-item">
-            📍 {getAvailableSpots()} Plätze frei
-          </span>
           {!canAcceptMore() && <span className="full-badge">Voll</span>}
         </div>
       </div>

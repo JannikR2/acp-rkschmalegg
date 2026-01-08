@@ -169,7 +169,7 @@ export function updateEvent(id, eventData) {
   // Get the existing event to preserve timeslots if not provided
   const existingEvent = eventsData[index];
 
-  // Handle timeSlots if provided
+  // Handle timeSlots - preserve existing timeSlots if not provided in update
   let timeSlots = existingEvent.timeSlots || [];
   if (eventData.timeSlots && Array.isArray(eventData.timeSlots)) {
     timeSlots = eventData.timeSlots.map(tsData => {
@@ -179,6 +179,15 @@ export function updateEvent(id, eventData) {
         id: id,
         ...tsData
       });
+    });
+  } else {
+    // Ensure existing timeSlots are proper TimeSlot instances
+    timeSlots = timeSlots.map(ts => {
+      if (ts instanceof TimeSlot) {
+        return ts;
+      }
+      // Convert plain object to TimeSlot instance
+      return new TimeSlot(ts);
     });
   }
   

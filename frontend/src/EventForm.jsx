@@ -198,7 +198,7 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
     <div className="event-form-page">
       <div className="event-form-header">
         <button className="back-button" onClick={onCancel}>
-          ← Zurück zur Übersicht
+          ← Zurück zum Event
         </button>
         <h2>{isEditing ? 'Event bearbeiten' : 'Neues Event erstellen'}</h2>
       </div>

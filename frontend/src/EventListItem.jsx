@@ -2,19 +2,7 @@ import React from 'react';
 import { EventUtils } from './apiService';
 import './EventListItem.css';
 
-const EventListItem = ({ event, onClick, isAdmin = false, onPublish, onUnpublish }) => {
-  const handlePublishToggle = async (e) => {
-    e.stopPropagation(); // Prevent triggering onClick
-    try {
-      if (event.status === 'published') {
-        await onUnpublish?.(event.id);
-      } else {
-        await onPublish?.(event.id);
-      }
-    } catch (error) {
-      console.error('Error toggling publish status:', error);
-    }
-  };
+const EventListItem = ({ event, onClick, isAdmin = false }) => {
 
   return (
     <div className="event-list-item" onClick={onClick}>
@@ -26,15 +14,6 @@ const EventListItem = ({ event, onClick, isAdmin = false, onPublish, onUnpublish
           </span>
         </div>
         <div className="event-list-actions">
-          {isAdmin && (
-            <button 
-              className={`publish-toggle-btn ${event.status}`}
-              onClick={handlePublishToggle}
-              title={event.status === 'published' ? 'Als Entwurf speichern' : 'Veröffentlichen'}
-            >
-              {event.status === 'published' ? '📝' : '🌐'}
-            </button>
-          )}
           <div className="event-list-arrow">→</div>
         </div>
       </div>

@@ -146,7 +146,6 @@ const UserDashboard = ({ user, onLogout }) => {
       <div className="dashboard-header">
         <div className="user-info">
           <h1>Willkommen, {user.fullName}!</h1>
-          <p>Hier können Sie sich für Zeitslots anmelden</p>
         </div>
         <button className="logout-button" onClick={onLogout}>
           Abmelden
@@ -154,21 +153,6 @@ const UserDashboard = ({ user, onLogout }) => {
       </div>
 
       {error && <div className="error-message">{error}</div>}
-
-      <div className="dashboard-stats">
-        <div className="stat-card">
-          <div className="stat-number">{timeSlotParticipation.filter(p => p.participation.status === 'accepted').length}</div>
-          <div className="stat-label">Gebuchte Zeitslots</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{getTimeSlotsForEvent ? timeSlotParticipation.length : 0}</div>
-          <div className="stat-label">Verfügbare Zeitslots</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{events.length}</div>
-          <div className="stat-label">Aktive Events</div>
-        </div>
-      </div>
 
       <div className="events-grid">
         {events.map((event) => {

@@ -59,6 +59,10 @@ const AdminPage = () => {
     setCurrentView('list');
   };
 
+  const handleBackToEventDetails = () => {
+    setCurrentView('details');
+  };
+
   const handlePersonSelect = (person) => {
     // Removed personEvents view - no longer needed since we don't manage event participation
     console.log('Selected person:', person);
@@ -124,38 +128,6 @@ const AdminPage = () => {
     } catch (error) {
       console.error('Error deleting event:', error);
       setError('Fehler beim Löschen des Events');
-    }
-  };
-
-  const handlePublishEvent = async (id) => {
-    try {
-      setError(null);
-      const response = await apiService.publishEvent(id);
-      
-      if (response.success) {
-        await loadEvents(); // Refresh the events list
-      } else {
-        setError('Fehler beim Veröffentlichen des Events');
-      }
-    } catch (error) {
-      console.error('Error publishing event:', error);
-      setError('Fehler beim Veröffentlichen des Events');
-    }
-  };
-
-  const handleUnpublishEvent = async (id) => {
-    try {
-      setError(null);
-      const response = await apiService.unpublishEvent(id);
-      
-      if (response.success) {
-        await loadEvents(); // Refresh the events list
-      } else {
-        setError('Fehler beim Speichern als Entwurf');
-      }
-    } catch (error) {
-      console.error('Error unpublishing event:', error);
-      setError('Fehler beim Speichern als Entwurf');
     }
   };
 
@@ -277,7 +249,7 @@ const AdminPage = () => {
           <EventForm 
             event={selectedEvent}
             onSave={handleSaveUpdatedEvent} 
-            onCancel={handleBackToList} 
+            onCancel={handleBackToEventDetails} 
             isEditing={true}
           />
         </main>
@@ -334,8 +306,6 @@ const AdminPage = () => {
                   event={event} 
                   onClick={() => handleEventClick(event)}
                   isAdmin={true}
-                  onPublish={handlePublishEvent}
-                  onUnpublish={handleUnpublishEvent}
                 />
               ))
             ) : (
