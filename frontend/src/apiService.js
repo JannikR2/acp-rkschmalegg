@@ -156,36 +156,7 @@ export const EventUtils = {
     return event.participants.length;
   },
 
-  // Get number of accepted participants
-  getAcceptedParticipants(event) {
-    return event.participants.filter(participant => participant.status === 'accepted').length;
-  },
 
-  // Get number of declined participants
-  getDeclinedParticipants(event) {
-    return event.participants.filter(participant => participant.status === 'declined').length;
-  },
-
-  // Get number of pending participants
-  getPendingParticipants(event) {
-    return event.participants.filter(participant => participant.status === 'pending').length;
-  },
-
-  // Get participation statistics
-  getParticipationStats(event) {
-    const total = this.getTotalParticipants(event);
-    const accepted = this.getAcceptedParticipants(event);
-    const declined = this.getDeclinedParticipants(event);
-    const pending = this.getPendingParticipants(event);
-    
-    return {
-      total,
-      accepted,
-      declined,
-      pending,
-      acceptanceRate: total > 0 ? (accepted / total * 100).toFixed(1) : 0
-    };
-  },
 
   // Get time range string
   getTimeRange(timeFrom, timeTo) {
@@ -206,39 +177,7 @@ export const EventUtils = {
     return `${startDate} - ${endDate}`;
   },
 
-  // Get participant names as string
-  getParticipantNames(event) {
-    return event.participants.map(p => `${p.person.firstName} ${p.person.lastName}`).join(', ');
-  },
 
-  // Get participants grouped by status
-  getParticipantsByStatus(event) {
-    const accepted = [];
-    const declined = [];
-    const pending = [];
-
-    event.participants.forEach(participant => {
-      const participantInfo = {
-        name: `${participant.person.firstName} ${participant.person.lastName}`,
-        status: participant.status
-      };
-
-      switch (participant.status) {
-        case 'accepted':
-          accepted.push(participantInfo);
-          break;
-        case 'declined':
-          declined.push(participantInfo);
-          break;
-        case 'pending':
-        default:
-          pending.push(participantInfo);
-          break;
-      }
-    });
-
-    return { accepted, declined, pending };
-  }
 };
 
 // Create and export a singleton instance

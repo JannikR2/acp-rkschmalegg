@@ -56,7 +56,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) 
       </div>
       
       <div className="event-details-content">
-        <EventCard event={event} hideParticipants={true} />
+        <EventCard event={event} />
         
         {/* Zeitslots Display */}
         {event.timeSlots && event.timeSlots.length > 0 && (

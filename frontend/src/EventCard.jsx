@@ -2,12 +2,8 @@ import React from 'react';
 import { EventUtils } from './apiService';
 import './EventCard.css';
 
-const EventCard = ({ event, hideParticipants = false }) => {
+const EventCard = ({ event }) => {
   const plannedDuration = EventUtils.calculatePlannedDuration(event);
-
-  // Count participants by status
-  const acceptedCount = event.participants ? event.participants.filter(p => p.status === 'accepted').length : 0;
-  const declinedCount = event.participants ? event.participants.filter(p => p.status === 'declined').length : 0;
 
   return (
     <div className="event-card">
@@ -31,22 +27,6 @@ const EventCard = ({ event, hideParticipants = false }) => {
           <span>{event.location}</span>
         </div>
       </div>
-
-      {!hideParticipants && (
-        <div className="participants-section">
-          <h4 className="participants-title">Teilnahme-Status</h4>
-          <div className="participation-stats">
-            <div className="stat-item">
-              <span className="stat-number accepted">{acceptedCount}</span>
-              <span className="stat-label">Zugesagt</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number declined">{declinedCount}</span>
-              <span className="stat-label">Abgesagt</span>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
