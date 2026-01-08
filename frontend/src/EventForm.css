@@ -103,11 +103,16 @@
 
 .form-actions {
   display: flex;
-  gap: 15px;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 30px;
   padding-top: 20px;
   border-top: 1px solid #eee;
+}
+
+.save-buttons {
+  display: flex;
+  gap: 15px;
 }
 
 .cancel-button {
@@ -126,7 +131,23 @@
   background: #5a6268;
 }
 
-.save-button {
+.draft-button {
+  background: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.draft-button:hover {
+  background: #e0a800;
+}
+
+.publish-button {
   background: #4CAF50;
   color: white;
   border: none;
@@ -134,11 +155,11 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 1em;
-  font-weight: 600;
+  font-weight: 500;
   transition: background 0.2s ease;
 }
 
-.save-button:hover {
+.publish-button:hover {
   background: #45a049;
 }
 

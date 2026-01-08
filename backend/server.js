@@ -18,23 +18,30 @@ app.get('/', (req, res) => {
   res.json({ message: 'RK Schmalegg Zeiterfassung API Server läuft!' })
 })
 
-// Get all events
+// Get all events (with optional status filter)
 app.get('/api/events', (req, res) => {
   try {
-    const events = dataService.getAllEvents()
+    const { status } = req.query;
+    let events = dataService.getAllEvents();
+    
+    // Filter by status if provided
+    if (status) {
+      events = events.filter(event => event.status === status);
+    }
+    
     res.json({
       success: true,
       data: events,
       totalEvents: events.length
-    })
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: 'Fehler beim Laden der Events',
       error: error.message
-    })
+    });
   }
-})
+});
 
 // Get specific event by ID
 app.get('/api/events/:id', (req, res) => {
@@ -100,6 +107,39 @@ app.put('/api/events/:id', (req, res) => {
     })
   }
 })
+
+// Update event status (publish/unpublish)
+app.put('/api/events/:id/status', (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!status || !['draft', 'published'].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Ungültiger Status. Erlaubt sind: draft, published'
+      });
+    }
+
+    const updatedEvent = dataService.updateEvent(req.params.id, { status });
+    if (!updatedEvent) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event nicht gefunden'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: updatedEvent,
+      message: `Event ${status === 'published' ? 'veröffentlicht' : 'als Entwurf gespeichert'}`
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: 'Fehler beim Aktualisieren des Event-Status',
+      error: error.message
+    });
+  }
+});
 
 // Delete event
 app.delete('/api/events/:id', (req, res) => {

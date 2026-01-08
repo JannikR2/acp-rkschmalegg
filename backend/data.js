@@ -19,6 +19,7 @@ function initializeSampleData() {
       timeTo: '22:00',
       location: 'Festplatz bei der Reithalle',
       participants: [], // Event participation removed
+      status: 'published',
       timeSlots: [
         new TimeSlot({
           id: nextTimeSlotId++,
@@ -56,6 +57,7 @@ function initializeSampleData() {
       timeTo: '18:00',
       location: 'Reitplatz und Reithalle',
       participants: [], // Event participation removed
+      status: 'published',
       timeSlots: [
         new TimeSlot({
           id: nextTimeSlotId++,
@@ -101,6 +103,7 @@ function initializeSampleData() {
       timeTo: '12:00',
       location: 'Reitanlage RK Schmalegg',
       participants: [], // Event participation removed
+      status: 'draft', // This one as draft for demo
       timeSlots: [
         new TimeSlot({
           id: nextTimeSlotId++,

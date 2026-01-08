@@ -21,6 +21,65 @@
   padding-bottom: 12px;
 }
 
+.event-title-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.event-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.published {
+  background: #4CAF50;
+  color: white;
+}
+
+.status-badge.draft {
+  background: #ffc107;
+  color: #212529;
+}
+
+.publish-toggle-btn {
+  background: none;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.publish-toggle-btn:hover {
+  border-color: #007ACC;
+  background: #f8f9fa;
+}
+
+.publish-toggle-btn.published {
+  border-color: #4CAF50;
+}
+
+.publish-toggle-btn.draft {
+  border-color: #ffc107;
+}
+
 .event-name {
   margin: 0;
   color: #333;

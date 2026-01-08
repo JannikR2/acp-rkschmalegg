@@ -135,7 +135,8 @@ export class Event {
     timeTo,
     location,
     participants = [], // Array of Participant objects
-    timeSlots = [] // Array of TimeSlot objects
+    timeSlots = [], // Array of TimeSlot objects
+    status = 'draft' // 'draft' or 'published'
   }) {
     this.id = id;
     this.name = name;
@@ -147,6 +148,7 @@ export class Event {
     this.location = location;
     this.participants = participants; // Array of Participant objects
     this.timeSlots = timeSlots; // Array of TimeSlot objects
+    this.status = status; // 'draft' or 'published'
   }
 
   // Calculate planned duration in hours
@@ -247,6 +249,7 @@ export class Event {
       timeFrom: this.timeFrom,
       timeTo: this.timeTo,
       location: this.location,
+      status: this.status,
       participants: this.participants.map(p => p.toJSON()),
       timeSlots: this.timeSlots.map(ts => ts.toJSON())
     };

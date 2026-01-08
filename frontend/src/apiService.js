@@ -4,10 +4,11 @@ const API_BASE_URL = 'http://localhost:3000/api';
 
 // API service for handling all backend communication
 class ApiService {
-  // Get all events
-  async getAllEvents() {
+  // Get all events (with optional status filter)
+  async getAllEvents(status = null) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/events`);
+      const url = status ? `${API_BASE_URL}/events?status=${status}` : `${API_BASE_URL}/events`;
+      const response = await axios.get(url);
       return response.data;
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -57,6 +58,27 @@ class ApiService {
       console.error('Error deleting event:', error);
       throw error;
     }
+  }
+
+  // Update event status
+  async updateEventStatus(id, status) {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/events/${id}/status`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating event status:', error);
+      throw error;
+    }
+  }
+
+  // Publish event
+  async publishEvent(id) {
+    return this.updateEventStatus(id, 'published');
+  }
+
+  // Unpublish event (save as draft)
+  async unpublishEvent(id) {
+    return this.updateEventStatus(id, 'draft');
   }
 
   // Get participation statistics

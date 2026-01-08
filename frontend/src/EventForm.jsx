@@ -173,9 +173,24 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
         dateTo: formData.dateTo || formData.dateFrom,
         timeSlots: timeSlots,
         // Preserve existing participants when editing, start with empty array when creating
-        participants: isEditing ? (event.participants || []) : []
+        participants: isEditing ? (event.participants || []) : [],
+        // Default to draft status when creating, preserve existing when editing
+        status: isEditing ? (event.status || 'draft') : 'draft'
       };
       onSave(eventData);
+    }
+  };
+
+  const handleSaveAs = (status) => {
+    if (validateForm()) {
+      const eventData = {
+        ...formData,
+        dateTo: formData.dateTo || formData.dateFrom,
+        timeSlots: timeSlots,
+        participants: isEditing ? (event.participants || []) : [],
+        status: status
+      };
+      onSave(eventData, status);
     }
   };
 
@@ -375,9 +390,22 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
           <button type="button" className="cancel-button" onClick={onCancel}>
             Abbrechen
           </button>
-          <button type="submit" className="save-button">
-            {isEditing ? 'Änderungen speichern' : 'Event erstellen'}
-          </button>
+          <div className="save-buttons">
+            <button 
+              type="button" 
+              className="draft-button"
+              onClick={() => handleSaveAs('draft')}
+            >
+              {isEditing ? 'Als Entwurf speichern' : 'Als Entwurf speichern'}
+            </button>
+            <button 
+              type="button" 
+              className="publish-button"
+              onClick={() => handleSaveAs('published')}
+            >
+              {isEditing ? 'Veröffentlichen' : 'Veröffentlichen'}
+            </button>
+          </div>
         </div>
       </form>
     </div>

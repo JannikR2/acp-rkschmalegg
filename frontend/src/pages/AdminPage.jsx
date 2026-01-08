@@ -64,10 +64,12 @@ const AdminPage = () => {
     console.log('Selected person:', person);
   };
 
-  const handleCreateEvent = async (eventData) => {
+  const handleCreateEvent = async (eventData, status = 'draft') => {
     try {
       setError(null);
-      const response = await apiService.createEvent(eventData);
+      // Ensure the status is set correctly
+      const eventDataWithStatus = { ...eventData, status };
+      const response = await apiService.createEvent(eventDataWithStatus);
       
       if (response.success) {
         await loadEvents();
@@ -86,10 +88,15 @@ const AdminPage = () => {
     setCurrentView('edit');
   };
 
-  const handleSaveUpdatedEvent = async (eventData) => {
+  const handleSaveUpdatedEvent = async (eventData, status = null) => {
     try {
       setError(null);
-      const response = await apiService.updateEvent(selectedEvent.id, eventData);
+      // If status is provided, use it; otherwise keep existing status
+      const eventDataWithStatus = { 
+        ...eventData, 
+        status: status || selectedEvent.status || 'draft' 
+      };
+      const response = await apiService.updateEvent(selectedEvent.id, eventDataWithStatus);
       
       if (response.success) {
         await loadEvents();
@@ -117,6 +124,38 @@ const AdminPage = () => {
     } catch (error) {
       console.error('Error deleting event:', error);
       setError('Fehler beim Löschen des Events');
+    }
+  };
+
+  const handlePublishEvent = async (id) => {
+    try {
+      setError(null);
+      const response = await apiService.publishEvent(id);
+      
+      if (response.success) {
+        await loadEvents(); // Refresh the events list
+      } else {
+        setError('Fehler beim Veröffentlichen des Events');
+      }
+    } catch (error) {
+      console.error('Error publishing event:', error);
+      setError('Fehler beim Veröffentlichen des Events');
+    }
+  };
+
+  const handleUnpublishEvent = async (id) => {
+    try {
+      setError(null);
+      const response = await apiService.unpublishEvent(id);
+      
+      if (response.success) {
+        await loadEvents(); // Refresh the events list
+      } else {
+        setError('Fehler beim Speichern als Entwurf');
+      }
+    } catch (error) {
+      console.error('Error unpublishing event:', error);
+      setError('Fehler beim Speichern als Entwurf');
     }
   };
 
@@ -294,6 +333,9 @@ const AdminPage = () => {
                   key={event.id} 
                   event={event} 
                   onClick={() => handleEventClick(event)}
+                  isAdmin={true}
+                  onPublish={handlePublishEvent}
+                  onUnpublish={handleUnpublishEvent}
                 />
               ))
             ) : (

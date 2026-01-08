@@ -16,7 +16,8 @@ const UserDashboard = ({ user, onLogout }) => {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      const eventsResponse = await fetch('http://localhost:3000/api/events');
+      // Only fetch published events for regular users
+      const eventsResponse = await fetch('http://localhost:3000/api/events?status=published');
       const eventsResult = await eventsResponse.json();
       
       if (eventsResult.success) {
