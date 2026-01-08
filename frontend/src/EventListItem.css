@@ -32,7 +32,7 @@
 .event-list-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .status-badge {
@@ -42,6 +42,8 @@
   font-size: 0.75em;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
 }
 
 .status-badge.published {

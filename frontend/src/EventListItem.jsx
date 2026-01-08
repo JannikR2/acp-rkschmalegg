@@ -9,12 +9,11 @@ const EventListItem = ({ event, onClick, isAdmin = false }) => {
       <div className="event-list-header">
         <div className="event-list-title">
           <h3 className="event-list-name">{event.name}</h3>
+        </div>
+        <div className="event-list-actions">
           <span className={`status-badge ${event.status}`}>
             {event.status === 'published' ? 'Veröffentlicht' : 'Entwurf'}
           </span>
-        </div>
-        <div className="event-list-actions">
-          <div className="event-list-arrow">→</div>
         </div>
       </div>
       

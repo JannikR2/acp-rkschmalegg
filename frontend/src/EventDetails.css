@@ -141,20 +141,30 @@
 .timeslot-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 12px;
+  min-height: 50px;
+  gap: 12px;
 }
 
 .timeslot-header h4 {
   margin: 0;
   color: #333;
   font-size: 1.1em;
+  flex: 1;
+  line-height: 1.3;
+  overflow: hidden;
+  word-wrap: break-word;
+  hyphens: none;
+  word-break: normal;
 }
 
 .timeslot-time {
   font-size: 0.9em;
   color: #666;
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .timeslot-participants {

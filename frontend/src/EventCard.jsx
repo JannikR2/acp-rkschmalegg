@@ -2,20 +2,8 @@ import React from 'react';
 import { EventUtils } from './apiService';
 import './EventCard.css';
 
-const EventCard = ({ event, isAdmin = false, onPublish, onUnpublish }) => {
+const EventCard = ({ event }) => {
   const plannedDuration = EventUtils.calculatePlannedDuration(event);
-
-  const handlePublishToggle = async () => {
-    try {
-      if (event.status === 'published') {
-        await onUnpublish?.(event.id);
-      } else {
-        await onPublish?.(event.id);
-      }
-    } catch (error) {
-      console.error('Error toggling publish status:', error);
-    }
-  };
 
   return (
     <div className="event-card">
@@ -26,15 +14,6 @@ const EventCard = ({ event, isAdmin = false, onPublish, onUnpublish }) => {
             <span className={`status-badge ${event.status}`}>
               {event.status === 'published' ? 'Veröffentlicht' : 'Entwurf'}
             </span>
-            {isAdmin && (
-              <button 
-                className={`publish-toggle-btn ${event.status}`}
-                onClick={handlePublishToggle}
-                title={event.status === 'published' ? 'Als Entwurf speichern' : 'Veröffentlichen'}
-              >
-                {event.status === 'published' ? '📝' : '🌐'}
-              </button>
-            )}
           </div>
         </div>
       </div>
