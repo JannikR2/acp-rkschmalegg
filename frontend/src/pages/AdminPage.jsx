@@ -6,12 +6,16 @@ import EventDetails from '../EventDetails';
 import EventForm from '../EventForm';
 import PersonsTable from '../PersonsTable';
 import TimeSlotManager from '../TimeSlotManager';
+import TimeSlotForm from '../TimeSlotForm';
 import '../App.css';
 
 const AdminPage = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [selectedTimeSlotState, setSelectedTimeSlotState] = useState(null);
+  const [showParticipants, setShowParticipants] = useState(false);
   const [currentView, setCurrentView] = useState('list');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -136,8 +140,38 @@ const AdminPage = () => {
     setCurrentView('timeslots');
   };
 
-  const handleBackFromTimeSlots = () => {
+  const handleBackFromTimeSlots = async () => {
+    setSelectedTimeSlot(null);
     setCurrentView('details');
+    // Refresh the selected event data to show updates
+    if (selectedEvent?.id) {
+      try {
+        const response = await apiService.getEventById(selectedEvent.id);
+        if (response.success) {
+          setSelectedEvent(response.data);
+        }
+        // Also refresh the events list
+        await loadEvents();
+      } catch (error) {
+        console.error('Error refreshing event data:', error);
+      }
+    }
+  };
+
+  const handleEditTimeSlot = (event, timeSlot) => {
+    setSelectedEvent(event);
+    setSelectedTimeSlot(timeSlot);
+    setSelectedTimeSlotState(null); // Clear participants state
+    setShowParticipants(false); // Ensure we're not showing participants
+    setCurrentView('timeslots');
+  };
+
+  const handleManageParticipantsFromDetails = (event, timeSlot) => {
+    setSelectedEvent(event);
+    setSelectedTimeSlot(null); // Clear edit state
+    setSelectedTimeSlotState(timeSlot);
+    setShowParticipants(true);
+    setCurrentView('timeslots');
   };
 
   if (loading) {
@@ -166,6 +200,8 @@ const AdminPage = () => {
             onUpdate={handleUpdateEvent}
             onDelete={handleDeleteEvent}
             onManageTimeSlots={() => handleManageTimeSlots(selectedEvent)}
+            onEditTimeSlot={handleEditTimeSlot}
+            onManageParticipants={handleManageParticipantsFromDetails}
           />
         </main>
       </>
@@ -183,6 +219,9 @@ const AdminPage = () => {
             event={selectedEvent}
             onBack={handleBackFromTimeSlots}
             onUpdate={loadEvents}
+            selectedTimeSlot={selectedTimeSlot}
+            initialShowParticipants={showParticipants}
+            initialSelectedTimeSlot={selectedTimeSlotState}
           />
         </main>
       </>

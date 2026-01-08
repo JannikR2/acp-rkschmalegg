@@ -147,6 +147,18 @@
   gap: 12px;
 }
 
+.timeslot-header.clickable {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 8px;
+  margin: -8px -8px 4px -8px;
+  transition: background-color 0.2s ease;
+}
+
+.timeslot-header.clickable:hover {
+  background-color: #e3f2fd;
+}
+
 .timeslot-header h4 {
   margin: 0;
   color: #333;
@@ -171,6 +183,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.timeslot-participants.clickable {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 8px;
+  margin: -8px;
+  transition: background-color 0.2s ease;
+}
+
+.timeslot-participants.clickable:hover {
+  background-color: #fff3e0;
 }
 
 .participant-count {

@@ -4,18 +4,27 @@ import TimeSlotForm from './TimeSlotForm';
 import TimeSlotParticipationTable from './TimeSlotParticipationTable';
 import './TimeSlotManager.css';
 
-const TimeSlotManager = ({ event, onBack, onUpdate }) => {
+const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialShowParticipants, initialSelectedTimeSlot }) => {
   const [timeSlots, setTimeSlots] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingTimeSlot, setEditingTimeSlot] = useState(null);
-  const [showParticipants, setShowParticipants] = useState(false);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [showParticipants, setShowParticipants] = useState(initialShowParticipants || false);
+  const [selectedTimeSlotState, setSelectedTimeSlotState] = useState(initialSelectedTimeSlot || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     loadTimeSlots();
   }, [event.id]);
+
+  useEffect(() => {
+    if (selectedTimeSlot) {
+      // If there's a selectedTimeSlot for editing, prioritize that over participants
+      setEditingTimeSlot(selectedTimeSlot);
+      setShowForm(true);
+      setShowParticipants(false); // Ensure participants view is not shown
+    }
+  }, [selectedTimeSlot]);
 
   const loadTimeSlots = async () => {
     try {
@@ -118,13 +127,13 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
   };
 
   const handleManageParticipants = (timeSlot) => {
-    setSelectedTimeSlot(timeSlot);
+    setSelectedTimeSlotState(timeSlot);
     setShowParticipants(true);
   };
 
   const handleBackFromParticipants = () => {
     setShowParticipants(false);
-    setSelectedTimeSlot(null);
+    setSelectedTimeSlotState(null);
     setError(''); // Clear any existing errors
     // Reload time slots quietly to get updated participant counts
     reloadTimeSlotsQuietly();
@@ -143,7 +152,7 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
     );
   }
 
-  if (showParticipants && selectedTimeSlot) {
+  if (showParticipants && selectedTimeSlotState) {
     return (
       <div className="timeslot-manager">
         <button className="back-button" onClick={handleBackFromParticipants}>
@@ -151,9 +160,9 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
         </button>
         <TimeSlotParticipationTable 
           eventId={event.id}
-          timeSlotId={selectedTimeSlot.id}
-          timeSlotName={selectedTimeSlot.name}
-          maxParticipants={selectedTimeSlot.maxParticipants}
+          timeSlotId={selectedTimeSlotState.id}
+          timeSlotName={selectedTimeSlotState.name}
+          maxParticipants={selectedTimeSlotState.maxParticipants}
           onParticipationChange={handleParticipationChange}
         />
       </div>
@@ -216,9 +225,6 @@ const TimeSlotManager = ({ event, onBack, onUpdate }) => {
                   <span className="timeslot-participants">
                     👥 {timeSlot.participants?.filter(p => p.status === 'accepted').length || 0} / {timeSlot.maxParticipants}
                     {timeSlot.isFull && <span className="full-badge">Voll</span>}
-                  </span>
-                  <span className="timeslot-available">
-                    📍 {timeSlot.availableSpots} Plätze frei
                   </span>
                 </div>
               </div>

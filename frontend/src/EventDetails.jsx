@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import EventCard from './EventCard';
 import './EventDetails.css';
 
-const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) => {
+const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, onEditTimeSlot, onManageParticipants }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleUpdateClick = () => {
@@ -20,6 +20,18 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) 
 
   const handleCancelDelete = () => {
     setShowDeleteConfirm(false);
+  };
+
+  const handleTimeSlotClick = (timeSlot) => {
+    if (onEditTimeSlot) {
+      onEditTimeSlot(event, timeSlot);
+    }
+  };
+
+  const handleParticipantsClick = (timeSlot) => {
+    if (onManageParticipants) {
+      onManageParticipants(event, timeSlot);
+    }
   };
 
   if (!event) {
@@ -65,11 +77,19 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots }) 
             <div className="timeslots-grid">
               {event.timeSlots.map((timeSlot) => (
                 <div key={timeSlot.id} className="timeslot-card">
-                  <div className="timeslot-header">
+                  <div 
+                    className="timeslot-header clickable" 
+                    onClick={() => handleTimeSlotClick(timeSlot)}
+                    title="Zeitslot bearbeiten"
+                  >
                     <h4>{timeSlot.name}</h4>
                     <span className="timeslot-time">{timeSlot.timeFrom} - {timeSlot.timeTo}</span>
                   </div>
-                  <div className="timeslot-participants">
+                  <div 
+                    className="timeslot-participants clickable"
+                    onClick={() => handleParticipantsClick(timeSlot)}
+                    title="Teilnehmer verwalten"
+                  >
                     <span className="participant-count">
                       {timeSlot.participants?.length || 0} / {timeSlot.maxParticipants} Teilnehmer
                     </span>
