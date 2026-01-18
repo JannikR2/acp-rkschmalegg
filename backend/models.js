@@ -3,6 +3,7 @@ export class Person {
   constructor(firstName, lastName) {
     this.firstName = firstName;
     this.lastName = lastName;
+    this.manualHours = 0; // Manually entered hours (e.g., from Excel import)
   }
 
   getFullName() {
@@ -13,13 +14,16 @@ export class Person {
   toJSON() {
     return {
       firstName: this.firstName,
-      lastName: this.lastName
+      lastName: this.lastName,
+      manualHours: this.manualHours
     };
   }
 
   // Create from JSON object
   static fromJSON(json) {
-    return new Person(json.firstName, json.lastName);
+    const person = new Person(json.firstName, json.lastName);
+    person.manualHours = json.manualHours || 0;
+    return person;
   }
 }
 

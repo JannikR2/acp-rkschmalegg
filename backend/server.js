@@ -169,10 +169,12 @@ app.delete('/api/events/:id', (req, res) => {
 // Get all persons
 app.get('/api/persons', (req, res) => {
   try {
-    const persons = userService.getAllPersons()
+    const { year } = req.query;
+    const persons = userService.getAllPersons(year ? parseInt(year) : null);
     res.json({
       success: true,
-      data: persons
+      data: persons,
+      year: year || 'all'
     })
   } catch (error) {
     res.status(500).json({
@@ -221,6 +223,35 @@ app.post('/api/persons', (req, res) => {
       message: 'Fehler beim Erstellen der Person',
       error: error.message
     })
+  }
+})
+
+// Import persons from array (overwrites all existing persons)
+app.post('/api/persons/import', (req, res) => {
+  try {
+    const { persons } = req.body;
+    
+    if (!persons || !Array.isArray(persons)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Import-Daten müssen ein Array von Personen enthalten'
+      });
+    }
+
+    const importedPersons = userService.importPersons(persons);
+    
+    res.json({
+      success: true,
+      data: importedPersons,
+      message: `${importedPersons.length} Personen erfolgreich importiert`,
+      count: importedPersons.length
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: 'Fehler beim Importieren der Personen',
+      error: error.message
+    });
   }
 })
 

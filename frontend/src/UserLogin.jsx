@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './UserLogin.css';
 
+const LOGO_URL = 'https://tse4.mm.bing.net/th/id/OIP.UORK-u3V7UVpyTeEcb0y_QHaHa?rs=1&pid=ImgDetMain&o=7&rm=3';
+
 const UserLogin = ({ onUserSelect }) => {
   const [persons, setPersons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +48,10 @@ const UserLogin = ({ onUserSelect }) => {
   return (
     <div className="user-login-container">
       <div className="login-box">
-        <h2>Als wer möchten Sie sich anmelden?</h2>
+        <div className="login-header">
+          <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+          <h2>Als wer möchten Sie sich anmelden?</h2>
+        </div>
         <p className="login-subtitle">Wählen Sie Ihren Namen aus der Liste:</p>
         
         {error && <div className="error-message">{error}</div>}

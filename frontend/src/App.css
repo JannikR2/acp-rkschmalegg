@@ -16,11 +16,24 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
+  gap: 40px;
+}
+
+.header-title-with-logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.header-logo {
+  height: 70px;
+  width: 70px;
+  object-fit: contain;
 }
 
 .header-content h1 {
   margin: 0;
-  flex: 1;
 }
 
 .header-actions {
@@ -91,6 +104,16 @@
     text-align: center;
   }
 
+  .header-title-with-logo {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header-logo {
+    height: 60px;
+    width: 60px;
+  }
+
   .header-actions {
     flex-direction: column;
     gap: 15px;
@@ -149,11 +172,57 @@
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 2px solid #282c34;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .section-header h2 {
   margin: 0;
   color: #282c34;
+}
+
+.section-header .year-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
+}
+
+.section-header .year-filter label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.section-header .year-select {
+  padding: 6px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  color: #495057;
+  font-weight: 500;
+  transition: border-color 0.3s ease;
+}
+
+.section-header .year-select:hover {
+  border-color: #3498db;
+}
+
+.section-header .year-select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .total-hours {
@@ -198,6 +267,18 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  .section-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .section-header .year-filter {
+    width: 100%;
+    justify-content: space-between;
   }
   
   .total-hours {

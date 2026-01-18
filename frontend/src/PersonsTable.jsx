@@ -6,6 +6,7 @@ const PersonsTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [newPerson, setNewPerson] = useState({
     firstName: '',
     lastName: '',
@@ -15,12 +16,12 @@ const PersonsTable = () => {
 
   useEffect(() => {
     fetchPersons();
-  }, []);
+  }, [selectedYear]);
 
   const fetchPersons = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/persons');
+      const response = await fetch(`http://localhost:3000/api/persons?year=${selectedYear}`);
       const result = await response.json();
       
       if (result.success) {
@@ -67,6 +68,53 @@ const PersonsTable = () => {
     }
   };
 
+  const handleExportCSV = () => {
+    // Create CSV header
+    const headers = ['ID', 'Vorname', 'Nachname', 'E-Mail', 'Telefon', 'Geleistete Stunden'];
+    
+    // Create CSV rows
+    const rows = persons.map(person => {
+      const nameParts = person.fullName.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      
+      return [
+        person.id,
+        firstName,
+        lastName,
+        person.email || '',
+        person.phone || '',
+        person.totalHours || 0
+      ];
+    });
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Mitglieder_${selectedYear}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Generate year options (current year and 5 years back)
+  const currentYear = new Date().getFullYear();
+  const yearOptions = [];
+  for (let i = 0; i <= 5; i++) {
+    yearOptions.push(currentYear - i);
+  }
+
   if (loading) {
     return <div className="loading">Lade Personen...</div>;
   }
@@ -75,12 +123,41 @@ const PersonsTable = () => {
     <div className="persons-table-container">
       <div className="persons-header">
         <h2>Personen Verwaltung</h2>
-        <button 
-          className="btn-primary"
-          onClick={() => setShowAddForm(true)}
-        >
-          + Person hinzufügen
-        </button>
+        <div className="header-controls">
+          <div className="year-filter">
+            <label htmlFor="year-select">Jahr:</label>
+            <select 
+              id="year-select"
+              value={selectedYear} 
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="year-select"
+            >
+              {yearOptions.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
+          <div className="header-buttons">
+            <button 
+              className="btn-primary"
+              onClick={() => setShowAddForm(true)}
+            >
+              + Person hinzufügen
+            </button>
+            <button 
+              className="btn-secondary"
+              onClick={() => alert('Excel-Import wird noch implementiert')}
+            >
+              📊 Excel importieren
+            </button>
+            <button 
+              className="btn-secondary"
+              onClick={handleExportCSV}
+            >
+              📥 CSV exportieren
+            </button>
+          </div>
+        </div>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -142,6 +219,7 @@ const PersonsTable = () => {
               <th>Name</th>
               <th>E-Mail</th>
               <th>Telefon</th>
+              <th>Geleistete Stunden</th>
             </tr>
           </thead>
           <tbody>
@@ -155,6 +233,7 @@ const PersonsTable = () => {
                 </td>
                 <td>{person.email}</td>
                 <td>{person.phone}</td>
+                <td className="hours-cell">{person.totalHours || 0} h</td>
               </tr>
             ))}
           </tbody>
