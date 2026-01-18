@@ -12,6 +12,7 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
   const [selectedTimeSlotState, setSelectedTimeSlotState] = useState(initialSelectedTimeSlot || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [categoryForNewSlot, setCategoryForNewSlot] = useState(null);
 
   useEffect(() => {
     loadTimeSlots();
@@ -62,14 +63,30 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
 
   const handleAddTimeSlot = async (timeSlotData) => {
     try {
-      const response = await apiService.createTimeSlot(event.id, timeSlotData);
-      
-      if (response.success) {
+      // Check if it's an array of timeslots (multiple) or single timeslot
+      if (Array.isArray(timeSlotData)) {
+        // Multiple timeslots - create each one
+        for (const slot of timeSlotData) {
+          const response = await apiService.createTimeSlot(event.id, slot);
+          if (!response.success) {
+            setError(response.message || 'Fehler beim Erstellen eines Zeitslots');
+            return;
+          }
+        }
         await reloadTimeSlotsQuietly();
         setShowForm(false);
         setError('');
       } else {
-        setError(response.message || 'Fehler beim Erstellen des Zeitslots');
+        // Single timeslot
+        const response = await apiService.createTimeSlot(event.id, timeSlotData);
+        
+        if (response.success) {
+          await reloadTimeSlotsQuietly();
+          setShowForm(false);
+          setError('');
+        } else {
+          setError(response.message || 'Fehler beim Erstellen des Zeitslots');
+        }
       }
     } catch (error) {
       setError('Verbindungsfehler');
@@ -123,7 +140,13 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
   const handleCancelForm = () => {
     setShowForm(false);
     setEditingTimeSlot(null);
+    setCategoryForNewSlot(null);
     setError('');
+  };
+
+  const handleAddToCategory = (category) => {
+    setCategoryForNewSlot(category);
+    setShowForm(true);
   };
 
   const handleManageParticipants = (timeSlot) => {
@@ -180,6 +203,7 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
           onCancel={handleCancelForm}
           timeSlot={editingTimeSlot}
           isEditing={!!editingTimeSlot}
+          presetCategory={categoryForNewSlot}
         />
       </div>
     );
@@ -214,42 +238,75 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
         </div>
       ) : (
         <div className="timeslots-list">
-          {timeSlots.map((timeSlot) => (
-            <div key={timeSlot.id} className="timeslot-item">
-              <div className="timeslot-info">
-                <h3 className="timeslot-name">{timeSlot.name}</h3>
-                <div className="timeslot-details">
-                  <span className="timeslot-time">
-                    🕐 {timeSlot.timeFrom} - {timeSlot.timeTo}
-                  </span>
-                  <span className="timeslot-participants">
-                    👥 {timeSlot.participants?.filter(p => p.status === 'accepted').length || 0} / {timeSlot.maxParticipants}
-                    {timeSlot.isFull && <span className="full-badge">Voll</span>}
-                  </span>
+          {(() => {
+            // Group timeslots by category
+            const grouped = timeSlots.reduce((acc, timeSlot) => {
+              const category = timeSlot.category || 'Ohne Kategorie';
+              if (!acc[category]) {
+                acc[category] = [];
+              }
+              acc[category].push(timeSlot);
+              return acc;
+            }, {});
+
+            return Object.entries(grouped).map(([category, slots]) => {
+              // Sort slots by start time within each category
+              const sortedSlots = slots.sort((a, b) => {
+                return a.timeFrom.localeCompare(b.timeFrom);
+              });
+              
+              return (
+                <div key={category} className="timeslot-category-section">
+                  <div className="category-header-bar">
+                    <h3>{category}</h3>
+                    <button 
+                      className="btn-add-to-category"
+                      onClick={() => handleAddToCategory(category)}
+                      title="Weiteren Zeitslot zu dieser Kategorie hinzufügen"
+                    >
+                      + Zeitslot hinzufügen
+                    </button>
+                  </div>
+                  {sortedSlots.map((timeSlot) => (
+                  <div key={timeSlot.id} className="timeslot-item">
+                    <div className="timeslot-info">
+                      <h3 className="timeslot-name">{timeSlot.name}</h3>
+                      <div className="timeslot-details">
+                        <span className="timeslot-time">
+                          🕐 {timeSlot.timeFrom} - {timeSlot.timeTo}
+                        </span>
+                        <span className="timeslot-participants">
+                          👥 {timeSlot.participants?.filter(p => p.status === 'accepted').length || 0} / {timeSlot.maxParticipants}
+                          {timeSlot.isFull && <span className="full-badge">Voll</span>}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="timeslot-actions">
+                      <button 
+                        className="btn-small btn-primary"
+                        onClick={() => handleManageParticipants(timeSlot)}
+                      >
+                        👥 Teilnehmer verwalten
+                      </button>
+                      <button 
+                        className="btn-small btn-secondary"
+                        onClick={() => handleEditTimeSlot(timeSlot)}
+                      >
+                        ✏️ Bearbeiten
+                      </button>
+                      <button 
+                        className="btn-small btn-danger"
+                        onClick={() => handleDeleteTimeSlot(timeSlot.id)}
+                      >
+                        🗑️ Löschen
+                      </button>
+                    </div>
+                  </div>
+                  ))}
                 </div>
-              </div>
-              <div className="timeslot-actions">
-                <button 
-                  className="btn-small btn-primary"
-                  onClick={() => handleManageParticipants(timeSlot)}
-                >
-                  👥 Teilnehmer verwalten
-                </button>
-                <button 
-                  className="btn-small btn-secondary"
-                  onClick={() => handleEditTimeSlot(timeSlot)}
-                >
-                  ✏️ Bearbeiten
-                </button>
-                <button 
-                  className="btn-small btn-danger"
-                  onClick={() => handleDeleteTimeSlot(timeSlot.id)}
-                >
-                  🗑️ Löschen
-                </button>
-              </div>
-            </div>
-          ))}
+              );
+            });
+          })()}
         </div>
       )}
     </div>

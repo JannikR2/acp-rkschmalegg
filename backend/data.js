@@ -219,10 +219,14 @@ export function addTimeSlot(eventId, timeSlotData) {
   const event = eventsData.find(e => e.id === parseInt(eventId));
   if (!event) return null;
 
+  console.log('Backend addTimeSlot - Received data:', timeSlotData);
+
   const timeSlot = new TimeSlot({
     id: nextTimeSlotId++,
     ...timeSlotData
   });
+
+  console.log('Backend addTimeSlot - Created timeSlot:', timeSlot);
 
   event.addTimeSlot(timeSlot);
   return timeSlot.toJSON();
@@ -235,10 +239,18 @@ export function updateTimeSlot(eventId, timeSlotId, timeSlotData) {
   const timeSlotIndex = event.timeSlots.findIndex(ts => ts.id === parseInt(timeSlotId));
   if (timeSlotIndex === -1) return null;
 
+  console.log('Backend updateTimeSlot - Received data:', timeSlotData);
+
+  // Preserve existing participants
+  const existingTimeSlot = event.timeSlots[timeSlotIndex];
+  
   const updatedTimeSlot = new TimeSlot({
     id: parseInt(timeSlotId),
-    ...timeSlotData
+    ...timeSlotData,
+    participants: existingTimeSlot.participants // Keep existing participants
   });
+
+  console.log('Backend updateTimeSlot - Updated timeSlot:', updatedTimeSlot);
 
   event.timeSlots[timeSlotIndex] = updatedTimeSlot;
   return updatedTimeSlot.toJSON();

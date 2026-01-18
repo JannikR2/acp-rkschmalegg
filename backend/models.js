@@ -57,6 +57,7 @@ export class TimeSlot {
     timeFrom,
     timeTo,
     maxParticipants,
+    category = '',
     participants = []
   }) {
     this.id = id;
@@ -64,6 +65,7 @@ export class TimeSlot {
     this.timeFrom = timeFrom; // Time string (e.g., "10:00")
     this.timeTo = timeTo;     // Time string (e.g., "11:00")
     this.maxParticipants = maxParticipants || 0;
+    this.category = category; // Category for grouping timeslots (e.g., "Parcour", "Putzen")
     this.participants = participants; // Array of Participant objects
   }
 
@@ -111,6 +113,7 @@ export class TimeSlot {
       timeFrom: this.timeFrom,
       timeTo: this.timeTo,
       maxParticipants: this.maxParticipants,
+      category: this.category,
       participants: this.participants.map(p => p.toJSON()),
       availableSpots: this.getAvailableSpots(),
       isFull: this.isFull()

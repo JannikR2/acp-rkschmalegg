@@ -149,6 +149,24 @@
   font-size: 1.3em;
 }
 
+.timeslot-category-group {
+  margin-bottom: 30px;
+}
+
+.timeslot-category-group:last-child {
+  margin-bottom: 0;
+}
+
+.category-title {
+  margin: 0 0 15px 0;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .timeslots-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

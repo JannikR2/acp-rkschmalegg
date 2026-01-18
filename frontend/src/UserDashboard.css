@@ -40,6 +40,46 @@
   opacity: 0.9;
 }
 
+/* Year Filter - Same style as Admin */
+.year-filter-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.year-filter-section label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.year-filter-section .year-select {
+  padding: 8px 15px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  color: #495057;
+  font-weight: 500;
+  transition: border-color 0.3s ease;
+}
+
+.year-filter-section .year-select:hover {
+  border-color: #3498db;
+}
+
+.year-filter-section .year-select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
 .logout-button {
   background: rgba(255, 255, 255, 0.2);
   color: white;
@@ -470,6 +510,39 @@
   font-weight: 600;
 }
 
+/* Timeslots Signup Section - between description and table */
+.timeslots-signup-section {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.timeslots-signup-section h3 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-size: 22px;
+}
+
+.timeslot-category-section {
+  margin-bottom: 30px;
+}
+
+.timeslot-category-section:last-child {
+  margin-bottom: 0;
+}
+
+.category-header {
+  margin: 0 0 15px 0;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .timeslots-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -633,5 +706,231 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
+  }
+}
+
+/* Event Details View for Members */
+.event-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.back-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.back-button:hover {
+  background: #2980b9;
+}
+
+.event-card-detail {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.event-card-detail h2 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-size: 28px;
+}
+
+.event-card-detail .event-info {
+  display: block;
+}
+
+.event-card-detail .event-date,
+.event-card-detail .event-time,
+.event-card-detail .event-location {
+  display: inline-block;
+  padding: 10px 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #495057;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.event-card-detail .event-description {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #495057;
+  border-left: 4px solid #3498db;
+  width: 100%;
+  display: block;
+}
+
+/* Participants Overview Table */
+.participants-overview {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.participants-overview h3 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-size: 22px;
+}
+
+.overview-table-container {
+  overflow-x: auto;
+}
+
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.overview-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.overview-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+}
+
+.overview-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+  color: #495057;
+}
+
+.overview-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.overview-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.overview-table .accepted-row {
+  background-color: #f8fff9;
+}
+
+.overview-table .declined-row {
+  background-color: #fff5f5;
+  opacity: 0.7;
+}
+
+.overview-table .empty-slot td {
+  font-style: italic;
+  color: #95a5a6;
+}
+
+.overview-table .no-participants {
+  text-align: center;
+  font-style: italic;
+  color: #95a5a6;
+}
+
+.overview-table .capacity {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e9ecef;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #495057;
+}
+
+.overview-table .full-badge-small {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 8px;
+  background: #dc3545;
+  color: white;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.overview-table .status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.overview-table .status-badge.status-accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.overview-table .status-badge.status-declined {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Make event cards clickable */
+.events-grid .event-card {
+  cursor: pointer;
+  position: relative;
+}
+
+.events-grid .event-card::after {
+  content: '→';
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  font-size: 24px;
+  color: #3498db;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.events-grid .event-card:hover::after {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+  .event-card-detail {
+    padding: 20px;
+  }
+
+  .event-card-detail h2 {
+    font-size: 22px;
+  }
+
+  .participants-overview {
+    padding: 20px;
+  }
+
+  .overview-table-container {
+    overflow-x: scroll;
+  }
+
+  .overview-table th,
+  .overview-table td {
+    padding: 10px;
+    font-size: 12px;
   }
 }

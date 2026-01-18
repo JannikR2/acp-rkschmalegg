@@ -56,8 +56,11 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
           }
           h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
           h2 { color: #34495e; margin-top: 30px; }
+          h3 { color: #5a6c7d; margin-top: 20px; margin-bottom: 10px; }
+          h4 { color: #2c3e50; background: #e8f4f8; padding: 8px 12px; border-left: 4px solid #3498db; margin-top: 25px; margin-bottom: 15px; }
           .event-info { margin: 20px 0; }
           .event-info p { margin: 5px 0; }
+          .category-section { margin-top: 30px; }
           table { width: 100%; border-collapse: collapse; margin: 20px 0; }
           th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
           th { background-color: #34495e; color: white; font-weight: 600; }
@@ -81,41 +84,64 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
 
         <h2>Zeitslots und Teilnehmer</h2>
         
-        ${event.timeSlots && event.timeSlots.length > 0 ? event.timeSlots.map(slot => {
-          const acceptedParticipants = slot.participants?.filter(p => p.status === 'accepted') || [];
-          const isFull = acceptedParticipants.length >= slot.maxParticipants;
-          
-          return `
-            <h3>${slot.name} (${slot.timeFrom} - ${slot.timeTo})</h3>
-            <p>
-              <strong>Belegung:</strong> ${acceptedParticipants.length} / ${slot.maxParticipants}
-              ${isFull ? '<span class="full-badge">Voll</span>' : `<span class="available-badge">${slot.maxParticipants - acceptedParticipants.length} frei</span>`}
-            </p>
+        ${event.timeSlots && event.timeSlots.length > 0 ? (() => {
+          // Group timeslots by category
+          const grouped = event.timeSlots.reduce((acc, slot) => {
+            const category = slot.category || 'Ohne Kategorie';
+            if (!acc[category]) {
+              acc[category] = [];
+            }
+            acc[category].push(slot);
+            return acc;
+          }, {});
+
+          // Sort and render by category
+          return Object.entries(grouped).map(([category, slots]) => {
+            // Sort slots by start time within each category
+            const sortedSlots = slots.sort((a, b) => a.timeFrom.localeCompare(b.timeFrom));
             
-            ${slot.participants && slot.participants.length > 0 ? `
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>E-Mail</th>
-                    <th>Telefon</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${slot.participants.map(p => `
-                    <tr>
-                      <td>${p.person?.fullName || p.person?.firstName + ' ' + p.person?.lastName || 'Unbekannt'}</td>
-                      <td>${p.person?.email || '-'}</td>
-                      <td>${p.person?.phone || '-'}</td>
-                      <td class="status-${p.status}">${p.status === 'accepted' ? '✓ Zugesagt' : '✗ Abgesagt'}</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            ` : '<p><em>Noch keine Teilnehmer eingetragen</em></p>'}
-          `;
-        }).join('') : '<p><em>Keine Zeitslots vorhanden</em></p>'}
+            return `
+              <div class="category-section">
+                <h4>${category}</h4>
+                ${sortedSlots.map(slot => {
+                  const acceptedParticipants = slot.participants?.filter(p => p.status === 'accepted') || [];
+                  const isFull = acceptedParticipants.length >= slot.maxParticipants;
+                  
+                  return `
+                    <h3>${slot.name} (${slot.timeFrom} - ${slot.timeTo})</h3>
+                    <p>
+                      <strong>Belegung:</strong> ${acceptedParticipants.length} / ${slot.maxParticipants}
+                      ${isFull ? '<span class="full-badge">Voll</span>' : `<span class="available-badge">${slot.maxParticipants - acceptedParticipants.length} frei</span>`}
+                    </p>
+                    
+                    ${slot.participants && slot.participants.length > 0 ? `
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>E-Mail</th>
+                            <th>Telefon</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${slot.participants.map(p => `
+                            <tr>
+                              <td>${p.person?.fullName || p.person?.firstName + ' ' + p.person?.lastName || 'Unbekannt'}</td>
+                              <td>${p.person?.email || '-'}</td>
+                              <td>${p.person?.phone || '-'}</td>
+                              <td class="status-${p.status}">${p.status === 'accepted' ? '✓ Zugesagt' : '✗ Abgesagt'}</td>
+                            </tr>
+                          `).join('')}
+                        </tbody>
+                      </table>
+                    ` : '<p><em>Noch keine Teilnehmer eingetragen</em></p>'}
+                  `;
+                }).join('')}
+              </div>
+            `;
+          }).join('');
+        })() : '<p><em>Keine Zeitslots vorhanden</em></p>'}
 
         <div class="footer">
           <p>Exportiert am: ${new Date().toLocaleString('de-DE')}</p>
@@ -178,28 +204,52 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
           <div className="timeslots-display">
             <h3>Zeitslots</h3>
             <div className="timeslots-grid">
-              {event.timeSlots.map((timeSlot) => (
-                <div key={timeSlot.id} className="timeslot-card">
-                  <div 
-                    className="timeslot-header clickable" 
-                    onClick={() => handleTimeSlotClick(timeSlot)}
-                    title="Zeitslot bearbeiten"
-                  >
-                    <h4>{timeSlot.name}</h4>
-                    <span className="timeslot-time">{timeSlot.timeFrom} - {timeSlot.timeTo}</span>
+              {(() => {
+                // Group timeslots by category
+                const grouped = event.timeSlots.reduce((acc, timeSlot) => {
+                  const category = timeSlot.category || 'Ohne Kategorie';
+                  if (!acc[category]) {
+                    acc[category] = [];
+                  }
+                  acc[category].push(timeSlot);
+                  return acc;
+                }, {});
+
+                return Object.entries(grouped).map(([category, slots]) => {
+                  // Sort slots by start time within each category
+                  const sortedSlots = slots.sort((a, b) => {
+                    return a.timeFrom.localeCompare(b.timeFrom);
+                  });
+                  
+                  return (
+                  <div key={category} className="timeslot-category-group">
+                    <h4 className="category-title">{category}</h4>
+                    {sortedSlots.map((timeSlot) => (
+                      <div key={timeSlot.id} className="timeslot-card">
+                        <div 
+                          className="timeslot-header clickable" 
+                          onClick={() => handleTimeSlotClick(timeSlot)}
+                          title="Zeitslot bearbeiten"
+                        >
+                          <h4>{timeSlot.name}</h4>
+                          <span className="timeslot-time">{timeSlot.timeFrom} - {timeSlot.timeTo}</span>
+                        </div>
+                        <div 
+                          className="timeslot-participants clickable"
+                          onClick={() => handleParticipantsClick(timeSlot)}
+                          title="Teilnehmer verwalten"
+                        >
+                          <span className="participant-count">
+                            {timeSlot.participants?.length || 0} / {timeSlot.maxParticipants} Teilnehmer
+                          </span>
+                          {timeSlot.isFull && <span className="full-badge">Voll</span>}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div 
-                    className="timeslot-participants clickable"
-                    onClick={() => handleParticipantsClick(timeSlot)}
-                    title="Teilnehmer verwalten"
-                  >
-                    <span className="participant-count">
-                      {timeSlot.participants?.length || 0} / {timeSlot.maxParticipants} Teilnehmer
-                    </span>
-                    {timeSlot.isFull && <span className="full-badge">Voll</span>}
-                  </div>
-                </div>
-              ))}
+                  );
+                });
+              })()}
             </div>
           </div>
         )}
@@ -212,6 +262,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
               <table className="overview-table">
                 <thead>
                   <tr>
+                    <th>Kategorie</th>
                     <th>Zeitslot</th>
                     <th>Zeit</th>
                     <th>Belegung</th>
@@ -220,13 +271,22 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                   </tr>
                 </thead>
                 <tbody>
-                  {event.timeSlots.map((timeSlot) => {
+                  {event.timeSlots.sort((a, b) => {
+                    // First sort by category, then by time
+                    const catA = a.category || 'Ohne Kategorie';
+                    const catB = b.category || 'Ohne Kategorie';
+                    if (catA !== catB) {
+                      return catA.localeCompare(catB);
+                    }
+                    return a.timeFrom.localeCompare(b.timeFrom);
+                  }).map((timeSlot) => {
                     const acceptedParticipants = timeSlot.participants?.filter(p => p.status === 'accepted') || [];
                     const allParticipants = timeSlot.participants || [];
                     
                     if (allParticipants.length === 0) {
                       return (
                         <tr key={timeSlot.id} className="empty-slot">
+                          <td>{timeSlot.category || 'Ohne Kategorie'}</td>
                           <td><strong>{timeSlot.name}</strong></td>
                           <td>{timeSlot.timeFrom} - {timeSlot.timeTo}</td>
                           <td>
@@ -243,6 +303,9 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                       <tr key={`${timeSlot.id}-${index}`} className={participant.status === 'accepted' ? 'accepted-row' : 'declined-row'}>
                         {index === 0 && (
                           <>
+                            <td rowSpan={allParticipants.length}>
+                              {timeSlot.category || 'Ohne Kategorie'}
+                            </td>
                             <td rowSpan={allParticipants.length}>
                               <strong>{timeSlot.name}</strong>
                             </td>
