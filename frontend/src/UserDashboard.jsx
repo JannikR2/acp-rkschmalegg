@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './UserDashboard.css';
 
+const LOGO_URL = 'https://tse4.mm.bing.net/th/id/OIP.UORK-u3V7UVpyTeEcb0y_QHaHa?rs=1&pid=ImgDetMain&o=7&rm=3';
+
 const UserDashboard = ({ user, onLogout }) => {
   const [events, setEvents] = useState([]);
   const [timeSlotParticipation, setTimeSlotParticipation] = useState([]);
@@ -145,6 +147,7 @@ const UserDashboard = ({ user, onLogout }) => {
     <div className="user-dashboard">
       <div className="dashboard-header">
         <div className="user-info">
+          <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
           <h1>Willkommen, {user.fullName}!</h1>
         </div>
         <button className="logout-button" onClick={onLogout}>

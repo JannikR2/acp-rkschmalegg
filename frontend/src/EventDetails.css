@@ -17,6 +17,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
 }
 
 .back-button:hover {
@@ -46,6 +49,13 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.action-buttons button {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
 }
 
 .update-button {

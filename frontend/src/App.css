@@ -16,11 +16,24 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
+  gap: 40px;
+}
+
+.header-title-with-logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.header-logo {
+  height: 70px;
+  width: 70px;
+  object-fit: contain;
 }
 
 .header-content h1 {
   margin: 0;
-  flex: 1;
 }
 
 .header-actions {
@@ -89,6 +102,16 @@
     flex-direction: column;
     gap: 15px;
     text-align: center;
+  }
+
+  .header-title-with-logo {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header-logo {
+    height: 60px;
+    width: 60px;
   }
 
   .header-actions {

@@ -9,6 +9,8 @@ import TimeSlotManager from '../TimeSlotManager';
 import TimeSlotForm from '../TimeSlotForm';
 import '../App.css';
 
+const LOGO_URL = 'https://tse4.mm.bing.net/th/id/OIP.UORK-u3V7UVpyTeEcb0y_QHaHa?rs=1&pid=ImgDetMain&o=7&rm=3';
+
 const AdminPage = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
@@ -207,7 +209,10 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg</h1>
+          </div>
         </header>
         <main className="App-main">
           <EventDetails 
@@ -228,7 +233,10 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg</h1>
+          </div>
         </header>
         <main className="App-main">
           <TimeSlotManager 
@@ -249,7 +257,10 @@ const AdminPage = () => {
       <>
         <header className="App-header">
           <div className="header-content">
-            <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+            </div>
             <div className="header-actions">
               <nav className="main-nav">
                 <button 
@@ -282,7 +293,10 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg</h1>
+          </div>
         </header>
         <main className="App-main">
           <EventForm 
@@ -298,7 +312,10 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg</h1>
+          </div>
         </header>
         <main className="App-main">
           <EventForm 
@@ -316,7 +333,10 @@ const AdminPage = () => {
     <>
       <header className="App-header">
         <div className="header-content">
-          <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+          </div>
           <div className="header-actions">
             <nav className="main-nav">
               <button 
