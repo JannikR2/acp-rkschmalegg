@@ -86,6 +86,25 @@
   background: #F57C00;
 }
 
+.export-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 500;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-button:hover {
+  background: #388E3C;
+}
+
 .delete-button {
   background: #f44336;
   color: white;
@@ -295,6 +314,137 @@
   margin-top: 20px;
 }
 
+/* Participants Overview Table */
+.participants-overview {
+  margin-top: 40px;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.participants-overview h3 {
+  color: #282c34;
+  margin: 0 0 20px 0;
+  font-size: 1.4em;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 12px;
+}
+
+.overview-table-container {
+  overflow-x: auto;
+}
+
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.overview-table thead {
+  background: #34495e;
+  color: white;
+}
+
+.overview-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.overview-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: top;
+}
+
+.overview-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.overview-table .empty-slot td {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.overview-table .accepted-row {
+  background: #e8f5e9;
+}
+
+.overview-table .declined-row {
+  background: #ffebee;
+}
+
+.capacity {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.05em;
+}
+
+.full-badge-small {
+  display: inline-block;
+  background: #e74c3c;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.participant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.participant-info strong {
+  color: #2c3e50;
+  font-size: 1em;
+}
+
+.participant-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85em;
+  color: #7f8c8d;
+}
+
+.participant-details span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.status-badge.status-accepted {
+  background: #27ae60;
+  color: white;
+}
+
+.status-badge.status-declined {
+  background: #e74c3c;
+  color: white;
+}
+
+.no-participants {
+  text-align: center;
+  color: #95a5a6;
+  font-style: italic;
+  padding: 20px !important;
+}
+
 @media (max-width: 768px) {
   .event-details-page {
     padding: 16px;
@@ -314,11 +464,15 @@
   .action-buttons {
     align-self: stretch;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
   
   .update-button,
-  .delete-button {
+  .delete-button,
+  .export-button,
+  .timeslots-button {
     flex: 1;
+    min-width: 45%;
     justify-content: center;
   }
   
@@ -337,7 +491,23 @@
     gap: 10px;
   }
   
-  .cancel-confirm-button,
+  
+  .participants-overview {
+    padding: 16px;
+  }
+  
+  .overview-table {
+    font-size: 0.85em;
+  }
+  
+  .overview-table th,
+  .overview-table td {
+    padding: 8px 10px;
+  }
+  
+  .participant-details {
+    font-size: 0.8em;
+  } .cancel-confirm-button,
   .confirm-delete-button {
     width: 100%;
   }

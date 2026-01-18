@@ -9,11 +9,63 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .persons-header h2 {
   margin: 0;
   color: #2c3e50;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.year-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
+}
+
+.year-filter label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.year-select {
+  padding: 6px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  color: #495057;
+  font-weight: 500;
+  transition: border-color 0.3s ease;
+}
+
+.year-select:hover {
+  border-color: #3498db;
+}
+
+.year-select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
 }
 
 .btn-primary {
@@ -39,7 +91,6 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-  margin-left: 10px;
   transition: background-color 0.3s ease;
 }
 
@@ -153,6 +204,12 @@
   font-weight: 600;
 }
 
+.hours-cell {
+  text-align: center;
+  font-weight: 600;
+  color: #27ae60;
+}
+
 .no-data {
   text-align: center;
   padding: 40px;
@@ -196,6 +253,19 @@
     flex-direction: column;
     gap: 15px;
     align-items: stretch;
+  }
+
+  .header-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .year-filter {
+    justify-content: space-between;
+  }
+
+  .header-buttons {
+    flex-direction: column;
   }
 
   .form-row {

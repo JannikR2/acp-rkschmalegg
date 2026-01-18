@@ -6,6 +6,9 @@ let eventsData = [];
 let nextEventId = 1;
 let nextTimeSlotId = 1;
 
+// Provide events data accessor to userService
+userService.setEventsDataAccessor(() => eventsData);
+
 // Initialize with sample data
 function initializeSampleData() {
   const events = [

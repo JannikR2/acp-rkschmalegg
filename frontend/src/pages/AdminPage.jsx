@@ -19,10 +19,11 @@ const AdminPage = () => {
   const [currentView, setCurrentView] = useState('list');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     loadEvents();
-  }, []);
+  }, [selectedYear]);
 
   const loadEvents = async () => {
     try {
@@ -31,7 +32,15 @@ const AdminPage = () => {
       const response = await apiService.getAllEvents();
       
       if (response.success) {
-        setEvents(response.data);
+        // Filter events by selected year
+        const filteredEvents = response.data.filter(event => {
+          if (event.dateFrom) {
+            const eventYear = new Date(event.dateFrom).getFullYear();
+            return eventYear === selectedYear;
+          }
+          return false;
+        });
+        setEvents(filteredEvents);
       } else {
         setError('Fehler beim Laden der Events');
       }
@@ -42,6 +51,13 @@ const AdminPage = () => {
       setLoading(false);
     }
   };
+
+  // Generate year options (current year and 5 years back)
+  const currentYear = new Date().getFullYear();
+  const yearOptions = [];
+  for (let i = 0; i <= 5; i++) {
+    yearOptions.push(currentYear - i);
+  }
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
@@ -331,7 +347,22 @@ const AdminPage = () => {
         
         <section className="events-section">
           <div className="section-header">
-            <h2>Termine</h2>
+            <div className="section-title-row">
+              <h2>Termine</h2>
+              <div className="year-filter">
+                <label htmlFor="event-year-select">Jahr:</label>
+                <select 
+                  id="event-year-select"
+                  value={selectedYear} 
+                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                  className="year-select"
+                >
+                  {yearOptions.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <button className="add-event-button" onClick={() => setCurrentView('create')}>
               + Neues Event
             </button>

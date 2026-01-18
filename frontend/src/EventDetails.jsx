@@ -34,6 +34,106 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
     }
   };
 
+  const handleExportPDF = () => {
+    // Create printable content
+    const printWindow = window.open('', '_blank');
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Event: ${event.name}</title>
+        <style>
+          @media print {
+            @page { margin: 2cm; }
+          }
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 210mm;
+            margin: 0 auto;
+          }
+          h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+          h2 { color: #34495e; margin-top: 30px; }
+          .event-info { margin: 20px 0; }
+          .event-info p { margin: 5px 0; }
+          table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+          th { background-color: #34495e; color: white; font-weight: 600; }
+          tr:nth-child(even) { background-color: #f8f9fa; }
+          .status-accepted { color: #27ae60; font-weight: bold; }
+          .status-declined { color: #e74c3c; }
+          .full-badge { background: #e74c3c; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; }
+          .available-badge { background: #27ae60; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; }
+          .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #7f8c8d; }
+        </style>
+      </head>
+      <body>
+        <h1>Event: ${event.name}</h1>
+        
+        <div class="event-info">
+          <p><strong>Datum:</strong> ${event.dateFrom}${event.dateTo !== event.dateFrom ? ' bis ' + event.dateTo : ''}</p>
+          <p><strong>Uhrzeit:</strong> ${event.timeFrom} - ${event.timeTo}</p>
+          <p><strong>Ort:</strong> ${event.location || 'Nicht angegeben'}</p>
+          <p><strong>Beschreibung:</strong> ${event.description || 'Keine Beschreibung'}</p>
+        </div>
+
+        <h2>Zeitslots und Teilnehmer</h2>
+        
+        ${event.timeSlots && event.timeSlots.length > 0 ? event.timeSlots.map(slot => {
+          const acceptedParticipants = slot.participants?.filter(p => p.status === 'accepted') || [];
+          const isFull = acceptedParticipants.length >= slot.maxParticipants;
+          
+          return `
+            <h3>${slot.name} (${slot.timeFrom} - ${slot.timeTo})</h3>
+            <p>
+              <strong>Belegung:</strong> ${acceptedParticipants.length} / ${slot.maxParticipants}
+              ${isFull ? '<span class="full-badge">Voll</span>' : `<span class="available-badge">${slot.maxParticipants - acceptedParticipants.length} frei</span>`}
+            </p>
+            
+            ${slot.participants && slot.participants.length > 0 ? `
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>E-Mail</th>
+                    <th>Telefon</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${slot.participants.map(p => `
+                    <tr>
+                      <td>${p.person?.fullName || p.person?.firstName + ' ' + p.person?.lastName || 'Unbekannt'}</td>
+                      <td>${p.person?.email || '-'}</td>
+                      <td>${p.person?.phone || '-'}</td>
+                      <td class="status-${p.status}">${p.status === 'accepted' ? '✓ Zugesagt' : '✗ Abgesagt'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            ` : '<p><em>Noch keine Teilnehmer eingetragen</em></p>'}
+          `;
+        }).join('') : '<p><em>Keine Zeitslots vorhanden</em></p>'}
+
+        <div class="footer">
+          <p>Exportiert am: ${new Date().toLocaleString('de-DE')}</p>
+          <p>RK Schmalegg Zeiterfassung</p>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    printWindow.document.write(html);
+    printWindow.document.close();
+    
+    // Wait for content to load, then trigger print
+    setTimeout(() => {
+      printWindow.print();
+    }, 250);
+  };
+
   if (!event) {
     return (
       <div className="event-details-page">
@@ -57,6 +157,9 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
         <div className="action-buttons">
           <button className="timeslots-button" onClick={onManageTimeSlots}>
             ⏰ Zeitslots verwalten
+          </button>
+          <button className="export-button" onClick={handleExportPDF}>
+            📄 PDF exportieren
           </button>
           <button className="update-button" onClick={handleUpdateClick}>
             ✏️ Bearbeiten
@@ -97,6 +200,84 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Detailed Participants Overview Table */}
+        {event.timeSlots && event.timeSlots.length > 0 && (
+          <div className="participants-overview">
+            <h3>Detaillierte Übersicht - Zeitslots & Teilnehmer</h3>
+            <div className="overview-table-container">
+              <table className="overview-table">
+                <thead>
+                  <tr>
+                    <th>Zeitslot</th>
+                    <th>Zeit</th>
+                    <th>Belegung</th>
+                    <th>Teilnehmer</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {event.timeSlots.map((timeSlot) => {
+                    const acceptedParticipants = timeSlot.participants?.filter(p => p.status === 'accepted') || [];
+                    const allParticipants = timeSlot.participants || [];
+                    
+                    if (allParticipants.length === 0) {
+                      return (
+                        <tr key={timeSlot.id} className="empty-slot">
+                          <td><strong>{timeSlot.name}</strong></td>
+                          <td>{timeSlot.timeFrom} - {timeSlot.timeTo}</td>
+                          <td>
+                            <span className="capacity">0 / {timeSlot.maxParticipants}</span>
+                          </td>
+                          <td colSpan="2" className="no-participants">
+                            <em>Noch keine Teilnehmer</em>
+                          </td>
+                        </tr>
+                      );
+                    }
+                    
+                    return allParticipants.map((participant, index) => (
+                      <tr key={`${timeSlot.id}-${index}`} className={participant.status === 'accepted' ? 'accepted-row' : 'declined-row'}>
+                        {index === 0 && (
+                          <>
+                            <td rowSpan={allParticipants.length}>
+                              <strong>{timeSlot.name}</strong>
+                            </td>
+                            <td rowSpan={allParticipants.length}>
+                              {timeSlot.timeFrom} - {timeSlot.timeTo}
+                            </td>
+                            <td rowSpan={allParticipants.length}>
+                              <span className="capacity">
+                                {acceptedParticipants.length} / {timeSlot.maxParticipants}
+                              </span>
+                              {acceptedParticipants.length >= timeSlot.maxParticipants && 
+                                <span className="full-badge-small">Voll</span>
+                              }
+                            </td>
+                          </>
+                        )}
+                        <td>
+                          <div className="participant-info">
+                            <strong>{participant.person?.fullName || participant.person?.firstName + ' ' + participant.person?.lastName || 'Unbekannt'}</strong>
+                            <div className="participant-details">
+                              {participant.person?.email && <span>📧 {participant.person.email}</span>}
+                              {participant.person?.phone && <span>📞 {participant.person.phone}</span>}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`status-badge status-${participant.status}`}>
+                            {participant.status === 'accepted' ? '✓ Zugesagt' : '✗ Abgesagt'}
+                          </span>
+                        </td>
+                      </tr>
+                    ));
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
