@@ -168,12 +168,14 @@ const UserDashboard = ({ user, onLogout }) => {
         <div className="dashboard-header">
           <div className="user-info">
             <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-            <h1>Event Details</h1>
+            <h1>Willkommen, {user.fullName}!</h1>
           </div>
           <button className="logout-button" onClick={onLogout}>
             Abmelden
           </button>
         </div>
+
+        {error && <div className="error-message">{error}</div>}
 
         <div className="event-details-container">
           <button className="back-button" onClick={handleBackToList}>
@@ -201,7 +203,7 @@ const UserDashboard = ({ user, onLogout }) => {
           {/* Zeitslots zum Anmelden */}
           {eventTimeSlots.length > 0 && (
             <div className="timeslots-signup-section">
-              <h3>📅 Verfügbare Zeitslots - Jetzt anmelden!</h3>
+              <h3> Verfügbare Zeitslots - Jetzt anmelden!</h3>
               {(() => {
                 // Group timeslots by category
                 const grouped = eventTimeSlots.reduce((acc, timeSlot) => {

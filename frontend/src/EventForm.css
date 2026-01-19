@@ -239,58 +239,80 @@
 .timeslots-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
-.timeslot-form-item {
+.timeslot-item {
   background: white;
-  padding: 16px;
+  padding: 12px 16px;
   border-radius: 6px;
   border: 1px solid #ddd;
-}
-
-.timeslot-form-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto;
-  gap: 12px;
-  align-items: end;
-}
-
-.form-group-small {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.form-group-small label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 4px;
+.timeslot-info {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex: 1;
 }
 
-.form-group-small input {
-  padding: 8px 10px;
-  border: 1px solid #ddd;
+.timeslot-detail {
+  min-width: 200px;
+}
+
+.timeslot-category {
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  padding: 2px 8px;
   border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.timeslot-time {
+  color: #666;
   font-size: 14px;
 }
 
-.form-group-small input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+.timeslot-capacity {
+  color: #666;
+  font-size: 14px;
+}
+
+.timeslot-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-timeslot-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.edit-timeslot-button:hover {
+  background: #0056b3;
 }
 
 .remove-timeslot-button {
   background: #dc3545;
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   transition: background 0.3s;
-  height: fit-content;
 }
 
 .remove-timeslot-button:hover {
@@ -305,6 +327,31 @@
   margin: 0;
 }
 
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+}
+
 @media (max-width: 768px) {
   .timeslots-header {
     flex-direction: column;
@@ -312,12 +359,20 @@
     align-items: flex-start;
   }
   
-  .timeslot-form-row {
-    grid-template-columns: 1fr;
+  .timeslot-item {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 12px;
   }
   
-  .remove-timeslot-button {
-    justify-self: end;
+  .timeslot-info {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .timeslot-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }

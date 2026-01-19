@@ -13,12 +13,14 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-radius: 15px;
+  gap: 40px;
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex: 0 1 auto;
 }
 
 .user-info .header-logo {
@@ -28,11 +30,13 @@
   background: white;
   border-radius: 8px;
   padding: 5px;
+  flex-shrink: 0;
 }
 
 .user-info h1 {
   margin: 0;
   font-size: 28px;
+  white-space: nowrap;
 }
 
 .user-info p {
@@ -68,6 +72,7 @@
   color: #495057;
   font-weight: 500;
   transition: border-color 0.3s ease;
+  min-width: 100px;
 }
 
 .year-filter-section .year-select:hover {
@@ -89,6 +94,8 @@
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .logout-button:hover {
