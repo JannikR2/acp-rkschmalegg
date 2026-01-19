@@ -204,6 +204,7 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
           timeSlot={editingTimeSlot}
           isEditing={!!editingTimeSlot}
           presetCategory={categoryForNewSlot}
+          event={event}
         />
       </div>
     );
@@ -239,70 +240,101 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
       ) : (
         <div className="timeslots-list">
           {(() => {
-            // Group timeslots by category
-            const grouped = timeSlots.reduce((acc, timeSlot) => {
-              const category = timeSlot.category || 'Ohne Kategorie';
-              if (!acc[category]) {
-                acc[category] = [];
+            // First group by date, then by category
+            const groupedByDate = timeSlots.reduce((acc, timeSlot) => {
+              const date = timeSlot.date || 'Alle Tage';
+              if (!acc[date]) {
+                acc[date] = {};
               }
-              acc[category].push(timeSlot);
+              const category = timeSlot.category || 'Ohne Kategorie';
+              if (!acc[date][category]) {
+                acc[date][category] = [];
+              }
+              acc[date][category].push(timeSlot);
               return acc;
             }, {});
 
-            return Object.entries(grouped).map(([category, slots]) => {
-              // Sort slots by start time within each category
-              const sortedSlots = slots.sort((a, b) => {
-                return a.timeFrom.localeCompare(b.timeFrom);
-              });
-              
+            // Sort dates ("Alle Tage" first, then chronologically)
+            const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+              if (a === 'Alle Tage') return -1;
+              if (b === 'Alle Tage') return 1;
+              return a.localeCompare(b);
+            });
+
+            return sortedDates.map(date => {
+              const categories = groupedByDate[date];
+              const sortedCategories = Object.keys(categories).sort();
+
               return (
-                <div key={category} className="timeslot-category-section">
-                  <div className="category-header-bar">
-                    <h3>{category}</h3>
-                    <button 
-                      className="btn-add-to-category"
-                      onClick={() => handleAddToCategory(category)}
-                      title="Weiteren Zeitslot zu dieser Kategorie hinzufügen"
-                    >
-                      + Zeitslot hinzufügen
-                    </button>
-                  </div>
-                  {sortedSlots.map((timeSlot) => (
-                  <div key={timeSlot.id} className="timeslot-item">
-                    <div className="timeslot-info">
-                      <h3 className="timeslot-name">{timeSlot.name}</h3>
-                      <div className="timeslot-details">
-                        <span className="timeslot-time">
-                          🕐 {timeSlot.timeFrom} - {timeSlot.timeTo}
-                        </span>
-                        <span className="timeslot-participants">
-                          👥 {timeSlot.participants?.filter(p => p.status === 'accepted').length || 0} / {timeSlot.maxParticipants}
-                          {timeSlot.isFull && <span className="full-badge">Voll</span>}
-                        </span>
+                <div key={date} className="timeslot-date-section">
+                  <h3 className="date-header">
+                    {date === 'Alle Tage' ? date : new Date(date).toLocaleDateString('de-DE', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </h3>
+                  
+                  {sortedCategories.map(category => {
+                    const slots = categories[category];
+                    
+                    // Sort slots by time within each category
+                    const sortedSlots = slots.sort((a, b) => {
+                      return a.timeFrom.localeCompare(b.timeFrom);
+                    });
+                    
+                    return (
+                      <div key={category} className="timeslot-category-section">
+                        <div className="category-header-bar">
+                          <h3>{category}</h3>
+                          <button 
+                            className="btn-add-to-category"
+                            onClick={() => handleAddToCategory(category)}
+                            title="Weiteren Zeitslot zu dieser Kategorie hinzufügen"
+                          >
+                            + Zeitslot hinzufügen
+                          </button>
+                        </div>
+                        {sortedSlots.map((timeSlot) => (
+                          <div key={timeSlot.id} className="timeslot-item">
+                            <div className="timeslot-info">
+                              <h3 className="timeslot-name">{timeSlot.name}</h3>
+                              <div className="timeslot-details">
+                                <span className="timeslot-time">
+                                  🕐 {timeSlot.timeFrom} - {timeSlot.timeTo}
+                                </span>
+                                <span className="timeslot-participants">
+                                  👥 {timeSlot.participants?.filter(p => p.status === 'accepted').length || 0} / {timeSlot.maxParticipants}
+                                  {timeSlot.isFull && <span className="full-badge">Voll</span>}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="timeslot-actions">
+                              <button 
+                                className="btn-small btn-primary"
+                                onClick={() => handleManageParticipants(timeSlot)}
+                              >
+                                👥 Teilnehmer verwalten
+                              </button>
+                              <button 
+                                className="btn-small btn-secondary"
+                                onClick={() => handleEditTimeSlot(timeSlot)}
+                              >
+                                ✏️ Bearbeiten
+                              </button>
+                              <button 
+                                className="btn-small btn-danger"
+                                onClick={() => handleDeleteTimeSlot(timeSlot.id)}
+                              >
+                                🗑️ Löschen
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                    <div className="timeslot-actions">
-                      <button 
-                        className="btn-small btn-primary"
-                        onClick={() => handleManageParticipants(timeSlot)}
-                      >
-                        👥 Teilnehmer verwalten
-                      </button>
-                      <button 
-                        className="btn-small btn-secondary"
-                        onClick={() => handleEditTimeSlot(timeSlot)}
-                      >
-                        ✏️ Bearbeiten
-                      </button>
-                      <button 
-                        className="btn-small btn-danger"
-                        onClick={() => handleDeleteTimeSlot(timeSlot.id)}
-                      >
-                        🗑️ Löschen
-                      </button>
-                    </div>
-                  </div>
-                  ))}
+                    );
+                  })}
                 </div>
               );
             });

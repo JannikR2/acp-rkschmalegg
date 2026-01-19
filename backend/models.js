@@ -54,6 +54,7 @@ export class TimeSlot {
   constructor({
     id,
     name,
+    date,
     timeFrom,
     timeTo,
     maxParticipants,
@@ -62,6 +63,7 @@ export class TimeSlot {
   }) {
     this.id = id;
     this.name = name;
+    this.date = date; // Optional date string (e.g., "2026-04-12") for multi-day events
     this.timeFrom = timeFrom; // Time string (e.g., "10:00")
     this.timeTo = timeTo;     // Time string (e.g., "11:00")
     this.maxParticipants = maxParticipants || 0;
@@ -110,6 +112,7 @@ export class TimeSlot {
     return {
       id: this.id,
       name: this.name,
+      date: this.date,
       timeFrom: this.timeFrom,
       timeTo: this.timeTo,
       maxParticipants: this.maxParticipants,

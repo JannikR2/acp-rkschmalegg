@@ -179,6 +179,9 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('EventForm: handleSubmit called');
+    console.log('EventForm: Form data:', formData);
+    console.log('EventForm: Time slots:', timeSlots);
     
     if (validateForm()) {
       const eventData = {
@@ -190,7 +193,10 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
         // Default to draft status when creating, preserve existing when editing
         status: isEditing ? (event.status || 'draft') : 'draft'
       };
+      console.log('EventForm: Validation passed, calling onSave with:', eventData);
       onSave(eventData);
+    } else {
+      console.log('EventForm: Validation failed, errors:', errors);
     }
   };
 
@@ -382,6 +388,7 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
                 onCancel={handleCancelTimeSlotForm}
                 timeSlot={editingTimeSlotIndex !== null ? timeSlots[editingTimeSlotIndex] : null}
                 isEditing={editingTimeSlotIndex !== null}
+                event={formData.dateFrom ? { dateFrom: formData.dateFrom, dateTo: formData.dateTo || formData.dateFrom } : null}
               />
             </div>
           </div>

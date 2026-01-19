@@ -147,6 +147,8 @@ export function getEventById(id) {
 }
 
 export function createEvent(eventData) {
+  console.log('Backend createEvent - Received data:', eventData);
+  
   // Handle timeSlots if provided
   let timeSlots = [];
   if (eventData.timeSlots && Array.isArray(eventData.timeSlots)) {
@@ -161,6 +163,9 @@ export function createEvent(eventData) {
     ...eventData,
     timeSlots: timeSlots
   });
+  
+  console.log('Backend createEvent - Created event:', event);
+  
   eventsData.push(event);
   return event.toJSON();
 }

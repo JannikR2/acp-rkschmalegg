@@ -92,10 +92,13 @@ const AdminPage = () => {
 
   const handleCreateEvent = async (eventData, status = 'draft') => {
     try {
+      console.log('AdminPage: handleCreateEvent called with:', eventData, 'status:', status);
       setError(null);
       // Ensure the status is set correctly
       const eventDataWithStatus = { ...eventData, status };
+      console.log('AdminPage: Sending to API:', eventDataWithStatus);
       const response = await apiService.createEvent(eventDataWithStatus);
+      console.log('AdminPage: API response:', response);
       
       if (response.success) {
         await loadEvents();
@@ -104,8 +107,8 @@ const AdminPage = () => {
         setError('Fehler beim Erstellen des Events');
       }
     } catch (error) {
-      console.error('Error creating event:', error);
-      setError('Fehler beim Erstellen des Events');
+      console.error('AdminPage: Error creating event:', error);
+      setError('Fehler beim Erstellen des Events: ' + error.message);
     }
   };
 

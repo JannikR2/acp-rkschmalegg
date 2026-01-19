@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import './TimeSlotForm.css';
 
-const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCategory = null }) => {
+const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCategory = null, event = null }) => {
   const [category, setCategory] = useState(timeSlot?.category || presetCategory || '');
   const [timeSlots, setTimeSlots] = useState(
     isEditing && timeSlot 
       ? [{
           name: timeSlot.name,
+          date: timeSlot.date || '',
           timeFrom: timeSlot.timeFrom,
           timeTo: timeSlot.timeTo,
           maxParticipants: timeSlot.maxParticipants
         }]
       : [{
           name: '',
+          date: '',
           timeFrom: '',
           timeTo: '',
           maxParticipants: 1
@@ -23,6 +25,7 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
   const addTimeSlot = () => {
     setTimeSlots([...timeSlots, {
       name: '',
+      date: '',
       timeFrom: '',
       timeTo: '',
       maxParticipants: 1
@@ -79,7 +82,10 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     console.log('Category state value:', category);
     console.log('presetCategory:', presetCategory);
     console.log('timeSlot?.category:', timeSlot?.category);
@@ -164,7 +170,28 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
                 />
                 {errors[`${index}-name`] && <span className="error-text">{errors[`${index}-name`]}</span>}
               </div>
+{event && (
+                <div className="form-group">
+                  <label htmlFor={`date-${index}`}>Datum (Optional)</label>
+                  <input
+                    type="date"
+                    id={`date-${index}`}
+                    value={slot.date || ''}
+                    onChange={(e) => updateTimeSlot(index, 'date', e.target.value)}
+                    min={event.dateFrom}
+                    max={event.dateTo || event.dateFrom}
+                    className={errors[`${index}-date`] ? 'error' : ''}
+                  />
+                  {!slot.date && (
+                    <span className="helper-text">
+                      Wenn leer, gilt: {event.dateFrom === event.dateTo || !event.dateTo ? new Date(event.dateFrom).toLocaleDateString('de-DE') : 'alle Event-Tage'}
+                    </span>
+                  )}
+                  {errors[`${index}-date`] && <span className="error-text">{errors[`${index}-date`]}</span>}
+                </div>
+              )}
 
+              
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor={`timeFrom-${index}`}>Startzeit *</label>
@@ -214,7 +241,7 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
         )}
 
         <div className="form-actions">
-          <button type="submit" className="btn-primary">
+          <button type="button" className="btn-primary" onClick={handleSubmit}>
             {isEditing ? 'Aktualisieren' : `${timeSlots.length} Zeitslot${timeSlots.length > 1 ? 's' : ''} speichern`}
           </button>
           <button type="button" className="btn-secondary" onClick={onCancel}>

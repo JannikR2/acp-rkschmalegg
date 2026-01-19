@@ -205,83 +205,114 @@ const UserDashboard = ({ user, onLogout }) => {
             <div className="timeslots-signup-section">
               <h3> Verfügbare Zeitslots - Jetzt anmelden!</h3>
               {(() => {
-                // Group timeslots by category
-                const grouped = eventTimeSlots.reduce((acc, timeSlot) => {
-                  const category = timeSlot.category || 'Ohne Kategorie';
-                  if (!acc[category]) {
-                    acc[category] = [];
+                // First group by date, then by category
+                const groupedByDate = eventTimeSlots.reduce((acc, timeSlot) => {
+                  const date = timeSlot.date || 'Alle Tage';
+                  if (!acc[date]) {
+                    acc[date] = {};
                   }
-                  acc[category].push(timeSlot);
+                  const category = timeSlot.category || 'Ohne Kategorie';
+                  if (!acc[date][category]) {
+                    acc[date][category] = [];
+                  }
+                  acc[date][category].push(timeSlot);
                   return acc;
                 }, {});
 
-                return Object.entries(grouped).map(([category, slots]) => {
-                  // Sort slots by start time within each category
-                  const sortedSlots = slots.sort((a, b) => {
-                    return a.timeFrom.localeCompare(b.timeFrom);
-                  });
-                  
+                // Sort dates ("Alle Tage" first, then chronologically)
+                const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+                  if (a === 'Alle Tage') return -1;
+                  if (b === 'Alle Tage') return 1;
+                  return a.localeCompare(b);
+                });
+
+                return sortedDates.map(date => {
+                  const categories = groupedByDate[date];
+                  const sortedCategories = Object.keys(categories).sort();
+
                   return (
-                  <div key={category} className="timeslot-category-section">
-                    <h4 className="category-header">{category}</h4>
-                    <div className="timeslots-grid">
-                      {sortedSlots.map((timeSlot) => {
-                        const timeSlotParticipation = getTimeSlotParticipation(selectedEvent.id, timeSlot.id);
-                        const isSignedUp = timeSlotParticipation.status === 'accepted';
-                        const isFull = timeSlot.isFull;
-                        const availableSpots = timeSlot.availableSpots;
+                    <div key={date} className="timeslot-date-section">
+                      <h3 className="date-header">
+                        {date === 'Alle Tage' ? date : new Date(date).toLocaleDateString('de-DE', { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+                      </h3>
+                      
+                      {sortedCategories.map(category => {
+                        const slots = categories[category];
+                        
+                        // Sort slots by time within each category
+                        const sortedSlots = slots.sort((a, b) => {
+                          return a.timeFrom.localeCompare(b.timeFrom);
+                        });
                         
                         return (
-                          <div key={timeSlot.id} className={`timeslot-card ${isSignedUp ? 'signed-up' : ''} ${isFull && !isSignedUp ? 'full' : ''}`}>
-                            <div className="timeslot-header">
-                              <h5>{timeSlot.name}</h5>
-                              <span className="timeslot-time">
-                                {timeSlot.timeFrom} - {timeSlot.timeTo}
-                              </span>
-                            </div>
-                            
-                            <div className="timeslot-info">
-                              <div className="capacity-info">
-                                {timeSlot.maxParticipants > 0 && (
-                                  <span className={`capacity ${isFull ? 'full' : ''}`}>
-                                    {timeSlot.maxParticipants - availableSpots}/{timeSlot.maxParticipants} Plätze
-                                  </span>
-                                )}
-                              </div>
-                              
-                              <div className="timeslot-status">
-                                {isSignedUp ? (
-                                  <span className="status-signed-up">✓ Angemeldet</span>
-                                ) : isFull ? (
-                                  <span className="status-full">Ausgebucht</span>
-                                ) : (
-                                  <span className="status-available">Verfügbar</span>
-                                )}
-                              </div>
-                            </div>
+                          <div key={category} className="timeslot-category-section">
+                            <h4 className="category-header">{category}</h4>
+                            <div className="timeslots-grid">
+                              {sortedSlots.map((timeSlot) => {
+                                const timeSlotParticipation = getTimeSlotParticipation(selectedEvent.id, timeSlot.id);
+                                const isSignedUp = timeSlotParticipation.status === 'accepted';
+                                const isFull = timeSlot.isFull;
+                                const availableSpots = timeSlot.availableSpots;
+                                
+                                return (
+                                  <div key={timeSlot.id} className={`timeslot-card ${isSignedUp ? 'signed-up' : ''} ${isFull && !isSignedUp ? 'full' : ''}`}>
+                                    <div className="timeslot-header">
+                                      <h5>{timeSlot.name}</h5>
+                                      <span className="timeslot-time">
+                                        {timeSlot.timeFrom} - {timeSlot.timeTo}
+                                      </span>
+                                    </div>
+                                    
+                                    <div className="timeslot-info">
+                                      <div className="capacity-info">
+                                        {timeSlot.maxParticipants > 0 && (
+                                          <span className={`capacity ${isFull ? 'full' : ''}`}>
+                                            {timeSlot.maxParticipants - availableSpots}/{timeSlot.maxParticipants} Plätze
+                                          </span>
+                                        )}
+                                      </div>
+                                      
+                                      <div className="timeslot-status">
+                                        {isSignedUp ? (
+                                          <span className="status-signed-up">✓ Angemeldet</span>
+                                        ) : isFull ? (
+                                          <span className="status-full">Ausgebucht</span>
+                                        ) : (
+                                          <span className="status-available">Verfügbar</span>
+                                        )}
+                                      </div>
+                                    </div>
 
-                            <div className="timeslot-actions">
-                              {isSignedUp ? (
-                                <button 
-                                  className="btn-timeslot-cancel"
-                                  onClick={() => updateTimeSlotParticipation(selectedEvent.id, timeSlot.id, 'declined')}
-                                >
-                                  Abmelden
-                                </button>
+                                    <div className="timeslot-actions">
+                                      {isSignedUp ? (
+                                        <button 
+                                          className="btn-timeslot-cancel"
+                                          onClick={() => updateTimeSlotParticipation(selectedEvent.id, timeSlot.id, 'declined')}
+                                        >
+                                          Abmelden
+                                        </button>
                               ) : !isFull ? (
-                                <button 
-                                  className="btn-timeslot-signup"
-                                  onClick={() => updateTimeSlotParticipation(selectedEvent.id, timeSlot.id, 'accepted')}
-                                >
-                                  Anmelden
-                                </button>
-                              ) : null}
+                                        <button 
+                                          className="btn-timeslot-signup"
+                                          onClick={() => updateTimeSlotParticipation(selectedEvent.id, timeSlot.id, 'accepted')}
+                                        >
+                                          Anmelden
+                                        </button>
+                                      ) : null}
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
                         );
                       })}
                     </div>
-                  </div>
                   );
                 });
               })()}
@@ -306,12 +337,21 @@ const UserDashboard = ({ user, onLogout }) => {
                   </thead>
                   <tbody>
                     {eventTimeSlots.sort((a, b) => {
-                      // First sort by category, then by time
+                      // First sort by category
                       const catA = a.category || 'Ohne Kategorie';
                       const catB = b.category || 'Ohne Kategorie';
                       if (catA !== catB) {
                         return catA.localeCompare(catB);
                       }
+                      // Then by date (if present)
+                      if (a.date && b.date) {
+                        const dateCompare = a.date.localeCompare(b.date);
+                        if (dateCompare !== 0) return dateCompare;
+                      }
+                      // If only one has a date, put the one without date first
+                      if (a.date && !b.date) return 1;
+                      if (!a.date && b.date) return -1;
+                      // Finally by time
                       return a.timeFrom.localeCompare(b.timeFrom);
                     }).map((timeSlot) => {
                       // Fetch participants for this timeslot

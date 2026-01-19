@@ -85,60 +85,78 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
         <h2>Zeitslots und Teilnehmer</h2>
         
         ${event.timeSlots && event.timeSlots.length > 0 ? (() => {
-          // Group timeslots by category
-          const grouped = event.timeSlots.reduce((acc, slot) => {
-            const category = slot.category || 'Ohne Kategorie';
-            if (!acc[category]) {
-              acc[category] = [];
+          // Group timeslots by date first, then by category
+          const groupedByDate = event.timeSlots.reduce((acc, slot) => {
+            const date = slot.date || 'Alle Tage';
+            if (!acc[date]) {
+              acc[date] = {};
             }
-            acc[category].push(slot);
+            const category = slot.category || 'Ohne Kategorie';
+            if (!acc[date][category]) {
+              acc[date][category] = [];
+            }
+            acc[date][category].push(slot);
             return acc;
           }, {});
 
-          // Sort and render by category
-          return Object.entries(grouped).map(([category, slots]) => {
-            // Sort slots by start time within each category
-            const sortedSlots = slots.sort((a, b) => a.timeFrom.localeCompare(b.timeFrom));
+          // Sort dates and render
+          const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+            if (a === 'Alle Tage') return -1;
+            if (b === 'Alle Tage') return 1;
+            return a.localeCompare(b);
+          });
+
+          return sortedDates.map(date => {
+            const categoriesForDate = groupedByDate[date];
+            const formattedDate = date === 'Alle Tage' ? date : new Date(date).toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             
             return `
-              <div class="category-section">
-                <h4>${category}</h4>
-                ${sortedSlots.map(slot => {
-                  const acceptedParticipants = slot.participants?.filter(p => p.status === 'accepted') || [];
-                  const isFull = acceptedParticipants.length >= slot.maxParticipants;
-                  
-                  return `
-                    <h3>${slot.name} (${slot.timeFrom} - ${slot.timeTo})</h3>
-                    <p>
-                      <strong>Belegung:</strong> ${acceptedParticipants.length} / ${slot.maxParticipants}
-                      ${isFull ? '<span class="full-badge">Voll</span>' : `<span class="available-badge">${slot.maxParticipants - acceptedParticipants.length} frei</span>`}
-                    </p>
-                    
-                    ${slot.participants && slot.participants.length > 0 ? `
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>E-Mail</th>
-                            <th>Telefon</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          ${slot.participants.map(p => `
-                            <tr>
-                              <td>${p.person?.fullName || p.person?.firstName + ' ' + p.person?.lastName || 'Unbekannt'}</td>
-                              <td>${p.person?.email || '-'}</td>
-                              <td>${p.person?.phone || '-'}</td>
-                              <td class="status-${p.status}">${p.status === 'accepted' ? '✓ Zugesagt' : '✗ Abgesagt'}</td>
-                            </tr>
-                          `).join('')}
-                        </tbody>
-                      </table>
-                    ` : '<p><em>Noch keine Teilnehmer eingetragen</em></p>'}
-                  `;
-                }).join('')}
-              </div>
+              <h3 style="color: #2c3e50; margin-top: 30px; padding-bottom: 10px; border-bottom: 2px solid #3498db;">${formattedDate}</h3>
+              ${Object.entries(categoriesForDate).sort(([a], [b]) => a.localeCompare(b)).map(([category, slots]) => {
+                // Sort slots by time within each category
+                const sortedSlots = slots.sort((a, b) => a.timeFrom.localeCompare(b.timeFrom));
+                
+                return `
+                  <div class="category-section">
+                    <h4>${category}</h4>
+                    ${sortedSlots.map(slot => {
+                      const acceptedParticipants = slot.participants?.filter(p => p.status === 'accepted') || [];
+                      const isFull = acceptedParticipants.length >= slot.maxParticipants;
+                      
+                      return `
+                        <h3 style="font-size: 16px;">${slot.name} (${slot.timeFrom} - ${slot.timeTo})</h3>
+                        <p>
+                          <strong>Belegung:</strong> ${acceptedParticipants.length} / ${slot.maxParticipants}
+                          ${isFull ? '<span class="full-badge">Voll</span>' : `<span class="available-badge">${slot.maxParticipants - acceptedParticipants.length} frei</span>`}
+                        </p>
+                        
+                        ${slot.participants && slot.participants.length > 0 ? `
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>E-Mail</th>
+                                <th>Telefon</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              ${slot.participants.map(p => `
+                                <tr>
+                                  <td>${p.person?.fullName || p.person?.firstName + ' ' + p.person?.lastName || 'Unbekannt'}</td>
+                                  <td>${p.person?.email || '-'}</td>
+                                  <td>${p.person?.phone || '-'}</td>
+                                  <td class="status-${p.status}">${p.status === 'accepted' ? '✓ Zugesagt' : '✗ Abgesagt'}</td>
+                                </tr>
+                              `).join('')}
+                            </tbody>
+                          </table>
+                        ` : '<p><em>Noch keine Teilnehmer eingetragen</em></p>'}
+                      `;
+                    }).join('')}
+                  </div>
+                `;
+              }).join('')}
             `;
           }).join('');
         })() : '<p><em>Keine Zeitslots vorhanden</em></p>'}
@@ -205,48 +223,79 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
             <h3>Zeitslots</h3>
             <div className="timeslots-grid">
               {(() => {
-                // Group timeslots by category
-                const grouped = event.timeSlots.reduce((acc, timeSlot) => {
-                  const category = timeSlot.category || 'Ohne Kategorie';
-                  if (!acc[category]) {
-                    acc[category] = [];
+                // First group by date, then by category
+                const groupedByDate = event.timeSlots.reduce((acc, timeSlot) => {
+                  const date = timeSlot.date || 'Alle Tage';
+                  if (!acc[date]) {
+                    acc[date] = {};
                   }
-                  acc[category].push(timeSlot);
+                  const category = timeSlot.category || 'Ohne Kategorie';
+                  if (!acc[date][category]) {
+                    acc[date][category] = [];
+                  }
+                  acc[date][category].push(timeSlot);
                   return acc;
                 }, {});
 
-                return Object.entries(grouped).map(([category, slots]) => {
-                  // Sort slots by start time within each category
-                  const sortedSlots = slots.sort((a, b) => {
-                    return a.timeFrom.localeCompare(b.timeFrom);
-                  });
-                  
+                // Sort dates ("Alle Tage" first, then chronologically)
+                const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+                  if (a === 'Alle Tage') return -1;
+                  if (b === 'Alle Tage') return 1;
+                  return a.localeCompare(b);
+                });
+
+                return sortedDates.map(date => {
+                  const categories = groupedByDate[date];
+                  const sortedCategories = Object.keys(categories).sort();
+
                   return (
-                  <div key={category} className="timeslot-category-group">
-                    <h4 className="category-title">{category}</h4>
-                    {sortedSlots.map((timeSlot) => (
-                      <div key={timeSlot.id} className="timeslot-card">
-                        <div 
-                          className="timeslot-header clickable" 
-                          onClick={() => handleTimeSlotClick(timeSlot)}
-                          title="Zeitslot bearbeiten"
-                        >
-                          <h4>{timeSlot.name}</h4>
-                          <span className="timeslot-time">{timeSlot.timeFrom} - {timeSlot.timeTo}</span>
-                        </div>
-                        <div 
-                          className="timeslot-participants clickable"
-                          onClick={() => handleParticipantsClick(timeSlot)}
-                          title="Teilnehmer verwalten"
-                        >
-                          <span className="participant-count">
-                            {timeSlot.participants?.length || 0} / {timeSlot.maxParticipants} Teilnehmer
-                          </span>
-                          {timeSlot.isFull && <span className="full-badge">Voll</span>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                    <div key={date} className="timeslot-date-section">
+                      <h3 className="date-header">
+                        {date === 'Alle Tage' ? date : new Date(date).toLocaleDateString('de-DE', { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+                      </h3>
+                      
+                      {sortedCategories.map(category => {
+                        const slots = categories[category];
+                        
+                        // Sort slots by time within each category
+                        const sortedSlots = slots.sort((a, b) => {
+                          return a.timeFrom.localeCompare(b.timeFrom);
+                        });
+                        
+                        return (
+                          <div key={category} className="timeslot-category-group">
+                            <h4 className="category-title">{category}</h4>
+                            {sortedSlots.map((timeSlot) => (
+                              <div key={timeSlot.id} className="timeslot-card">
+                                <div 
+                                  className="timeslot-header clickable" 
+                                  onClick={() => handleTimeSlotClick(timeSlot)}
+                                  title="Zeitslot bearbeiten"
+                                >
+                                  <h4>{timeSlot.name}</h4>
+                                  <span className="timeslot-time">{timeSlot.timeFrom} - {timeSlot.timeTo}</span>
+                                </div>
+                                <div 
+                                  className="timeslot-participants clickable"
+                                  onClick={() => handleParticipantsClick(timeSlot)}
+                                  title="Teilnehmer verwalten"
+                                >
+                                  <span className="participant-count">
+                                    {timeSlot.participants?.length || 0} / {timeSlot.maxParticipants} Teilnehmer
+                                  </span>
+                                  {timeSlot.isFull && <span className="full-badge">Voll</span>}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })}
+                    </div>
                   );
                 });
               })()}
@@ -272,12 +321,21 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                 </thead>
                 <tbody>
                   {event.timeSlots.sort((a, b) => {
-                    // First sort by category, then by time
+                    // First sort by category
                     const catA = a.category || 'Ohne Kategorie';
                     const catB = b.category || 'Ohne Kategorie';
                     if (catA !== catB) {
                       return catA.localeCompare(catB);
                     }
+                    // Then by date (if present)
+                    if (a.date && b.date) {
+                      const dateCompare = a.date.localeCompare(b.date);
+                      if (dateCompare !== 0) return dateCompare;
+                    }
+                    // If only one has a date, put the one without date first
+                    if (a.date && !b.date) return 1;
+                    if (!a.date && b.date) return -1;
+                    // Finally by time
                     return a.timeFrom.localeCompare(b.timeFrom);
                   }).map((timeSlot) => {
                     const acceptedParticipants = timeSlot.participants?.filter(p => p.status === 'accepted') || [];
