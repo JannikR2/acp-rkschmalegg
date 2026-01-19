@@ -323,37 +323,62 @@ const UserDashboard = ({ user, onLogout }) => {
           {eventTimeSlots.length > 0 && (
             <div className="participants-overview">
               <h3>Zeitslots & Teilnehmer</h3>
-              <div className="overview-table-container">
-                <table className="overview-table">
-                  <thead>
-                    <tr>
-                      <th>Kategorie</th>
-                      <th>Zeitslot</th>
-                      <th>Zeit</th>
-                      <th>Belegung</th>
-                      <th>Teilnehmer</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {eventTimeSlots.sort((a, b) => {
-                      // First sort by category
-                      const catA = a.category || 'Ohne Kategorie';
-                      const catB = b.category || 'Ohne Kategorie';
-                      if (catA !== catB) {
-                        return catA.localeCompare(catB);
-                      }
-                      // Then by date (if present)
-                      if (a.date && b.date) {
-                        const dateCompare = a.date.localeCompare(b.date);
-                        if (dateCompare !== 0) return dateCompare;
-                      }
-                      // If only one has a date, put the one without date first
-                      if (a.date && !b.date) return 1;
-                      if (!a.date && b.date) return -1;
-                      // Finally by time
-                      return a.timeFrom.localeCompare(b.timeFrom);
-                    }).map((timeSlot) => {
+              {(() => {
+                // Group by date first, then by category
+                const groupedByDate = eventTimeSlots.reduce((acc, timeSlot) => {
+                  const date = timeSlot.date || 'Alle Tage';
+                  if (!acc[date]) {
+                    acc[date] = {};
+                  }
+                  const category = timeSlot.category || 'Ohne Kategorie';
+                  if (!acc[date][category]) {
+                    acc[date][category] = [];
+                  }
+                  acc[date][category].push(timeSlot);
+                  return acc;
+                }, {});
+
+                // Sort dates
+                const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+                  if (a === 'Alle Tage') return -1;
+                  if (b === 'Alle Tage') return 1;
+                  return a.localeCompare(b);
+                });
+
+                return sortedDates.map(date => {
+                  const categories = groupedByDate[date];
+                  const sortedCategories = Object.keys(categories).sort();
+
+                  return (
+                    <div key={date} className="table-date-section">
+                      <h4 className="table-date-header">
+                        {date === 'Alle Tage' ? date : new Date(date).toLocaleDateString('de-DE', { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+                      </h4>
+                      
+                      {sortedCategories.map(category => {
+                        const slots = categories[category].sort((a, b) => a.timeFrom.localeCompare(b.timeFrom));
+                        
+                        return (
+                          <div key={category} className="table-category-section">
+                            <h5 className="table-category-header">{category}</h5>
+                            <div className="overview-table-container">
+                              <table className="overview-table">
+                                <thead>
+                                  <tr>
+                                    <th>Zeitslot</th>
+                                    <th>Zeit</th>
+                                    <th>Belegung</th>
+                                    <th>Teilnehmer</th>
+                                    <th>Status</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {slots.map((timeSlot) => {
                       // Fetch participants for this timeslot
                       const timeSlotData = timeSlotParticipation.find(
                         p => p.eventId === selectedEvent.id && p.timeSlotId === timeSlot.id
@@ -366,7 +391,6 @@ const UserDashboard = ({ user, onLogout }) => {
                       if (allParticipants.length === 0) {
                         return (
                           <tr key={timeSlot.id} className="empty-slot">
-                            <td>{timeSlot.category || 'Ohne Kategorie'}</td>
                             <td><strong>{timeSlot.name}</strong></td>
                             <td>{timeSlot.timeFrom} - {timeSlot.timeTo}</td>
                             <td>
@@ -383,9 +407,6 @@ const UserDashboard = ({ user, onLogout }) => {
                         <tr key={`${timeSlot.id}-${index}`} className={participant.status === 'accepted' ? 'accepted-row' : 'declined-row'}>
                           {index === 0 && (
                             <>
-                              <td rowSpan={allParticipants.length}>
-                                {timeSlot.category || 'Ohne Kategorie'}
-                              </td>
                               <td rowSpan={allParticipants.length}>
                                 <strong>{timeSlot.name}</strong>
                               </td>
@@ -413,9 +434,16 @@ const UserDashboard = ({ user, onLogout }) => {
                         </tr>
                       ));
                     })}
-                  </tbody>
-                </table>
-              </div>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                });
+              })()}
             </div>
           )}
         </div>
