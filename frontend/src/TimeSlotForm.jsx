@@ -119,7 +119,7 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
         <h3>{isEditing ? 'Zeitslot bearbeiten' : 'Neue Zeitslots hinzufügen'}</h3>
       </div>
 
-      <form className="timeslot-form" onSubmit={handleSubmit}>
+      <div className="timeslot-form">
         <div className="form-group">
           <label htmlFor="category">Kategorie {isEditing ? '' : '*'}</label>
           <input
@@ -248,7 +248,7 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
             Abbrechen
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

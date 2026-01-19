@@ -184,10 +184,21 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
     console.log('EventForm: Time slots:', timeSlots);
     
     if (validateForm()) {
+      // Remove temporary IDs from new timeslots (those with decimal point IDs)
+      const cleanedTimeSlots = timeSlots.map(slot => {
+        const { id, ...slotData } = slot;
+        // Only keep ID if it's an integer (existing slot from backend)
+        if (Number.isInteger(id)) {
+          return slot;
+        }
+        // Remove temporary ID for new slots
+        return slotData;
+      });
+      
       const eventData = {
         ...formData,
         dateTo: formData.dateTo || formData.dateFrom,
-        timeSlots: timeSlots,
+        timeSlots: cleanedTimeSlots,
         // Preserve existing participants when editing, start with empty array when creating
         participants: isEditing ? (event.participants || []) : [],
         // Default to draft status when creating, preserve existing when editing
@@ -202,10 +213,19 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
 
   const handleSaveAs = (status) => {
     if (validateForm()) {
+      // Remove temporary IDs from new timeslots
+      const cleanedTimeSlots = timeSlots.map(slot => {
+        const { id, ...slotData } = slot;
+        if (Number.isInteger(id)) {
+          return slot;
+        }
+        return slotData;
+      });
+      
       const eventData = {
         ...formData,
         dateTo: formData.dateTo || formData.dateFrom,
-        timeSlots: timeSlots,
+        timeSlots: cleanedTimeSlots,
         participants: isEditing ? (event.participants || []) : [],
         status: status
       };
