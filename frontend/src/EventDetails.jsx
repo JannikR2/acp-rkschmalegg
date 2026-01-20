@@ -87,7 +87,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
         ${event.timeSlots && event.timeSlots.length > 0 ? (() => {
           // Group timeslots by date first, then by category
           const groupedByDate = event.timeSlots.reduce((acc, slot) => {
-            const date = slot.date || 'Alle Tage';
+            const date = slot.date || event.dateFrom;
             if (!acc[date]) {
               acc[date] = {};
             }
@@ -101,14 +101,12 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
 
           // Sort dates and render
           const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
-            if (a === 'Alle Tage') return -1;
-            if (b === 'Alle Tage') return 1;
             return a.localeCompare(b);
           });
 
           return sortedDates.map(date => {
             const categoriesForDate = groupedByDate[date];
-            const formattedDate = date === 'Alle Tage' ? date : new Date(date).toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedDate = new Date(date).toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             
             return `
               <h3 style="color: #2c3e50; margin-top: 30px; padding-bottom: 10px; border-bottom: 2px solid #3498db;">${formattedDate}</h3>
@@ -225,7 +223,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
               {(() => {
                 // First group by date, then by category
                 const groupedByDate = event.timeSlots.reduce((acc, timeSlot) => {
-                  const date = timeSlot.date || 'Alle Tage';
+                  const date = timeSlot.date || event.dateFrom;
                   if (!acc[date]) {
                     acc[date] = {};
                   }
@@ -237,10 +235,8 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                   return acc;
                 }, {});
 
-                // Sort dates ("Alle Tage" first, then chronologically)
+                // Sort dates chronologically
                 const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
-                  if (a === 'Alle Tage') return -1;
-                  if (b === 'Alle Tage') return 1;
                   return a.localeCompare(b);
                 });
 
@@ -251,7 +247,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                   return (
                     <div key={date} className="timeslot-date-section">
                       <h3 className="date-header">
-                        {date === 'Alle Tage' ? date : new Date(date).toLocaleDateString('de-DE', { 
+                        {new Date(date).toLocaleDateString('de-DE', { 
                           weekday: 'long', 
                           year: 'numeric', 
                           month: 'long', 
@@ -310,7 +306,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
             {(() => {
               // Group by date first, then by category
               const groupedByDate = event.timeSlots.reduce((acc, timeSlot) => {
-                const date = timeSlot.date || 'Alle Tage';
+                const date = timeSlot.date || event.dateFrom;
                 if (!acc[date]) {
                   acc[date] = {};
                 }
@@ -324,8 +320,6 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
 
               // Sort dates
               const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
-                if (a === 'Alle Tage') return -1;
-                if (b === 'Alle Tage') return 1;
                 return a.localeCompare(b);
               });
 
@@ -336,7 +330,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                 return (
                   <div key={date} className="table-date-section">
                     <h4 className="table-date-header">
-                      {date === 'Alle Tage' ? date : new Date(date).toLocaleDateString('de-DE', { 
+                      {new Date(date).toLocaleDateString('de-DE', { 
                         weekday: 'long', 
                         year: 'numeric', 
                         month: 'long', 

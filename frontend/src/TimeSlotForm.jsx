@@ -101,14 +101,71 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
         console.log('Editing - Saving data:', dataToSave);
         onSave(dataToSave);
       } else {
-        // When creating, save all timeslots
-        const slotsToSave = timeSlots.map(slot => ({
-          ...slot,
-          category,
-          maxParticipants: parseInt(slot.maxParticipants)
-        }));
-        console.log('Creating - Saving data:', slotsToSave);
-        onSave(slotsToSave);
+        // When creating, group timeslots by category and effective date, then save
+        const slotsWithDefaults = timeSlots.map(slot => {
+          // Determine effective date - use slot date or event's dateFrom as default
+          const effectiveDate = slot.date || (event?.dateFrom || '');
+          
+          return {
+            ...slot,
+            category,
+            date: effectiveDate,
+            maxParticipants: parseInt(slot.maxParticipants)
+          };
+        });
+
+        // Group timeslots by category and effective date
+        const groupedSlots = new Map();
+        
+        slotsWithDefaults.forEach(slot => {
+          const key = `${slot.category}_${slot.date}`;
+          
+          if (!groupedSlots.has(key)) {
+            groupedSlots.set(key, []);
+          }
+          groupedSlots.get(key).push(slot);
+        });
+
+        // Merge slots that have the same category and date
+        const mergedSlots = [];
+        
+        groupedSlots.forEach((slots, key) => {
+          if (slots.length === 1) {
+            // Single slot, add as-is
+            mergedSlots.push(slots[0]);
+          } else {
+            // Multiple slots with same category and date, combine them
+            const baseSlot = slots[0];
+            
+            // Sort slots by time to merge ranges properly
+            const sortedSlots = slots.sort((a, b) => a.timeFrom.localeCompare(b.timeFrom));
+            
+            // Determine if we should merge names or create a time range
+            const hasDistinctNames = slots.some(s => s.name !== sortedSlots[0].name);
+            const combinedName = hasDistinctNames 
+              ? slots.map(s => s.name).join(' / ')
+              : sortedSlots[0].name;
+            
+            // Sum up max participants
+            const totalMaxParticipants = slots.reduce((sum, s) => sum + s.maxParticipants, 0);
+            
+            // Use the earliest start time and latest end time if times differ
+            const earliestStart = sortedSlots[0].timeFrom;
+            const latestEnd = sortedSlots[sortedSlots.length - 1].timeTo;
+            
+            mergedSlots.push({
+              ...baseSlot,
+              name: combinedName,
+              timeFrom: earliestStart,
+              timeTo: latestEnd,
+              maxParticipants: totalMaxParticipants
+            });
+          }
+        });
+
+        console.log('Creating - Original slots:', slotsWithDefaults);
+        console.log('Creating - Merged slots:', mergedSlots);
+        onSave(mergedSlots);
       }
     }
   };
@@ -135,7 +192,7 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
             <span className="helper-text">Zeitslots werden zur Kategorie "{presetCategory}" hinzugefügt</span>
           )}
           {!presetCategory && !isEditing && (
-            <span className="helper-text">Alle Zeitslots werden dieser Kategorie zugeordnet</span>
+            <span className="helper-text">Alle Zeitslots werden dieser Kategorie zugeordnet. Zeitslots mit gleicher Kategorie und gleichem Datum werden automatisch zusammengefasst.</span>
           )}
           {isEditing && (
             <span className="helper-text">Kategorie kann geändert werden</span>
@@ -184,7 +241,10 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
                   />
                   {!slot.date && (
                     <span className="helper-text">
-                      Wenn leer, gilt: {event.dateFrom === event.dateTo || !event.dateTo ? new Date(event.dateFrom).toLocaleDateString('de-DE') : 'alle Event-Tage'}
+                      Wenn leer, gilt: {event.dateFrom === event.dateTo || !event.dateTo 
+                        ? new Date(event.dateFrom).toLocaleDateString('de-DE') 
+                        : `${new Date(event.dateFrom).toLocaleDateString('de-DE')} - ${new Date(event.dateTo).toLocaleDateString('de-DE')}`
+                      }. Zeitslots mit gleicher Kategorie und gleichem Datum werden automatisch zusammengefasst.
                     </span>
                   )}
                   {errors[`${index}-date`] && <span className="error-text">{errors[`${index}-date`]}</span>}
