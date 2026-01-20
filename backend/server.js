@@ -388,12 +388,12 @@ app.post('/api/events/:eventId/timeslots/:timeSlotId/participation', (req, res) 
         })
       }
     } else {
-      // Validate status
-      const validStatuses = ['accepted', 'declined'];
+      // Validate status - only 'accepted' is allowed, 'remove' is handled above
+      const validStatuses = ['accepted'];
       if (!validStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
-          message: `Ungültiger Status. Erlaubte Werte: ${validStatuses.join(', ')}`
+          message: `Ungültiger Status. Erlaubte Werte: ${validStatuses.join(', ')}, oder 'remove' zum Entfernen`
         });
       }
 

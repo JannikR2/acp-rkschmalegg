@@ -284,7 +284,7 @@ const UserDashboard = ({ user, onLogout }) => {
                                       {isSignedUp ? (
                                         <button 
                                           className="btn-timeslot-cancel"
-                                          onClick={() => updateTimeSlotParticipation(selectedEvent.id, timeSlot.id, 'declined')}
+                                          onClick={() => updateTimeSlotParticipation(selectedEvent.id, timeSlot.id, 'remove')}
                                         >
                                           Abmelden
                                         </button>
@@ -396,7 +396,7 @@ const UserDashboard = ({ user, onLogout }) => {
                       }
                       
                       return allParticipants.map((participant, index) => (
-                        <tr key={`${timeSlot.id}-${index}`} className={participant.status === 'accepted' ? 'accepted-row' : 'declined-row'}>
+                        <tr key={`${timeSlot.id}-${index}`} className="accepted-row">{/* Only accepted participants are shown */}
                           {index === 0 && (
                             <>
                               <td rowSpan={allParticipants.length}>

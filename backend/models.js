@@ -29,9 +29,9 @@ export class Person {
 
 // Participant with status (no time tracking)
 export class Participant {
-  constructor(person, status = 'declined') {
+  constructor(person, status = 'accepted') {
     this.person = person; // Person object
-    this.status = status; // 'accepted', 'declined'
+    this.status = status; // 'accepted' only
   }
 
   // Convert to JSON-serializable object
@@ -45,7 +45,7 @@ export class Participant {
   // Create from JSON object
   static fromJSON(json) {
     const person = Person.fromJSON(json.person);
-    return new Participant(person, json.status || 'declined');
+    return new Participant(person, json.status || 'accepted');
   }
 }
 
@@ -177,11 +177,6 @@ export class Event {
   // Get count of accepted participants
   getAcceptedCount() {
     return this.participants.filter(p => p.status === 'accepted').length;
-  }
-
-  // Get count of declined participants
-  getDeclinedCount() {
-    return this.participants.filter(p => p.status === 'declined').length;
   }
 
   // Add participant to event

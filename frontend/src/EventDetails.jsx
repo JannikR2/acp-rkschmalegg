@@ -376,7 +376,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                     }
                     
                     return allParticipants.map((participant, index) => (
-                      <tr key={`${timeSlot.id}-${index}`} className={participant.status === 'accepted' ? 'accepted-row' : 'declined-row'}>
+                      <tr key={`${timeSlot.id}-${index}`} className="accepted-row">{/* Only accepted participants are shown */}
                         {index === 0 && (
                           <>
                             <td rowSpan={allParticipants.length}>
