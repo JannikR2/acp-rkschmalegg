@@ -46,17 +46,17 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  transition: border-color 0.3s;
+  transition: border-color 0.2s;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #f6ce38;
+  box-shadow: 0 0 0 2px rgba(246, 206, 56, 0.25);
 }
 
 .form-group input.error {
-  border-color: #dc3545;
+  border-color: #cc4444;
 }
 
 .form-group input.readonly-input {
@@ -65,7 +65,7 @@
 }
 
 .error-text {
-  color: #dc3545;
+  color: #cc4444;
   font-size: 12px;
   margin-top: 4px;
   display: block;
@@ -81,39 +81,38 @@
 }
 
 .btn-primary {
-  background: #007bff;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 10px 20px;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.2s;
 }
 
 .btn-primary:hover {
-  background: #0056b3;
+  background: #e6be28;
+  border-color: #d1a81f;
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: #6c757d;
-  color: white;
-  border: none;
+  background: #f5f5f5;
+  color: #555;
+  border: 2px solid #ddd;
   padding: 10px 20px;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.2s;
 }
 
 .btn-secondary:hover {
-  background: #545b62;
-}
-
-.btn-secondary:hover {
-  background: #545b62;
+  background: #e8e8e8;
+  border-color: #ccc;
 }
 
 .helper-text {
@@ -157,37 +156,39 @@
 }
 
 .btn-remove-slot {
-  background: #dc3545;
-  color: white;
-  border: none;
+  background: #fff5f5;
+  color: #cc4444;
+  border: 2px solid #f5b7b1;
   padding: 6px 12px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.2s;
 }
 
 .btn-remove-slot:hover {
-  background: #c82333;
+  background: #ffebeb;
+  border-color: #f1948a;
 }
 
 .btn-add-slot {
   width: 100%;
-  background: #28a745;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 12px 20px;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.2s;
   margin-bottom: 20px;
 }
 
 .btn-add-slot:hover {
-  background: #218838;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
 @media (max-width: 768px) {

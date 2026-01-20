@@ -193,6 +193,12 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
   }
 
   if (showForm) {
+    // Calculate existing categories from current time slots
+    const existingCategories = [...new Set(timeSlots
+      .map(slot => slot.category)
+      .filter(category => category && category.trim())
+    )].sort();
+
     return (
       <div className="timeslot-manager">
         <button className="back-button" onClick={handleCancelForm}>
@@ -205,6 +211,7 @@ const TimeSlotManager = ({ event, onBack, onUpdate, selectedTimeSlot, initialSho
           isEditing={!!editingTimeSlot}
           presetCategory={categoryForNewSlot}
           event={event}
+          existingCategories={existingCategories}
         />
       </div>
     );

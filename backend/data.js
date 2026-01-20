@@ -265,7 +265,6 @@ export function createEvent(eventData) {
   console.log('Backend createEvent - Created event:', event);
   
   eventsData.push(event);
-  saveDataToFile();
   return event.toJSON();
 }
 
@@ -306,7 +305,6 @@ export function updateEvent(id, eventData) {
   });
   
   eventsData[index] = updatedEvent;
-  saveDataToFile();
   return updatedEvent.toJSON();
 }
 
@@ -315,7 +313,6 @@ export function deleteEvent(id) {
   if (index === -1) return false;
   
   eventsData.splice(index, 1);
-  saveDataToFile();
   return true;
 }
 
@@ -334,7 +331,6 @@ export function addTimeSlot(eventId, timeSlotData) {
 
   console.log('Backend addTimeSlot - Created timeSlot:', timeSlot);
 
-  saveDataToFile();
   event.addTimeSlot(timeSlot);
   return timeSlot.toJSON();
 }
@@ -359,7 +355,6 @@ export function updateTimeSlot(eventId, timeSlotId, timeSlotData) {
 
   console.log('Backend updateTimeSlot - Updated timeSlot:', updatedTimeSlot);
 
-  saveDataToFile();
   event.timeSlots[timeSlotIndex] = updatedTimeSlot;
   return updatedTimeSlot.toJSON();
 }
@@ -372,7 +367,6 @@ export function deleteTimeSlot(eventId, timeSlotId) {
   event.removeTimeSlot(parseInt(timeSlotId));
   const removed = event.timeSlots.length < initialLength;
   
-  if (removed) saveDataToFile();
   return removed;
 }
 
@@ -424,7 +418,6 @@ export function setTimeSlotParticipation(eventId, timeSlotId, personId, status) 
     
     const newParticipant = new Participant(person, status);
     timeSlot.participants.push(newParticipant);
-  saveDataToFile();
   }
 
   return {
@@ -444,128 +437,8 @@ export function removeTimeSlotParticipation(eventId, timeSlotId, personId) {
   timeSlot.participants = timeSlot.participants.filter(p => p.person.id !== parseInt(personId));
   
   const removed = timeSlot.participants.length < initialLength;
-  if (removed) saveDataToFile();
   return removed;
 }
 
-// Save data to JSON file
-function saveDataToFile() {
-  try {
-    // Create data directory if it doesn't exist
-    const dataDir = path.dirname(DATA_FILE);
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
-    }
-
-    // Prepare data for saving
-    const dataToSave = {
-      nextEventId,
-      nextTimeSlotId,
-      events: eventsData.map(event => ({
-        id: event.id,
-        name: event.name,
-        description: event.description,
-        dateFrom: event.dateFrom,
-        dateTo: event.dateTo,
-        timeFrom: event.timeFrom,
-        timeTo: event.timeTo,
-        location: event.location,
-        status: event.status,
-        timeSlots: event.timeSlots.map(ts => ({
-          id: ts.id,
-          name: ts.name,
-          date: ts.date,
-          category: ts.category,
-          timeFrom: ts.timeFrom,
-          timeTo: ts.timeTo,
-          maxParticipants: ts.maxParticipants,
-          participants: ts.participants.map(p => ({
-            personId: p.person.id,
-            status: p.status
-          }))
-        }))
-      }))
-    };
-
-    fs.writeFileSync(DATA_FILE, JSON.stringify(dataToSave, null, 2), 'utf8');
-    console.log('✓ Daten erfolgreich gespeichert in:', DATA_FILE);
-  } catch (error) {
-    console.error('✗ Fehler beim Speichern der Daten:', error.message);
-  }
-}
-
-// Load data from JSON file
-function loadDataFromFile() {
-  try {
-    if (!fs.existsSync(DATA_FILE)) {
-      console.log('Keine gespeicherten Daten gefunden. Initialisiere mit Beispieldaten...');
-      return false;
-    }
-
-    const fileContent = fs.readFileSync(DATA_FILE, 'utf8');
-    const savedData = JSON.parse(fileContent);
-
-    // Restore counters
-    nextEventId = savedData.nextEventId || 1;
-    nextTimeSlotId = savedData.nextTimeSlotId || 1;
-
-    // Restore events
-    eventsData = savedData.events.map(eventData => {
-      const event = new Event({
-        id: eventData.id,
-        name: eventData.name,
-        description: eventData.description,
-        dateFrom: eventData.dateFrom,
-        dateTo: eventData.dateTo,
-        timeFrom: eventData.timeFrom,
-        timeTo: eventData.timeTo,
-        location: eventData.location,
-        status: eventData.status,
-        timeSlots: []
-      });
-
-      // Restore time slots
-      event.timeSlots = eventData.timeSlots.map(tsData => {
-        const timeSlot = new TimeSlot({
-          id: tsData.id,
-          name: tsData.name,
-          date: tsData.date,
-          category: tsData.category,
-          timeFrom: tsData.timeFrom,
-          timeTo: tsData.timeTo,
-          maxParticipants: tsData.maxParticipants,
-          participants: []
-        });
-
-        // Restore participants
-        timeSlot.participants = tsData.participants.map(pData => {
-          const person = userService.getPersonById(pData.personId);
-          return new Participant({
-            person: person,
-            status: pData.status
-          });
-        });
-
-        return timeSlot;
-      });
-
-      return event;
-    });
-
-    console.log(`✓ ${eventsData.length} Events aus Datei geladen`);
-    return true;
-  } catch (error) {
-    console.error('✗ Fehler beim Laden der Daten:', error.message);
-    return false;
-  }
-}
-
-// Export saveDataToFile function so it can be called manually if needed
-export { saveDataToFile };
-
 // Initialize the data when the module is loaded
-const dataLoaded = loadDataFromFile();
-if (!dataLoaded) {
-  initializeSampleData();
-  saveDataToFile(); // Save initial sample data
-}
+initializeSampleData();

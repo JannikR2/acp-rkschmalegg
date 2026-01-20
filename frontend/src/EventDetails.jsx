@@ -54,16 +54,16 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
             max-width: 210mm;
             margin: 0 auto;
           }
-          h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
-          h2 { color: #34495e; margin-top: 30px; }
-          h3 { color: #5a6c7d; margin-top: 20px; margin-bottom: 10px; }
-          h4 { color: #2c3e50; background: #e8f4f8; padding: 8px 12px; border-left: 4px solid #3498db; margin-top: 25px; margin-bottom: 15px; }
+          h1 { color: #333; border-bottom: 3px solid #f6ce38; padding-bottom: 10px; }
+          h2 { color: #333; margin-top: 30px; }
+          h3 { color: #333; margin-top: 20px; margin-bottom: 10px; }
+          h4 { color: #333; background: #fff8dc; padding: 8px 12px; border-left: 4px solid #f6ce38; margin-top: 25px; margin-bottom: 15px; }
           .event-info { margin: 20px 0; }
           .event-info p { margin: 5px 0; }
           .category-section { margin-top: 30px; }
           table { width: 100%; border-collapse: collapse; margin: 20px 0; }
           th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-          th { background-color: #34495e; color: white; font-weight: 600; }
+          th { background-color: #333; color: #f6ce38; font-weight: 600; }
           tr:nth-child(even) { background-color: #f8f9fa; }
           .status-accepted { color: #27ae60; font-weight: bold; }
           .status-declined { color: #e74c3c; }
@@ -109,7 +109,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
             const formattedDate = new Date(date).toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             
             return `
-              <h3 style="color: #2c3e50; margin-top: 30px; padding-bottom: 10px; border-bottom: 2px solid #3498db;">${formattedDate}</h3>
+              <h3 style="color: #333; margin-top: 30px; padding-bottom: 10px; border-bottom: 2px solid #f6ce38;">${formattedDate}</h3>
               ${Object.entries(categoriesForDate).sort(([a], [b]) => a.localeCompare(b)).map(([category, slots]) => {
                 // Sort slots by time within each category
                 const sortedSlots = slots.sort((a, b) => a.timeFrom.localeCompare(b.timeFrom));

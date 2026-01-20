@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './TimeSlotForm.css';
 
-const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCategory = null, event = null }) => {
+const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCategory = null, event = null, existingCategories = [] }) => {
   const [category, setCategory] = useState(timeSlot?.category || presetCategory || '');
   const [timeSlots, setTimeSlots] = useState(
     isEditing && timeSlot 
@@ -187,14 +187,25 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
             placeholder="z.B. Parcour, Putzen, Aufbau"
             readOnly={presetCategory && !isEditing}
             className={presetCategory && !isEditing ? 'readonly-input' : ''}
+            list="category-suggestions"
           />
+          {existingCategories.length > 0 && (
+            <datalist id="category-suggestions">
+              {existingCategories.map((cat, index) => (
+                <option key={index} value={cat} />
+              ))}
+            </datalist>
+          )}
           {presetCategory && !isEditing && (
             <span className="helper-text">Zeitslots werden zur Kategorie "{presetCategory}" hinzugefügt</span>
           )}
           {!presetCategory && !isEditing && (
             <span className="helper-text">Alle Zeitslots werden dieser Kategorie zugeordnet. Zeitslots mit gleicher Kategorie und gleichem Datum werden automatisch zusammengefasst.</span>
           )}
-          {isEditing && (
+          {isEditing && existingCategories.length > 0 && (
+            <span className="helper-text">Wähle eine bestehende Kategorie oder erstelle eine neue</span>
+          )}
+          {isEditing && existingCategories.length === 0 && (
             <span className="helper-text">Kategorie kann geändert werden</span>
           )}
         </div>

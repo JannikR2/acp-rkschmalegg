@@ -10,7 +10,7 @@
   align-items: center;
   margin-bottom: 30px;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #333;
   color: white;
   border-radius: 15px;
   gap: 40px;
@@ -76,12 +76,12 @@
 }
 
 .year-filter-section .year-select:hover {
-  border-color: #3498db;
+  border-color: #f6ce38;
 }
 
 .year-filter-section .year-select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #f6ce38;
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
@@ -104,8 +104,9 @@
 }
 
 .error-message {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #fff5f5;
+  color: #cc4444;
+  border: 2px solid #f5b7b1;
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -136,7 +137,7 @@
   display: block;
   font-size: 32px;
   font-weight: bold;
-  color: #3498db;
+  color: #f6ce38;
   margin-bottom: 8px;
 }
 
@@ -174,7 +175,7 @@
 
 .event-header h3 {
   margin: 0;
-  color: #2c3e50;
+  color: #333;
   font-size: 20px;
   flex: 1;
 }
@@ -219,7 +220,7 @@
 }
 
 .event-description {
-  color: #2c3e50;
+  color: #333;
   font-style: italic;
   margin-top: 10px;
   padding-top: 10px;
@@ -233,35 +234,37 @@
 }
 
 .btn-accept {
-  background-color: #27ae60;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 10px 20px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
   flex: 1;
 }
 
 .btn-accept:hover {
-  background-color: #229954;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
 .btn-decline {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
+  background: #fff5f5;
+  color: #cc4444;
+  border: 2px solid #f5b7b1;
   padding: 10px 20px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
   flex: 1;
 }
 
 .btn-decline:hover {
-  background-color: #c0392b;
+  background: #ffebeb;
+  border-color: #f1948a;
 }
 
 .time-tracking {
@@ -280,23 +283,24 @@
 
 .time-tracking-header h4 {
   margin: 0;
-  color: #2c3e50;
+  color: #333;
 }
 
 .btn-add-time {
-  background-color: #3498db;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 6px 12px;
   border-radius: 15px;
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-add-time:hover {
-  background-color: #2980b9;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
 .time-spans-list {
@@ -312,7 +316,7 @@
   background-color: white;
   padding: 15px;
   border-radius: 8px;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid #f6ce38;
 }
 
 .time-span-info {
@@ -321,7 +325,7 @@
 
 .time-span-date {
   font-weight: 600;
-  color: #2c3e50;
+  color: #333;
   font-size: 14px;
 }
 
@@ -339,9 +343,9 @@
 }
 
 .btn-remove-timespan {
-  background: #e74c3c;
+  background: #cc4444;
   color: white;
-  border: none;
+  border: 2px solid #cc4444;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -352,10 +356,12 @@
   justify-content: center;
   margin-left: 10px;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .btn-remove-timespan:hover {
-  background: #c0392b;
+  background: #b73e3e;
+  border-color: #b73e3e;
 }
 
 .no-timespans {
@@ -389,7 +395,7 @@
 
 .timespan-form h4 {
   margin: 0 0 20px 0;
-  color: #2c3e50;
+  color: #333;
 }
 
 .form-row {
@@ -410,7 +416,7 @@
 .form-row input:focus,
 .form-row textarea:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #f6ce38;
   box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
 }
 
@@ -422,33 +428,35 @@
 }
 
 .btn-primary {
-  background-color: #3498db;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 12px 24px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
 .btn-secondary {
-  background-color: #95a5a6;
-  color: white;
-  border: none;
+  background: #f5f5f5;
+  color: #555;
+  border: 2px solid #ddd;
   padding: 12px 24px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
-  background-color: #7f8c8d;
+  background: #e8e8e8;
+  border-color: #ccc;
 }
 
 /* Responsive design */
@@ -528,7 +536,7 @@
 
 .timeslots-signup-section h3 {
   margin: 0 0 20px 0;
-  color: #2c3e50;
+  color: #333;
   font-size: 22px;
 }
 
@@ -545,7 +553,7 @@
   margin: 0 0 20px 0;
   padding: 12px 20px;
   background: #f8f9fa;
-  color: #2c3e50;
+  color: #333;
   border-radius: 10px;
   font-size: 20px;
   font-weight: 700;
@@ -564,11 +572,12 @@
 .category-header {
   margin: 0 0 15px 0;
   padding: 10px 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #f6ce38;
+  color: #333;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
+  border: 2px solid #e6be28;
 }
 
 .timeslots-grid {
@@ -751,7 +760,7 @@
 }
 
 .back-button {
-  background: #3498db;
+  background: #f6ce38;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -780,7 +789,7 @@
 
 .event-card-detail h2 {
   margin: 0 0 20px 0;
-  color: #2c3e50;
+  color: #333;
   font-size: 28px;
 }
 
@@ -807,7 +816,7 @@
   background: #f8f9fa;
   border-radius: 8px;
   color: #495057;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid #f6ce38;
   width: 100%;
   display: block;
 }
@@ -822,7 +831,7 @@
 
 .participants-overview h3 {
   margin: 0 0 20px 0;
-  color: #2c3e50;
+  color: #333;
   font-size: 22px;
 }
 
@@ -839,7 +848,7 @@
   margin: 0 0 20px 0;
   padding: 10px 15px;
   background: #f8f9fa;
-  color: #2c3e50;
+  color: #333;
   border-radius: 8px;
   font-size: 18px;
   font-weight: 700;
@@ -857,8 +866,8 @@
 .table-category-header {
   margin: 0 0 10px 0;
   padding: 8px 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #333;
+  color: #f6ce38;
   border-radius: 6px;
   font-size: 15px;
   font-weight: 600;
@@ -876,8 +885,8 @@
 }
 
 .overview-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #333;
+  color: #f6ce38;
 }
 
 .overview-table th {
@@ -974,7 +983,7 @@
   top: 25px;
   right: 25px;
   font-size: 24px;
-  color: #3498db;
+  color: #f6ce38;
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }

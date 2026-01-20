@@ -12,7 +12,7 @@
 .event-list-item:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
-  border-color: #007ACC;
+  border-color: #f6ce38;
 }
 
 .event-list-header {
@@ -47,13 +47,13 @@
 }
 
 .status-badge.published {
-  background: #4CAF50;
+  background: #333;
   color: white;
 }
 
 .status-badge.draft {
-  background: #ffc107;
-  color: #212529;
+  background: #f6ce38;
+  color: #333;
 }
 
 .publish-toggle-btn {
@@ -71,12 +71,12 @@
 }
 
 .publish-toggle-btn:hover {
-  border-color: #007ACC;
+  border-color: #f6ce38;
   background: #f8f9fa;
 }
 
 .publish-toggle-btn.published {
-  border-color: #4CAF50;
+  border-color: #333;
 }
 
 .publish-toggle-btn.draft {
@@ -92,7 +92,7 @@
 
 .event-list-arrow {
   font-size: 1.2em;
-  color: #007ACC;
+  color: #333;
   font-weight: bold;
   transition: transform 0.2s ease;
 }

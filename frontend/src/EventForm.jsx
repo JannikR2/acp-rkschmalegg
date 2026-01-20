@@ -409,6 +409,10 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
                 timeSlot={editingTimeSlotIndex !== null ? timeSlots[editingTimeSlotIndex] : null}
                 isEditing={editingTimeSlotIndex !== null}
                 event={formData.dateFrom ? { dateFrom: formData.dateFrom, dateTo: formData.dateTo || formData.dateFrom } : null}
+                existingCategories={[...new Set(timeSlots
+                  .map(slot => slot.category)
+                  .filter(category => category && category.trim())
+                )].sort()}
               />
             </div>
           </div>

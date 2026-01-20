@@ -5,15 +5,15 @@
 }
 
 .back-button {
-  background: #007ACC;
+  background: #333;
   color: white;
-  border: none;
+  border: 2px solid #333;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -23,7 +23,9 @@
 }
 
 .back-button:hover {
-  background: #005a9e;
+  background: #222;
+  border-color: #222;
+  transform: translateX(-2px);
 }
 
 .event-details-header {
@@ -59,79 +61,83 @@
 }
 
 .update-button {
-  background: #2196F3;
-  color: white;
-  border: none;
+  background: #f5f5f5;
+  color: #555;
+  border: 2px solid #ddd;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .update-button:hover {
-  background: #1976D2;
+  background: #e8e8e8;
+  border-color: #ccc;
 }
 
 .timeslots-button {
-  background: #FF9800;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .timeslots-button:hover {
-  background: #F57C00;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
 .export-button {
-  background: #4CAF50;
+  background: #333;
   color: white;
-  border: none;
+  border: 2px solid #333;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .export-button:hover {
-  background: #388E3C;
+  background: #222;
+  border-color: #222;
 }
 
 .delete-button {
-  background: #f44336;
-  color: white;
-  border: none;
+  background: #fff5f5;
+  color: #cc4444;
+  border: 2px solid #f5b7b1;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .delete-button:hover {
-  background: #d32f2f;
+  background: #ffebeb;
+  border-color: #f1948a;
 }
 
 /* Zeitslots Display */
@@ -162,11 +168,11 @@
   margin: 0 0 20px 0;
   padding: 12px 20px;
   background: #f8f9fa;
-  color: #2c3e50;
+  color: #333;
   border-radius: 10px;
   font-size: 20px;
   font-weight: 700;
-  border: 2px solid #e9ecef;
+  border: 2px solid #f6ce38;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
@@ -181,11 +187,12 @@
 .category-title {
   margin: 0 0 15px 0;
   padding: 10px 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #f6ce38;
+  color: #333;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
+  border: 2px solid #e6be28;
 }
 
 .timeslots-grid {
@@ -224,7 +231,7 @@
 }
 
 .timeslot-header.clickable:hover {
-  background-color: #e3f2fd;
+  background-color: #fff8dc;
 }
 
 .timeslot-header h4 {
@@ -376,7 +383,7 @@
   color: #282c34;
   margin: 0 0 20px 0;
   font-size: 1.4em;
-  border-bottom: 2px solid #3498db;
+  border-bottom: 2px solid #f6ce38;
   padding-bottom: 12px;
 }
 
@@ -389,15 +396,15 @@
   margin-bottom: 0;
 }
 
-.table-date-header {
+.participants-overview .table-date-header {
   margin: 0 0 20px 0;
   padding: 10px 15px;
-  background: #f8f9fa;
-  color: #2c3e50;
+  background: #f8f9fa !important;
+  color: #333 !important;
   border-radius: 8px;
   font-size: 18px;
   font-weight: 700;
-  border: 2px solid #e9ecef;
+  border: 2px solid #f6ce38 !important;
 }
 
 .table-category-section {
@@ -408,11 +415,11 @@
   margin-bottom: 0;
 }
 
-.table-category-header {
+.participants-overview .table-category-header {
   margin: 0 0 10px 0;
   padding: 8px 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background:#f6ce38 !important;
+  color: #333 !important;
   border-radius: 6px;
   font-size: 15px;
   font-weight: 600;
@@ -429,16 +436,17 @@
   font-size: 0.95em;
 }
 
-.overview-table thead {
-  background: #34495e;
-  color: white;
+.participants-overview .overview-table thead {
+  color: #333 !important;
+  background: #f8f9fa !important;
 }
 
-.overview-table th {
+.participants-overview .overview-table th {
   padding: 12px 16px;
   text-align: left;
   font-weight: 600;
   letter-spacing: 0.3px;
+  color: #333 !important;
 }
 
 .overview-table td {
@@ -466,7 +474,7 @@
 
 .capacity {
   font-weight: 600;
-  color: #2c3e50;
+  color: #333;
   font-size: 1.05em;
 }
 
@@ -489,7 +497,7 @@
 }
 
 .participant-info strong {
-  color: #2c3e50;
+  color: #333;
   font-size: 1em;
 }
 
