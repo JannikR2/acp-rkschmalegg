@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TimeSlotForm from './TimeSlotForm';
 import './EventForm.css';
 
 const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
@@ -14,6 +15,8 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
 
   const [timeSlots, setTimeSlots] = useState([]);
   const [errors, setErrors] = useState({});
+  const [showTimeSlotForm, setShowTimeSlotForm] = useState(false);
+  const [editingTimeSlotIndex, setEditingTimeSlotIndex] = useState(null);
 
   // Initialize form data when editing
   useEffect(() => {
@@ -129,34 +132,44 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
   };
 
   // Time Slot Management Functions
-  const addTimeSlot = () => {
-    const newTimeSlot = {
-      id: Date.now(), // Temporary ID for new slots
-      name: '',
-      timeFrom: '',
-      timeTo: '',
-      maxParticipants: 1,
-      participants: []
-    };
-    setTimeSlots([...timeSlots, newTimeSlot]);
+  const handleAddTimeSlots = (newTimeSlots) => {
+    if (Array.isArray(newTimeSlots)) {
+      // Multiple timeslots
+      const slotsWithIds = newTimeSlots.map(slot => ({
+        ...slot,
+        id: Date.now() + Math.random()
+      }));
+      setTimeSlots([...timeSlots, ...slotsWithIds]);
+    } else {
+      // Single timeslot
+      const slotWithId = {
+        ...newTimeSlots,
+        id: Date.now()
+      };
+      setTimeSlots([...timeSlots, slotWithId]);
+    }
+    setShowTimeSlotForm(false);
   };
 
-  const updateTimeSlot = (index, field, value) => {
+  const handleEditTimeSlot = (index) => {
+    setEditingTimeSlotIndex(index);
+    setShowTimeSlotForm(true);
+  };
+
+  const handleUpdateTimeSlot = (updatedSlot) => {
     const updatedTimeSlots = [...timeSlots];
-    updatedTimeSlots[index] = {
-      ...updatedTimeSlots[index],
-      [field]: value
+    updatedTimeSlots[editingTimeSlotIndex] = {
+      ...updatedTimeSlots[editingTimeSlotIndex],
+      ...updatedSlot
     };
     setTimeSlots(updatedTimeSlots);
-    
-    // Clear related errors when user starts typing
-    const errorKey = `timeSlot_${index}_${field}`;
-    if (errors[errorKey]) {
-      setErrors(prev => ({
-        ...prev,
-        [errorKey]: ''
-      }));
-    }
+    setShowTimeSlotForm(false);
+    setEditingTimeSlotIndex(null);
+  };
+
+  const handleCancelTimeSlotForm = () => {
+    setShowTimeSlotForm(false);
+    setEditingTimeSlotIndex(null);
   };
 
   const removeTimeSlot = (index) => {
@@ -166,27 +179,53 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('EventForm: handleSubmit called');
+    console.log('EventForm: Form data:', formData);
+    console.log('EventForm: Time slots:', timeSlots);
     
     if (validateForm()) {
+      // Remove temporary IDs from new timeslots (those with decimal point IDs)
+      const cleanedTimeSlots = timeSlots.map(slot => {
+        const { id, ...slotData } = slot;
+        // Only keep ID if it's an integer (existing slot from backend)
+        if (Number.isInteger(id)) {
+          return slot;
+        }
+        // Remove temporary ID for new slots
+        return slotData;
+      });
+      
       const eventData = {
         ...formData,
         dateTo: formData.dateTo || formData.dateFrom,
-        timeSlots: timeSlots,
+        timeSlots: cleanedTimeSlots,
         // Preserve existing participants when editing, start with empty array when creating
         participants: isEditing ? (event.participants || []) : [],
         // Default to draft status when creating, preserve existing when editing
         status: isEditing ? (event.status || 'draft') : 'draft'
       };
+      console.log('EventForm: Validation passed, calling onSave with:', eventData);
       onSave(eventData);
+    } else {
+      console.log('EventForm: Validation failed, errors:', errors);
     }
   };
 
   const handleSaveAs = (status) => {
     if (validateForm()) {
+      // Remove temporary IDs from new timeslots
+      const cleanedTimeSlots = timeSlots.map(slot => {
+        const { id, ...slotData } = slot;
+        if (Number.isInteger(id)) {
+          return slot;
+        }
+        return slotData;
+      });
+      
       const eventData = {
         ...formData,
         dateTo: formData.dateTo || formData.dateFrom,
-        timeSlots: timeSlots,
+        timeSlots: cleanedTimeSlots,
         participants: isEditing ? (event.participants || []) : [],
         status: status
       };
@@ -308,7 +347,7 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
             <button 
               type="button" 
               className="add-timeslot-button"
-              onClick={addTimeSlot}
+              onClick={() => setShowTimeSlotForm(true)}
             >
               + Zeitslot hinzufügen
             </button>
@@ -317,54 +356,28 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
           {timeSlots.length > 0 && (
             <div className="timeslots-list">
               {timeSlots.map((timeSlot, index) => (
-                <div key={timeSlot.id || index} className="timeslot-form-item">
-                  <div className="timeslot-form-row">
-                    <div className="form-group-small">
-                      <label>Name *</label>
-                      <input
-                        type="text"
-                        value={timeSlot.name}
-                        onChange={(e) => updateTimeSlot(index, 'name', e.target.value)}
-                        placeholder="z.B. Putzen, Aufbau"
-                        className={errors[`timeSlot_${index}_name`] ? 'error' : ''}
-                      />
-                      {errors[`timeSlot_${index}_name`] && <span className="error-text">{errors[`timeSlot_${index}_name`]}</span>}
+                <div key={timeSlot.id || index} className="timeslot-item">
+                  <div className="timeslot-info">
+                    <div className="timeslot-detail">
+                      {timeSlot.category && <span className="timeslot-category">{timeSlot.category}</span>}
+                      <strong>{timeSlot.name}</strong>
                     </div>
-                    
-                    <div className="form-group-small">
-                      <label>Von *</label>
-                      <input
-                        type="time"
-                        value={timeSlot.timeFrom}
-                        onChange={(e) => updateTimeSlot(index, 'timeFrom', e.target.value)}
-                        className={errors[`timeSlot_${index}_timeFrom`] ? 'error' : ''}
-                      />
-                      {errors[`timeSlot_${index}_timeFrom`] && <span className="error-text">{errors[`timeSlot_${index}_timeFrom`]}</span>}
+                    <div className="timeslot-time">
+                      {timeSlot.timeFrom} - {timeSlot.timeTo}
                     </div>
-                    
-                    <div className="form-group-small">
-                      <label>Bis *</label>
-                      <input
-                        type="time"
-                        value={timeSlot.timeTo}
-                        onChange={(e) => updateTimeSlot(index, 'timeTo', e.target.value)}
-                        className={errors[`timeSlot_${index}_timeTo`] ? 'error' : ''}
-                      />
-                      {errors[`timeSlot_${index}_timeTo`] && <span className="error-text">{errors[`timeSlot_${index}_timeTo`]}</span>}
+                    <div className="timeslot-capacity">
+                      Max: {timeSlot.maxParticipants} Teilnehmer
                     </div>
-                    
-                    <div className="form-group-small">
-                      <label>Max. Teilnehmer *</label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={timeSlot.maxParticipants}
-                        className={errors[`timeSlot_${index}_maxParticipants`] ? 'error' : ''}
-                        onChange={(e) => updateTimeSlot(index, 'maxParticipants', parseInt(e.target.value) || 1)}
-                      />
-                      {errors[`timeSlot_${index}_maxParticipants`] && <span className="error-text">{errors[`timeSlot_${index}_maxParticipants`]}</span>}
-                    </div>
-                    
+                  </div>
+                  <div className="timeslot-actions">
+                    <button 
+                      type="button" 
+                      className="edit-timeslot-button"
+                      onClick={() => handleEditTimeSlot(index)}
+                      title="Zeitslot bearbeiten"
+                    >
+                      ✎
+                    </button>
                     <button 
                       type="button" 
                       className="remove-timeslot-button"
@@ -385,6 +398,25 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
             </p>
           )}
         </div>
+
+        {/* TimeSlot Form Modal */}
+        {showTimeSlotForm && (
+          <div className="modal-overlay" onClick={handleCancelTimeSlotForm}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <TimeSlotForm
+                onSave={editingTimeSlotIndex !== null ? handleUpdateTimeSlot : handleAddTimeSlots}
+                onCancel={handleCancelTimeSlotForm}
+                timeSlot={editingTimeSlotIndex !== null ? timeSlots[editingTimeSlotIndex] : null}
+                isEditing={editingTimeSlotIndex !== null}
+                event={formData.dateFrom ? { dateFrom: formData.dateFrom, dateTo: formData.dateTo || formData.dateFrom } : null}
+                existingCategories={[...new Set(timeSlots
+                  .map(slot => slot.category)
+                  .filter(category => category && category.trim())
+                )].sort()}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="form-actions">
           <button type="button" className="cancel-button" onClick={onCancel}>

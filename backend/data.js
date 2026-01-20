@@ -1,10 +1,13 @@
 import { Person, Participant, Event, TimeSlot } from './models.js';
 import * as userService from './userManagement.js';
 
-// In-memory data store (in a real app, this would be a database)
+// In-memory data store
 let eventsData = [];
 let nextEventId = 1;
 let nextTimeSlotId = 1;
+
+// Provide events data accessor to userService
+userService.setEventsDataAccessor(() => eventsData);
 
 // Initialize with sample data
 function initializeSampleData() {
@@ -13,8 +16,8 @@ function initializeSampleData() {
       id: nextEventId++,
       name: 'Sommerfest',
       description: 'Jährliches Vereinsfest mit Bewirtung, Ponyreiten für Kinder und geselligem Beisammensein',
-      dateFrom: '2024-06-20',
-      dateTo: '2024-06-20',
+      dateFrom: '2025-06-20',
+      dateTo: '2025-06-20',
       timeFrom: '12:00',
       timeTo: '22:00',
       location: 'Festplatz bei der Reithalle',
@@ -23,7 +26,9 @@ function initializeSampleData() {
       timeSlots: [
         new TimeSlot({
           id: nextTimeSlotId++,
-          name: 'Aufbau Vormittag',
+          name: 'Aufbau',
+          category: 'Aufbau',
+          date: '2025-06-20',
           timeFrom: '08:00',
           timeTo: '12:00',
           maxParticipants: 5,
@@ -31,17 +36,51 @@ function initializeSampleData() {
         }),
         new TimeSlot({
           id: nextTimeSlotId++,
-          name: 'Bewirtung Nachmittag',
-          timeFrom: '14:00',
-          timeTo: '18:00',
+          name: 'Aufbau',
+          category: 'Aufbau',
+          date: '2025-06-20',
+          timeFrom: '06:00',
+          timeTo: '09:00',
           maxParticipants: 3,
           participants: []
         }),
         new TimeSlot({
           id: nextTimeSlotId++,
-          name: 'Aufräumen Abend',
+          name: 'Bewirtung',
+          category: 'Bewirtung',
+          date: '2025-06-20',
+          timeFrom: '12:00',
+          timeTo: '16:00',
+          maxParticipants: 4,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Bewirtung',
+          category: 'Bewirtung',
+          date: '2025-06-20',
+          timeFrom: '16:00',
+          timeTo: '20:00',
+          maxParticipants: 4,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Aufräumen',
+          category: 'Aufräumen',
+          date: '2025-06-20',
           timeFrom: '20:00',
           timeTo: '23:00',
+          maxParticipants: 6,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Aufräumen',
+          category: 'Aufräumen',
+          date: '2025-06-21',
+          timeFrom: '09:00',
+          timeTo: '12:00',
           maxParticipants: 4,
           participants: []
         })
@@ -51,8 +90,8 @@ function initializeSampleData() {
       id: nextEventId++,
       name: 'Reitturnier Frühjahr',
       description: 'Traditionelles Frühjahrsturnier mit Dressur- und Springprüfungen für alle Altersklassen',
-      dateFrom: '2025-01-12',
-      dateTo: '2025-01-12',
+      dateFrom: '2026-01-12',
+      dateTo: '2026-01-12',
       timeFrom: '08:00',
       timeTo: '18:00',
       location: 'Reitplatz und Reithalle',
@@ -62,6 +101,8 @@ function initializeSampleData() {
         new TimeSlot({
           id: nextTimeSlotId++,
           name: 'Parcours Aufbau',
+          category: 'Aufbau',
+          date: '2026-01-12',
           timeFrom: '07:00',
           timeTo: '08:00',
           maxParticipants: 6,
@@ -69,7 +110,19 @@ function initializeSampleData() {
         }),
         new TimeSlot({
           id: nextTimeSlotId++,
+          name: 'Hindernisse aufbauen',
+          category: 'Aufbau',
+          date: '2026-01-12',
+          timeFrom: '06:30',
+          timeTo: '07:30',
+          maxParticipants: 4,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
           name: 'Dressurrichter Assistenz',
+          category: 'Wettkampf',
+          date: '2026-01-12',
           timeFrom: '08:00',
           timeTo: '12:00',
           maxParticipants: 2,
@@ -78,6 +131,8 @@ function initializeSampleData() {
         new TimeSlot({
           id: nextTimeSlotId++,
           name: 'Springrichter Assistenz',
+          category: 'Wettkampf',
+          date: '2026-01-12',
           timeFrom: '13:00',
           timeTo: '17:00',
           maxParticipants: 2,
@@ -85,10 +140,32 @@ function initializeSampleData() {
         }),
         new TimeSlot({
           id: nextTimeSlotId++,
+          name: 'Zeitnahme',
+          category: 'Wettkampf',
+          date: '2026-01-12',
+          timeFrom: '08:00',
+          timeTo: '18:00',
+          maxParticipants: 3,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
           name: 'Siegerehrung',
+          category: 'Siegerehrung',
+          date: '2026-01-12',
           timeFrom: '17:00',
           timeTo: '18:00',
           maxParticipants: 3,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Aufräumen',
+          category: 'Aufräumen',
+          date: '2026-01-12',
+          timeFrom: '18:00',
+          timeTo: '20:00',
+          maxParticipants: 8,
           participants: []
         })
       ]
@@ -97,8 +174,8 @@ function initializeSampleData() {
       id: nextEventId++,
       name: 'Aufbau Reitplatz',
       description: 'Vorbereitung des Reitplatzes für das kommende Turnier mit Hindernisaufbau und Platzvorbereitung',
-      dateFrom: '2024-12-15',
-      dateTo: '2024-12-15',
+      dateFrom: '2025-12-15',
+      dateTo: '2025-12-15',
       timeFrom: '08:00',
       timeTo: '12:00',
       location: 'Reitanlage RK Schmalegg',
@@ -108,6 +185,8 @@ function initializeSampleData() {
         new TimeSlot({
           id: nextTimeSlotId++,
           name: 'Hindernisse aufbauen',
+          category: 'Aufbau',
+          date: '2025-12-15',
           timeFrom: '08:00',
           timeTo: '10:00',
           maxParticipants: 4,
@@ -115,10 +194,32 @@ function initializeSampleData() {
         }),
         new TimeSlot({
           id: nextTimeSlotId++,
+          name: 'Material Transport',
+          category: 'Aufbau',
+          date: '2025-12-15',
+          timeFrom: '07:30',
+          timeTo: '09:00',
+          maxParticipants: 6,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
           name: 'Platz vorbereiten',
+          category: 'Vorbereitung',
+          date: '2025-12-15',
           timeFrom: '10:00',
           timeTo: '12:00',
           maxParticipants: 3,
+          participants: []
+        }),
+        new TimeSlot({
+          id: nextTimeSlotId++,
+          name: 'Sicherheitskontrolle',
+          category: 'Vorbereitung',
+          date: '2025-12-15',
+          timeFrom: '11:30',
+          timeTo: '12:30',
+          maxParticipants: 2,
           participants: []
         })
       ]
@@ -144,6 +245,8 @@ export function getEventById(id) {
 }
 
 export function createEvent(eventData) {
+  console.log('Backend createEvent - Received data:', eventData);
+  
   // Handle timeSlots if provided
   let timeSlots = [];
   if (eventData.timeSlots && Array.isArray(eventData.timeSlots)) {
@@ -158,6 +261,9 @@ export function createEvent(eventData) {
     ...eventData,
     timeSlots: timeSlots
   });
+  
+  console.log('Backend createEvent - Created event:', event);
+  
   eventsData.push(event);
   return event.toJSON();
 }
@@ -216,10 +322,14 @@ export function addTimeSlot(eventId, timeSlotData) {
   const event = eventsData.find(e => e.id === parseInt(eventId));
   if (!event) return null;
 
+  console.log('Backend addTimeSlot - Received data:', timeSlotData);
+
   const timeSlot = new TimeSlot({
     id: nextTimeSlotId++,
     ...timeSlotData
   });
+
+  console.log('Backend addTimeSlot - Created timeSlot:', timeSlot);
 
   event.addTimeSlot(timeSlot);
   return timeSlot.toJSON();
@@ -232,10 +342,18 @@ export function updateTimeSlot(eventId, timeSlotId, timeSlotData) {
   const timeSlotIndex = event.timeSlots.findIndex(ts => ts.id === parseInt(timeSlotId));
   if (timeSlotIndex === -1) return null;
 
+  console.log('Backend updateTimeSlot - Received data:', timeSlotData);
+
+  // Preserve existing participants
+  const existingTimeSlot = event.timeSlots[timeSlotIndex];
+  
   const updatedTimeSlot = new TimeSlot({
     id: parseInt(timeSlotId),
-    ...timeSlotData
+    ...timeSlotData,
+    participants: existingTimeSlot.participants // Keep existing participants
   });
+
+  console.log('Backend updateTimeSlot - Updated timeSlot:', updatedTimeSlot);
 
   event.timeSlots[timeSlotIndex] = updatedTimeSlot;
   return updatedTimeSlot.toJSON();
@@ -247,7 +365,9 @@ export function deleteTimeSlot(eventId, timeSlotId) {
 
   const initialLength = event.timeSlots.length;
   event.removeTimeSlot(parseInt(timeSlotId));
-  return event.timeSlots.length < initialLength;
+  const removed = event.timeSlots.length < initialLength;
+  
+  return removed;
 }
 
 export function getTimeSlotById(eventId, timeSlotId) {
@@ -316,7 +436,8 @@ export function removeTimeSlotParticipation(eventId, timeSlotId, personId) {
   const initialLength = timeSlot.participants.length;
   timeSlot.participants = timeSlot.participants.filter(p => p.person.id !== parseInt(personId));
   
-  return timeSlot.participants.length < initialLength;
+  const removed = timeSlot.participants.length < initialLength;
+  return removed;
 }
 
 // Initialize the data when the module is loaded

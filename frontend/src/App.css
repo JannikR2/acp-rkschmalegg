@@ -16,11 +16,24 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
+  gap: 40px;
+}
+
+.header-title-with-logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.header-logo {
+  height: 70px;
+  width: 70px;
+  object-fit: contain;
 }
 
 .header-content h1 {
   margin: 0;
-  flex: 1;
 }
 
 .header-actions {
@@ -43,7 +56,7 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .logout-button:hover {
@@ -60,7 +73,7 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -73,14 +86,14 @@
 }
 
 .nav-button.active {
-  background-color: #3498db;
-  border-color: #3498db;
-  color: white;
+  background-color: #f6ce38;
+  border-color: #f6ce38;
+  color: #333;
 }
 
 .nav-button.active:hover {
-  background-color: #2980b9;
-  border-color: #2980b9;
+  background-color: #e6be28;
+  border-color: #e6be28;
 }
 
 /* Responsive design */
@@ -89,6 +102,16 @@
     flex-direction: column;
     gap: 15px;
     text-align: center;
+  }
+
+  .header-title-with-logo {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header-logo {
+    height: 60px;
+    width: 60px;
   }
 
   .header-actions {
@@ -118,12 +141,12 @@
 }
 
 .loading-message {
-  background: #e3f2fd;
+  background: #fff8dc;
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
   text-align: center;
-  color: #1976d2;
+  color: #333;
   font-size: 1.1em;
 }
 
@@ -149,6 +172,14 @@
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 2px solid #282c34;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .section-header h2 {
@@ -156,31 +187,70 @@
   color: #282c34;
 }
 
+.section-header .year-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
+}
+
+.section-header .year-filter label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.section-header .year-select {
+  padding: 6px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  color: #495057;
+  font-weight: 500;
+  transition: border-color 0.3s ease;
+}
+
+.section-header .year-select:hover {
+  border-color: #f6ce38;
+}
+
+.section-header .year-select:focus {
+  outline: none;
+  border-color: #f6ce38;
+  box-shadow: 0 0 0 3px rgba(246, 206, 56, 0.1);
+}
+
 .total-hours {
-  background: #2196F3;
-  color: white;
+  background: #333;
+  color: #f6ce38;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 1.1em;
 }
 
 .add-event-button {
-  background: #4CAF50;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1em;
   font-weight: 600;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .add-event-button:hover {
-  background: #45a049;
+  background: #e6be28;
+  border-color: #d1a81f;
   transform: translateY(-1px);
 }
 
@@ -198,6 +268,18 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  .section-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .section-header .year-filter {
+    width: 100%;
+    justify-content: space-between;
   }
   
   .total-hours {
@@ -217,21 +299,23 @@
 }
 
 .back-button {
-  background: #f0f0f0 !important;
-  border: 1px solid #ddd !important;
+  background: #333 !important;
+  border: 2px solid #333 !important;
+  color: white !important;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.3s;
+  transition: all 0.2s ease;
   margin-bottom: 20px;
-  color: #333 !important;
   text-decoration: none;
 }
 
 .back-button:hover {
-  background: #e0e0e0 !important;
-  color: #333 !important;
+  background: #222 !important;
+  border-color: #222 !important;
+  color: white !important;
+  transform: translateX(-2px);
 }
 
 .events-list-simple {

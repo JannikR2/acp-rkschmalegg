@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #333;
   padding: 20px;
 }
 
@@ -17,9 +17,23 @@
   text-align: center;
 }
 
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.login-header .header-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
 .login-box h2 {
-  color: #2c3e50;
-  margin: 0 0 10px 0;
+  color: #333;
+  margin: 0;
   font-size: 28px;
   font-weight: 600;
 }
@@ -31,8 +45,9 @@
 }
 
 .error-message {
-  background-color: #e74c3c;
-  color: white;
+  background: #fff5f5;
+  color: #cc4444;
+  border: 2px solid #f5b7b1;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 20px;
@@ -51,7 +66,7 @@
   border-radius: 10px;
   padding: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-align: center;
   min-height: 80px;
   display: flex;
@@ -60,16 +75,16 @@
 }
 
 .person-card:hover {
-  background: #e3f2fd;
-  border-color: #2196f3;
+  background: #fff9e6;
+  border-color: #f6ce38;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+  box-shadow: 0 5px 15px rgba(246, 206, 56, 0.3);
 }
 
 .person-name {
   font-size: 18px;
   font-weight: 600;
-  color: #2c3e50;
+  color: #333;
   margin-bottom: 5px;
 }
 
@@ -85,21 +100,22 @@
 }
 
 .admin-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 15px 30px;
   border-radius: 25px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transition: all 0.2s ease;
 }
 
 .admin-button:hover {
+  background: #e6be28;
+  border-color: #d1a81f;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 6px 20px rgba(246, 206, 56, 0.4);
 }
 
 /* Responsive design */

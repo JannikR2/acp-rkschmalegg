@@ -9,6 +9,8 @@ import TimeSlotManager from '../TimeSlotManager';
 import TimeSlotForm from '../TimeSlotForm';
 import '../App.css';
 
+const LOGO_URL = 'https://tse4.mm.bing.net/th/id/OIP.UORK-u3V7UVpyTeEcb0y_QHaHa?rs=1&pid=ImgDetMain&o=7&rm=3';
+
 const AdminPage = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
@@ -19,10 +21,11 @@ const AdminPage = () => {
   const [currentView, setCurrentView] = useState('list');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     loadEvents();
-  }, []);
+  }, [selectedYear]);
 
   const loadEvents = async () => {
     try {
@@ -31,7 +34,15 @@ const AdminPage = () => {
       const response = await apiService.getAllEvents();
       
       if (response.success) {
-        setEvents(response.data);
+        // Filter events by selected year
+        const filteredEvents = response.data.filter(event => {
+          if (event.dateFrom) {
+            const eventYear = new Date(event.dateFrom).getFullYear();
+            return eventYear === selectedYear;
+          }
+          return false;
+        });
+        setEvents(filteredEvents);
       } else {
         setError('Fehler beim Laden der Events');
       }
@@ -42,6 +53,13 @@ const AdminPage = () => {
       setLoading(false);
     }
   };
+
+  // Generate year options (current year and 5 years back)
+  const currentYear = new Date().getFullYear();
+  const yearOptions = [];
+  for (let i = 0; i <= 5; i++) {
+    yearOptions.push(currentYear - i);
+  }
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
@@ -74,10 +92,13 @@ const AdminPage = () => {
 
   const handleCreateEvent = async (eventData, status = 'draft') => {
     try {
+      console.log('AdminPage: handleCreateEvent called with:', eventData, 'status:', status);
       setError(null);
       // Ensure the status is set correctly
       const eventDataWithStatus = { ...eventData, status };
+      console.log('AdminPage: Sending to API:', eventDataWithStatus);
       const response = await apiService.createEvent(eventDataWithStatus);
+      console.log('AdminPage: API response:', response);
       
       if (response.success) {
         await loadEvents();
@@ -86,8 +107,8 @@ const AdminPage = () => {
         setError('Fehler beim Erstellen des Events');
       }
     } catch (error) {
-      console.error('Error creating event:', error);
-      setError('Fehler beim Erstellen des Events');
+      console.error('AdminPage: Error creating event:', error);
+      setError('Fehler beim Erstellen des Events: ' + error.message);
     }
   };
 
@@ -191,7 +212,10 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg</h1>
+          </div>
         </header>
         <main className="App-main">
           <EventDetails 
@@ -212,7 +236,10 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg</h1>
+          </div>
         </header>
         <main className="App-main">
           <TimeSlotManager 
@@ -233,7 +260,10 @@ const AdminPage = () => {
       <>
         <header className="App-header">
           <div className="header-content">
-            <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+            </div>
             <div className="header-actions">
               <nav className="main-nav">
                 <button 
@@ -266,7 +296,10 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg</h1>
+          </div>
         </header>
         <main className="App-main">
           <EventForm 
@@ -282,7 +315,10 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg</h1>
+          </div>
         </header>
         <main className="App-main">
           <EventForm 
@@ -300,7 +336,10 @@ const AdminPage = () => {
     <>
       <header className="App-header">
         <div className="header-content">
-          <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+          <div className="header-title-with-logo">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+          </div>
           <div className="header-actions">
             <nav className="main-nav">
               <button 
@@ -331,7 +370,22 @@ const AdminPage = () => {
         
         <section className="events-section">
           <div className="section-header">
-            <h2>Termine</h2>
+            <div className="section-title-row">
+              <h2>Termine</h2>
+              <div className="year-filter">
+                <label htmlFor="event-year-select">Jahr:</label>
+                <select 
+                  id="event-year-select"
+                  value={selectedYear} 
+                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                  className="year-select"
+                >
+                  {yearOptions.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <button className="add-event-button" onClick={() => setCurrentView('create')}>
               + Neues Event
             </button>

@@ -5,22 +5,27 @@
 }
 
 .back-button {
-  background: #007ACC;
+  background: #333;
   color: white;
-  border: none;
+  border: 2px solid #333;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
 }
 
 .back-button:hover {
-  background: #005a9e;
+  background: #222;
+  border-color: #222;
+  transform: translateX(-2px);
 }
 
 .event-details-header {
@@ -46,63 +51,93 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.action-buttons button {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
 }
 
 .update-button {
-  background: #2196F3;
-  color: white;
-  border: none;
+  background: #f5f5f5;
+  color: #555;
+  border: 2px solid #ddd;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .update-button:hover {
-  background: #1976D2;
+  background: #e8e8e8;
+  border-color: #ccc;
 }
 
 .timeslots-button {
-  background: #FF9800;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .timeslots-button:hover {
-  background: #F57C00;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
-.delete-button {
-  background: #f44336;
+.export-button {
+  background: #333;
   color: white;
-  border: none;
+  border: 2px solid #333;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95em;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-button:hover {
+  background: #222;
+  border-color: #222;
+}
+
+.delete-button {
+  background: #fff5f5;
+  color: #cc4444;
+  border: 2px solid #f5b7b1;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 500;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .delete-button:hover {
-  background: #d32f2f;
+  background: #ffebeb;
+  border-color: #f1948a;
 }
 
 /* Zeitslots Display */
@@ -118,6 +153,46 @@
   margin: 0 0 16px 0;
   color: #333;
   font-size: 1.3em;
+}
+
+/* Date Section Grouping */
+.timeslot-date-section {
+  margin-bottom: 40px;
+}
+
+.timeslot-date-section:last-child {
+  margin-bottom: 0;
+}
+
+.date-header {
+  margin: 0 0 20px 0;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  color: #333;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  border: 2px solid #f6ce38;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.timeslot-category-group {
+  margin-bottom: 30px;
+}
+
+.timeslot-category-group:last-child {
+  margin-bottom: 0;
+}
+
+.category-title {
+  margin: 0 0 15px 0;
+  padding: 10px 15px;
+  background: #f6ce38;
+  color: #333;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 2px solid #e6be28;
 }
 
 .timeslots-grid {
@@ -156,7 +231,7 @@
 }
 
 .timeslot-header.clickable:hover {
-  background-color: #e3f2fd;
+  background-color: #fff8dc;
 }
 
 .timeslot-header h4 {
@@ -295,6 +370,177 @@
   margin-top: 20px;
 }
 
+/* Participants Overview Table */
+.participants-overview {
+  margin-top: 40px;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.participants-overview h3 {
+  color: #282c34;
+  margin: 0 0 20px 0;
+  font-size: 1.4em;
+  border-bottom: 2px solid #f6ce38;
+  padding-bottom: 12px;
+}
+
+/* Table grouping headers */
+.table-date-section {
+  margin-bottom: 40px;
+}
+
+.table-date-section:last-child {
+  margin-bottom: 0;
+}
+
+.participants-overview .table-date-header {
+  margin: 0 0 20px 0;
+  padding: 10px 15px;
+  background: #f8f9fa !important;
+  color: #333 !important;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  border: 2px solid #f6ce38 !important;
+}
+
+.table-category-section {
+  margin-bottom: 25px;
+}
+
+.table-category-section:last-child {
+  margin-bottom: 0;
+}
+
+.participants-overview .table-category-header {
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  background:#f6ce38 !important;
+  color: #333 !important;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.overview-table-container {
+  overflow-x: auto;
+  margin-bottom: 15px;
+}
+
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.participants-overview .overview-table thead {
+  color: #333 !important;
+  background: #f8f9fa !important;
+}
+
+.participants-overview .overview-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #333 !important;
+}
+
+.overview-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: top;
+}
+
+.overview-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.overview-table .empty-slot td {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.overview-table .accepted-row {
+  background: #e8f5e9;
+}
+
+.overview-table .declined-row {
+  background: #ffebee;
+}
+
+.capacity {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.05em;
+}
+
+.full-badge-small {
+  display: inline-block;
+  background: #e74c3c;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.participant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.participant-info strong {
+  color: #333;
+  font-size: 1em;
+}
+
+.participant-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85em;
+  color: #7f8c8d;
+}
+
+.participant-details span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.status-badge.status-accepted {
+  background: #27ae60;
+  color: white;
+}
+
+.status-badge.status-declined {
+  background: #e74c3c;
+  color: white;
+}
+
+.no-participants {
+  text-align: center;
+  color: #95a5a6;
+  font-style: italic;
+  padding: 20px !important;
+}
+
 @media (max-width: 768px) {
   .event-details-page {
     padding: 16px;
@@ -314,11 +560,15 @@
   .action-buttons {
     align-self: stretch;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
   
   .update-button,
-  .delete-button {
+  .delete-button,
+  .export-button,
+  .timeslots-button {
     flex: 1;
+    min-width: 45%;
     justify-content: center;
   }
   
@@ -337,7 +587,23 @@
     gap: 10px;
   }
   
-  .cancel-confirm-button,
+  
+  .participants-overview {
+    padding: 16px;
+  }
+  
+  .overview-table {
+    font-size: 0.85em;
+  }
+  
+  .overview-table th,
+  .overview-table td {
+    padding: 8px 10px;
+  }
+  
+  .participant-details {
+    font-size: 0.8em;
+  } .cancel-confirm-button,
   .confirm-delete-button {
     width: 100%;
   }

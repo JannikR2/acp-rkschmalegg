@@ -10,19 +10,79 @@
   align-items: center;
   margin-bottom: 30px;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #333;
   color: white;
   border-radius: 15px;
+  gap: 40px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 0 1 auto;
+}
+
+.user-info .header-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  background: white;
+  border-radius: 8px;
+  padding: 5px;
+  flex-shrink: 0;
 }
 
 .user-info h1 {
   margin: 0;
   font-size: 28px;
+  white-space: nowrap;
 }
 
 .user-info p {
   margin: 5px 0 0 0;
   opacity: 0.9;
+}
+
+/* Year Filter - Same style as Admin */
+.year-filter-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.year-filter-section label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.year-filter-section .year-select {
+  padding: 8px 15px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  color: #495057;
+  font-weight: 500;
+  transition: border-color 0.3s ease;
+  min-width: 100px;
+}
+
+.year-filter-section .year-select:hover {
+  border-color: #f6ce38;
+}
+
+.year-filter-section .year-select:focus {
+  outline: none;
+  border-color: #f6ce38;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 .logout-button {
@@ -34,6 +94,8 @@
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .logout-button:hover {
@@ -42,8 +104,9 @@
 }
 
 .error-message {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #fff5f5;
+  color: #cc4444;
+  border: 2px solid #f5b7b1;
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -74,7 +137,7 @@
   display: block;
   font-size: 32px;
   font-weight: bold;
-  color: #3498db;
+  color: #f6ce38;
   margin-bottom: 8px;
 }
 
@@ -112,7 +175,7 @@
 
 .event-header h3 {
   margin: 0;
-  color: #2c3e50;
+  color: #333;
   font-size: 20px;
   flex: 1;
 }
@@ -157,7 +220,7 @@
 }
 
 .event-description {
-  color: #2c3e50;
+  color: #333;
   font-style: italic;
   margin-top: 10px;
   padding-top: 10px;
@@ -171,35 +234,37 @@
 }
 
 .btn-accept {
-  background-color: #27ae60;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 10px 20px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
   flex: 1;
 }
 
 .btn-accept:hover {
-  background-color: #229954;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
 .btn-decline {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
+  background: #fff5f5;
+  color: #cc4444;
+  border: 2px solid #f5b7b1;
   padding: 10px 20px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
   flex: 1;
 }
 
 .btn-decline:hover {
-  background-color: #c0392b;
+  background: #ffebeb;
+  border-color: #f1948a;
 }
 
 .time-tracking {
@@ -218,23 +283,24 @@
 
 .time-tracking-header h4 {
   margin: 0;
-  color: #2c3e50;
+  color: #333;
 }
 
 .btn-add-time {
-  background-color: #3498db;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 6px 12px;
   border-radius: 15px;
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-add-time:hover {
-  background-color: #2980b9;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
 .time-spans-list {
@@ -250,7 +316,7 @@
   background-color: white;
   padding: 15px;
   border-radius: 8px;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid #f6ce38;
 }
 
 .time-span-info {
@@ -259,7 +325,7 @@
 
 .time-span-date {
   font-weight: 600;
-  color: #2c3e50;
+  color: #333;
   font-size: 14px;
 }
 
@@ -277,9 +343,9 @@
 }
 
 .btn-remove-timespan {
-  background: #e74c3c;
+  background: #cc4444;
   color: white;
-  border: none;
+  border: 2px solid #cc4444;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -290,10 +356,12 @@
   justify-content: center;
   margin-left: 10px;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .btn-remove-timespan:hover {
-  background: #c0392b;
+  background: #b73e3e;
+  border-color: #b73e3e;
 }
 
 .no-timespans {
@@ -327,7 +395,7 @@
 
 .timespan-form h4 {
   margin: 0 0 20px 0;
-  color: #2c3e50;
+  color: #333;
 }
 
 .form-row {
@@ -348,7 +416,7 @@
 .form-row input:focus,
 .form-row textarea:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #f6ce38;
   box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
 }
 
@@ -360,33 +428,35 @@
 }
 
 .btn-primary {
-  background-color: #3498db;
-  color: white;
-  border: none;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 12px 24px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background: #e6be28;
+  border-color: #d1a81f;
 }
 
 .btn-secondary {
-  background-color: #95a5a6;
-  color: white;
-  border: none;
+  background: #f5f5f5;
+  color: #555;
+  border: 2px solid #ddd;
   padding: 12px 24px;
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
-  background-color: #7f8c8d;
+  background: #e8e8e8;
+  border-color: #ccc;
 }
 
 /* Responsive design */
@@ -455,6 +525,61 @@
   font-weight: 600;
 }
 
+/* Timeslots Signup Section - between description and table */
+.timeslots-signup-section {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.timeslots-signup-section h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 22px;
+}
+
+/* Date Section Grouping */
+.timeslot-date-section {
+  margin-bottom: 40px;
+}
+
+.timeslot-date-section:last-child {
+  margin-bottom: 0;
+}
+
+.date-header {
+  margin: 0 0 20px 0;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  color: #333;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  border: 2px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.timeslot-category-section {
+  margin-bottom: 30px;
+}
+
+.timeslot-category-section:last-child {
+  margin-bottom: 0;
+}
+
+.category-header {
+  margin: 0 0 15px 0;
+  padding: 10px 15px;
+  background: #f6ce38;
+  color: #333;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 2px solid #e6be28;
+}
+
 .timeslots-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -507,6 +632,12 @@
   padding: 4px 8px;
   border-radius: 4px;
   font-weight: 500;
+}
+
+.timeslot-date {
+  color: #495057;
+  font-weight: 600;
+  margin-right: 4px;
 }
 
 .timeslot-info {
@@ -618,5 +749,270 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
+  }
+}
+
+/* Event Details View for Members */
+.event-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.back-button {
+  background: #f6ce38;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.back-button:hover {
+  background: #2980b9;
+}
+
+.event-card-detail {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.event-card-detail h2 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 28px;
+}
+
+.event-card-detail .event-info {
+  display: block;
+}
+
+.event-card-detail .event-date,
+.event-card-detail .event-time,
+.event-card-detail .event-location {
+  display: inline-block;
+  padding: 10px 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #495057;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.event-card-detail .event-description {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #495057;
+  border-left: 4px solid #f6ce38;
+  width: 100%;
+  display: block;
+}
+
+/* Participants Overview Table */
+.participants-overview {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.participants-overview h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 22px;
+}
+
+/* Table grouping headers */
+.table-date-section {
+  margin-bottom: 40px;
+}
+
+.table-date-section:last-child {
+  margin-bottom: 0;
+}
+
+.table-date-header {
+  margin: 0 0 20px 0;
+  padding: 10px 15px;
+  background: #f8f9fa;
+  color: #333;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  border: 2px solid #e9ecef;
+}
+
+.table-category-section {
+  margin-bottom: 25px;
+}
+
+.table-category-section:last-child {
+  margin-bottom: 0;
+}
+
+.table-category-header {
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  background: #333;
+  color: #f6ce38;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.overview-table-container {
+  overflow-x: auto;
+  margin-bottom: 15px;
+}
+
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.overview-table thead {
+  background: #333;
+  color: #f6ce38;
+}
+
+.overview-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+}
+
+.overview-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+  color: #495057;
+}
+
+.overview-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.overview-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.overview-table .accepted-row {
+  background-color: #f8fff9;
+}
+
+.overview-table .declined-row {
+  background-color: #fff5f5;
+  opacity: 0.7;
+}
+
+.overview-table .empty-slot td {
+  font-style: italic;
+  color: #95a5a6;
+}
+
+.overview-table .no-participants {
+  text-align: center;
+  font-style: italic;
+  color: #95a5a6;
+}
+
+.overview-table .capacity {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e9ecef;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #495057;
+}
+
+.overview-table .full-badge-small {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 8px;
+  background: #dc3545;
+  color: white;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.overview-table .status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.overview-table .status-badge.status-accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.overview-table .status-badge.status-declined {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Make event cards clickable */
+.events-grid .event-card {
+  cursor: pointer;
+  position: relative;
+}
+
+.events-grid .event-card::after {
+  content: '→';
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  font-size: 24px;
+  color: #f6ce38;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.events-grid .event-card:hover::after {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+  .event-card-detail {
+    padding: 20px;
+  }
+
+  .event-card-detail h2 {
+    font-size: 22px;
+  }
+
+  .participants-overview {
+    padding: 20px;
+  }
+
+  .overview-table-container {
+    overflow-x: scroll;
+  }
+
+  .overview-table th,
+  .overview-table td {
+    padding: 10px;
+    font-size: 12px;
   }
 }

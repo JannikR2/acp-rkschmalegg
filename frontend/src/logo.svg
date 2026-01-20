@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="95" fill="#FFD700" stroke="#000" stroke-width="3"/>
+  <text x="100" y="60" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#000">
+    Reiterkameraden
+  </text>
+  <text x="100" y="90" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#000">
+    Schmalegg e.V.
+  </text>
+  <path d="M 80 120 Q 90 110, 100 120 Q 110 110, 120 120 L 120 140 Q 115 150, 100 145 Q 85 150, 80 140 Z" fill="#000"/>
+  <ellipse cx="90" cy="135" rx="3" ry="5" fill="#FFF"/>
+  <ellipse cx="110" cy="135" rx="3" ry="5" fill="#FFF"/>
+</svg>

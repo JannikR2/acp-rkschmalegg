@@ -3,6 +3,7 @@ export class Person {
   constructor(firstName, lastName) {
     this.firstName = firstName;
     this.lastName = lastName;
+    this.manualHours = 0; // Manually entered hours (e.g., from Excel import)
   }
 
   getFullName() {
@@ -13,21 +14,24 @@ export class Person {
   toJSON() {
     return {
       firstName: this.firstName,
-      lastName: this.lastName
+      lastName: this.lastName,
+      manualHours: this.manualHours
     };
   }
 
   // Create from JSON object
   static fromJSON(json) {
-    return new Person(json.firstName, json.lastName);
+    const person = new Person(json.firstName, json.lastName);
+    person.manualHours = json.manualHours || 0;
+    return person;
   }
 }
 
 // Participant with status (no time tracking)
 export class Participant {
-  constructor(person, status = 'declined') {
+  constructor(person, status = 'accepted') {
     this.person = person; // Person object
-    this.status = status; // 'accepted', 'declined'
+    this.status = status; // 'accepted' only
   }
 
   // Convert to JSON-serializable object
@@ -41,7 +45,7 @@ export class Participant {
   // Create from JSON object
   static fromJSON(json) {
     const person = Person.fromJSON(json.person);
-    return new Participant(person, json.status || 'declined');
+    return new Participant(person, json.status || 'accepted');
   }
 }
 
@@ -50,16 +54,20 @@ export class TimeSlot {
   constructor({
     id,
     name,
+    date,
     timeFrom,
     timeTo,
     maxParticipants,
+    category = '',
     participants = []
   }) {
     this.id = id;
     this.name = name;
+    this.date = date; // Optional date string (e.g., "2026-04-12") for multi-day events
     this.timeFrom = timeFrom; // Time string (e.g., "10:00")
     this.timeTo = timeTo;     // Time string (e.g., "11:00")
     this.maxParticipants = maxParticipants || 0;
+    this.category = category; // Category for grouping timeslots (e.g., "Parcour", "Putzen")
     this.participants = participants; // Array of Participant objects
   }
 
@@ -104,9 +112,11 @@ export class TimeSlot {
     return {
       id: this.id,
       name: this.name,
+      date: this.date,
       timeFrom: this.timeFrom,
       timeTo: this.timeTo,
       maxParticipants: this.maxParticipants,
+      category: this.category,
       participants: this.participants.map(p => p.toJSON()),
       availableSpots: this.getAvailableSpots(),
       isFull: this.isFull()
@@ -167,11 +177,6 @@ export class Event {
   // Get count of accepted participants
   getAcceptedCount() {
     return this.participants.filter(p => p.status === 'accepted').length;
-  }
-
-  // Get count of declined participants
-  getDeclinedCount() {
-    return this.participants.filter(p => p.status === 'declined').length;
   }
 
   // Add participant to event

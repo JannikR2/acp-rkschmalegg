@@ -48,7 +48,22 @@ const UserPage = () => {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
         <h2>Benutzer nicht gefunden</h2>
-        <button onClick={() => navigate('/login')}>Zurück zur Anmeldung</button>
+        <button 
+          onClick={() => navigate('/login')}
+          style={{
+            background: '#f6ce38',
+            color: '#333',
+            border: '2px solid #e6be28',
+            padding: '10px 20px',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '600',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          Zurück zur Anmeldung
+        </button>
       </div>
     );
   }

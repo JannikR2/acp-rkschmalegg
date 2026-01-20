@@ -44,13 +44,13 @@
 }
 
 .status-badge.published {
-  background: #4CAF50;
+  background: #333;
   color: white;
 }
 
 .status-badge.draft {
-  background: #ffc107;
-  color: #212529;
+  background: #f6ce38;
+  color: #333;
 }
 
 .publish-toggle-btn {
@@ -68,16 +68,16 @@
 }
 
 .publish-toggle-btn:hover {
-  border-color: #007ACC;
+  border-color: #f6ce38;
   background: #f8f9fa;
 }
 
 .publish-toggle-btn.published {
-  border-color: #4CAF50;
+  border-color: #333;
 }
 
 .publish-toggle-btn.draft {
-  border-color: #ffc107;
+  border-color: #f6ce38;
 }
 
 .event-name {
@@ -88,8 +88,9 @@
 }
 
 .event-hours {
-  background: #4CAF50;
-  color: white;
+  background: #f6ce38;
+  color: #333;
+  border: 2px solid #e6be28;
   padding: 4px 12px;
   border-radius: 16px;
   font-weight: 600;
@@ -162,7 +163,7 @@
 }
 
 .participant-hours {
-  background: #2196F3;
+  background: #333;
   color: white;
   padding: 2px 8px;
   border-radius: 12px;
