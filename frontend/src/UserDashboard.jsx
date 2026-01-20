@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { EventUtils } from './apiService';
 import './UserDashboard.css';
 
 const LOGO_URL = 'https://tse4.mm.bing.net/th/id/OIP.UORK-u3V7UVpyTeEcb0y_QHaHa?rs=1&pid=ImgDetMain&o=7&rm=3';
@@ -126,15 +127,6 @@ const UserDashboard = ({ user, onLogout }) => {
       .map(p => p.timeSlot);
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('de-DE', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
   const formatTime = (timeString) => {
     return timeString.substring(0, 5);
   };
@@ -186,7 +178,7 @@ const UserDashboard = ({ user, onLogout }) => {
             <h2>{selectedEvent.name}</h2>
             <div className="event-info">
               <div className="event-date">
-                📅 {formatDate(selectedEvent.dateFrom)}
+                📅 {EventUtils.getDateRange(selectedEvent.dateFrom, selectedEvent.dateTo)}
               </div>
               <div className="event-time">
                 🕐 {formatTime(selectedEvent.timeFrom)} - {formatTime(selectedEvent.timeTo)}
@@ -500,7 +492,7 @@ const UserDashboard = ({ user, onLogout }) => {
               
               <div className="event-details">
                 <div className="event-date">
-                  📅 {formatDate(event.dateFrom)}
+                  📅 {EventUtils.getDateRange(event.dateFrom, event.dateTo)}
                 </div>
                 <div className="event-time">
                   🕐 {formatTime(event.timeFrom)} - {formatTime(event.timeTo)}
