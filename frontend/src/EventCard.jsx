@@ -3,8 +3,6 @@ import { EventUtils } from './apiService';
 import './EventCard.css';
 
 const EventCard = ({ event }) => {
-  const plannedDuration = EventUtils.calculatePlannedDuration(event);
-
   return (
     <div className="event-card">
       <div className="event-header">
@@ -22,11 +20,6 @@ const EventCard = ({ event }) => {
         <div className="event-detail">
           <span className="detail-label">Datum:</span>
           <span>{EventUtils.getDateRange(event.dateFrom, event.dateTo)}</span>
-        </div>
-        
-        <div className="event-detail">
-          <span className="detail-label">Zeit:</span>
-          <span>{EventUtils.getTimeRange(event.timeFrom, event.timeTo)} ({plannedDuration}h)</span>
         </div>
         
         <div className="event-detail">

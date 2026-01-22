@@ -77,7 +77,6 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
         
         <div class="event-info">
           <p><strong>Datum:</strong> ${event.dateFrom}${event.dateTo !== event.dateFrom ? ' bis ' + event.dateTo : ''}</p>
-          <p><strong>Uhrzeit:</strong> ${event.timeFrom} - ${event.timeTo}</p>
           <p><strong>Ort:</strong> ${event.location || 'Nicht angegeben'}</p>
           <p><strong>Beschreibung:</strong> ${event.description || 'Keine Beschreibung'}</p>
         </div>
