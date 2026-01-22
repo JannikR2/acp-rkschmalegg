@@ -341,10 +341,6 @@
   overflow-wrap: break-word;
 }
 
-.overview-table tbody tr:hover {
-  background: #f8f9fa;
-}
-
 .overview-table .empty-slot td {
   color: #7f8c8d;
   font-style: italic;

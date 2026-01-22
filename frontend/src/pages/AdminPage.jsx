@@ -268,7 +268,12 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-content">
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Eventmanager RK Schmalegg</h1>
+            </div>
+          </div>
         </header>
         <main className="App-main">
           <div className="loading-message">Lade Events...</div>
@@ -282,9 +287,11 @@ const AdminPage = () => {
       return (
         <>
           <header className="App-header">
-            <div className="header-title-with-logo">
-              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-              <h1>Zeiterfassung RK Schmalegg</h1>
+            <div className="header-content">
+              <div className="header-title-with-logo">
+                <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+                <h1>Eventmanager RK Schmalegg</h1>
+              </div>
             </div>
           </header>
           <main className="App-main">
@@ -302,9 +309,11 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <div className="header-title-with-logo">
-            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-            <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-content">
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Eventmanager RK Schmalegg</h1>
+            </div>
           </div>
         </header>
         <main className="App-main">
@@ -327,9 +336,11 @@ const AdminPage = () => {
       return (
         <>
           <header className="App-header">
-            <div className="header-title-with-logo">
-              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-              <h1>Zeiterfassung RK Schmalegg</h1>
+            <div className="header-content">
+              <div className="header-title-with-logo">
+                <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+                <h1>Eventmanager RK Schmalegg</h1>
+              </div>
             </div>
           </header>
           <main className="App-main">
@@ -347,9 +358,11 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <div className="header-title-with-logo">
-            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-            <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-content">
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Eventmanager RK Schmalegg</h1>
+            </div>
           </div>
         </header>
         <main className="App-main">
@@ -373,7 +386,7 @@ const AdminPage = () => {
           <div className="header-content">
             <div className="header-title-with-logo">
               <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-              <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+              <h1>Eventmanager RK Schmalegg</h1>
             </div>
             <div className="header-actions">
               <nav className="main-nav">
@@ -407,9 +420,11 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <div className="header-title-with-logo">
-            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-            <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-content">
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Eventmanager RK Schmalegg</h1>
+            </div>
           </div>
         </header>
         <main className="App-main">
@@ -427,9 +442,11 @@ const AdminPage = () => {
       return (
         <>
           <header className="App-header">
-            <div className="header-title-with-logo">
-              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-              <h1>Zeiterfassung RK Schmalegg</h1>
+            <div className="header-content">
+              <div className="header-title-with-logo">
+                <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+                <h1>Eventmanager RK Schmalegg</h1>
+              </div>
             </div>
           </header>
           <main className="App-main">
@@ -447,9 +464,11 @@ const AdminPage = () => {
     return (
       <>
         <header className="App-header">
-          <div className="header-title-with-logo">
-            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-            <h1>Zeiterfassung RK Schmalegg</h1>
+          <div className="header-content">
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Eventmanager RK Schmalegg</h1>
+            </div>
           </div>
         </header>
         <main className="App-main">
@@ -470,7 +489,7 @@ const AdminPage = () => {
         <div className="header-content">
           <div className="header-title-with-logo">
             <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-            <h1>Zeiterfassung RK Schmalegg - Admin</h1>
+            <h1>Eventmanager RK Schmalegg</h1>
           </div>
           <div className="header-actions">
             <nav className="main-nav">

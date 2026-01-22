@@ -1,0 +1,157 @@
+/* Participants Overview Table */
+.participants-overview {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.participants-overview h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 22px;
+  text-align: center;
+}
+
+/* Table grouping headers */
+.table-date-section {
+  margin-bottom: 40px;
+}
+
+.table-date-section:last-child {
+  margin-bottom: 0;
+}
+
+.table-date-header {
+  margin: 0 0 20px 0;
+  padding: 10px 15px;
+  background: #f8f9fa;
+  color: #333;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  border: 2px solid #e9ecef;
+}
+
+.table-category-section {
+  margin-bottom: 25px;
+}
+
+.table-category-section:last-child {
+  margin-bottom: 0;
+}
+
+.table-category-header {
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  background: #333;
+  color: #f6ce38;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.overview-table-container {
+  overflow-x: auto;
+  margin-bottom: 15px;
+}
+
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.overview-table thead {
+  background: #333;
+  color: #f6ce38;
+}
+
+.overview-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+}
+
+.overview-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+  color: #495057;
+}
+
+.overview-table .accepted-row {
+  background-color: #f8fff9;
+}
+
+.overview-table .declined-row {
+  background-color: #fff5f5;
+  opacity: 0.7;
+}
+
+.overview-table .empty-slot td {
+  font-style: italic;
+  color: #95a5a6;
+}
+
+.overview-table .no-participants {
+  text-align: center;
+  font-style: italic;
+  color: #95a5a6;
+}
+
+.overview-table .capacity {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e9ecef;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #495057;
+}
+
+.overview-table .full-badge-small {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 8px;
+  background: #dc3545;
+  color: white;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Column sizing */
+.overview-table .col-zeitslot {
+  width: 25%;
+}
+
+.overview-table .col-zeit {
+  width: 20%;
+}
+
+.overview-table .col-belegung {
+  width: 15%;
+}
+
+.overview-table .col-teilnehmer {
+  width: 40%;
+}
+
+@media (max-width: 768px) {
+  .participants-overview {
+    padding: 20px;
+  }
+
+  .overview-table-container {
+    overflow-x: scroll;
+  }
+
+  .overview-table th,
+  .overview-table td {
+    padding: 10px;
+    font-size: 12px;
+  }
+}

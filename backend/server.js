@@ -15,7 +15,7 @@ app.use(express.json()) // Parse JSON request bodies
 
 // Basic health check
 app.get('/', (req, res) => {
-  res.json({ message: 'RK Schmalegg Zeiterfassung API Server läuft!' })
+  res.json({ message: 'RK Schmalegg Eventmanager API Server läuft!' })
 })
 
 // Get all events (with optional status filter)
