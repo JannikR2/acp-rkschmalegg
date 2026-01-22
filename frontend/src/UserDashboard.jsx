@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { EventUtils } from './apiService';
 import './UserDashboard.css';
 
@@ -6,6 +7,9 @@ const LOGO_URL = 'https://tse4.mm.bing.net/th/id/OIP.UORK-u3V7UVpyTeEcb0y_QHaHa?
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 const UserDashboard = ({ user, onLogout }) => {
+  const navigate = useNavigate();
+  const { userId, eventId } = useParams();
+  const location = useLocation();
   const [events, setEvents] = useState([]);
   const [timeSlotParticipation, setTimeSlotParticipation] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,6 +22,28 @@ const UserDashboard = ({ user, onLogout }) => {
       fetchEvents();
     }
   }, [user]);
+
+  useEffect(() => {
+    // Load specific event when eventId is in URL
+    if (eventId && events.length > 0) {
+      console.log('Looking for eventId:', eventId, 'type:', typeof eventId);
+      console.log('Available events:', events.map(e => ({ id: e.id, type: typeof e.id, name: e.name })));
+      
+      // Try both string and number comparison since URL params are strings
+      const event = events.find(e => e.id == eventId || e.id === eventId || String(e.id) === String(eventId));
+      
+      if (event) {
+        console.log('Found event:', event);
+        setSelectedEvent(event);
+      } else {
+        console.log('Event not found with ID:', eventId);
+        setError('Event nicht gefunden');
+        navigate(`/user/${userId}`);
+      }
+    } else {
+      setSelectedEvent(null);
+    }
+  }, [eventId, events, userId, navigate]);
 
   const fetchEvents = async () => {
     try {
@@ -133,11 +159,20 @@ const UserDashboard = ({ user, onLogout }) => {
   };
 
   const handleEventClick = (event) => {
-    setSelectedEvent(event);
+    if (!event || !event.id) {
+      setError('Event nicht gefunden');
+      return;
+    }
+    console.log('Clicking event:', event.id, 'type:', typeof event.id);
+    navigate(`/user/${userId}/events/${event.id}`);
   };
 
   const handleBackToList = () => {
-    setSelectedEvent(null);
+    navigate(`/user/${userId}`);
+  };
+
+  const handleLogout = () => {
+    navigate('/');
   };
 
   const getAvailableYears = () => {
@@ -152,8 +187,54 @@ const UserDashboard = ({ user, onLogout }) => {
     });
   };
 
-  // If an event is selected, show the detail view
-  if (selectedEvent) {
+  // Determine current view based on URL
+  const getCurrentView = () => {
+    return eventId ? 'details' : 'list';
+  };
+
+  const currentView = getCurrentView();
+
+  // If an event is selected (URL has eventId), show the detail view
+  if (currentView === 'details') {
+    if (!selectedEvent && !loading) {
+      return (
+        <div className="user-dashboard">
+          <div className="dashboard-header">
+            <div className="user-info">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Willkommen, {user.fullName}!</h1>
+            </div>
+            <button className="logout-button" onClick={handleLogout}>
+              Abmelden
+            </button>
+          </div>
+          <div className="error-message">
+            Event nicht gefunden
+            <button className="back-button" onClick={handleBackToList}>
+              ← Zurück zur Übersicht
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (!selectedEvent && loading) {
+      return (
+        <div className="user-dashboard">
+          <div className="dashboard-header">
+            <div className="user-info">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Willkommen, {user.fullName}!</h1>
+            </div>
+            <button className="logout-button" onClick={handleLogout}>
+              Abmelden
+            </button>
+          </div>
+          <div>Event wird geladen...</div>
+        </div>
+      );
+    }
+
     const eventTimeSlots = getTimeSlotsForEvent(selectedEvent.id);
     
     return (
@@ -163,7 +244,7 @@ const UserDashboard = ({ user, onLogout }) => {
             <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
             <h1>Willkommen, {user.fullName}!</h1>
           </div>
-          <button className="logout-button" onClick={onLogout}>
+          <button className="logout-button" onClick={handleLogout}>
             Abmelden
           </button>
         </div>
@@ -461,7 +542,7 @@ const UserDashboard = ({ user, onLogout }) => {
           <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
           <h1>Willkommen, {user.fullName}!</h1>
         </div>
-        <button className="logout-button" onClick={onLogout}>
+        <button className="logout-button" onClick={handleLogout}>
           Abmelden
         </button>
       </div>
