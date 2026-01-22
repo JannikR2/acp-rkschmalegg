@@ -194,21 +194,23 @@ const UserDashboard = ({ user, onLogout }) => {
   if (currentView === 'details') {
     if (!selectedEvent && !loading) {
       return (
-        <div className="user-dashboard">
-          <div className="dashboard-header">
-            <div className="user-info">
-              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-              <h1>Willkommen, {user.fullName}!</h1>
+        <div className="user-dashboard-background">
+          <div className="user-dashboard">
+            <div className="dashboard-header">
+              <div className="user-info">
+                <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+                <h1>Willkommen, {user.fullName}!</h1>
+              </div>
+              <button className="logout-button" onClick={handleLogout}>
+                Abmelden
+              </button>
             </div>
-            <button className="logout-button" onClick={handleLogout}>
-              Abmelden
-            </button>
-          </div>
-          <div className="error-message">
-            Event nicht gefunden
-            <button className="back-button" onClick={handleBackToList}>
-              ← Zurück zur Übersicht
-            </button>
+            <div className="error-message">
+              Event nicht gefunden
+              <button className="back-button" onClick={handleBackToList}>
+                ← Zurück zur Übersicht
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -216,17 +218,19 @@ const UserDashboard = ({ user, onLogout }) => {
 
     if (!selectedEvent && loading) {
       return (
-        <div className="user-dashboard">
-          <div className="dashboard-header">
-            <div className="user-info">
-              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-              <h1>Willkommen, {user.fullName}!</h1>
+        <div className="user-dashboard-background">
+          <div className="user-dashboard">
+            <div className="dashboard-header">
+              <div className="user-info">
+                <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+                <h1>Willkommen, {user.fullName}!</h1>
+              </div>
+              <button className="logout-button" onClick={handleLogout}>
+                Abmelden
+              </button>
             </div>
-            <button className="logout-button" onClick={handleLogout}>
-              Abmelden
-            </button>
+            <div>Event wird geladen...</div>
           </div>
-          <div>Event wird geladen...</div>
         </div>
       );
     }
@@ -234,7 +238,8 @@ const UserDashboard = ({ user, onLogout }) => {
     const eventTimeSlots = getTimeSlotsForEvent(selectedEvent.id);
     
     return (
-      <div className="user-dashboard">
+      <div className="user-dashboard-background">
+        <div className="user-dashboard">
         <div className="dashboard-header">
           <div className="user-info">
             <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
@@ -270,7 +275,6 @@ const UserDashboard = ({ user, onLogout }) => {
           {/* Zeitslots zum Anmelden */}
           {eventTimeSlots.length > 0 && (
             <div className="timeslots-signup-section">
-              <h3> Verfügbare Zeitslots - Jetzt anmelden!</h3>
               {(() => {
                 // First group by date, then by category
                 const groupedByDate = eventTimeSlots.reduce((acc, timeSlot) => {
@@ -437,23 +441,16 @@ const UserDashboard = ({ user, onLogout }) => {
                               <table className="overview-table">
                                 <thead>
                                   <tr>
-                                    <th>Zeitslot</th>
-                                    <th>Zeit</th>
-                                    <th>Belegung</th>
-                                    <th>Teilnehmer</th>
-                                    <th>Status</th>
+                                    <th className="col-zeitslot">Zeitslot</th>
+                                    <th className="col-zeit">Zeit</th>
+                                    <th className="col-belegung">Belegung</th>
+                                    <th className="col-teilnehmer">Teilnehmer</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {slots.map((timeSlot) => {
-                      // Fetch participants for this timeslot
-                      const timeSlotData = timeSlotParticipation.find(
-                        p => p.eventId === selectedEvent.id && p.timeSlotId === timeSlot.id
-                      );
-                      
-                      // Get participants from the timeSlot data
+                      const acceptedParticipants = timeSlot.participants?.filter(p => p.status === 'accepted') || [];
                       const allParticipants = timeSlot.participants || [];
-                      const acceptedParticipants = allParticipants.filter(p => p.status === 'accepted');
                       
                       if (allParticipants.length === 0) {
                         return (
@@ -463,7 +460,7 @@ const UserDashboard = ({ user, onLogout }) => {
                             <td>
                               <span className="capacity">0 / {timeSlot.maxParticipants}</span>
                             </td>
-                            <td colSpan="2" className="no-participants">
+                            <td colSpan="1" className="no-participants">
                               <em>Noch keine Teilnehmer</em>
                             </td>
                           </tr>
@@ -491,12 +488,9 @@ const UserDashboard = ({ user, onLogout }) => {
                             </>
                           )}
                           <td>
-                            <strong>{participant.person?.fullName || participant.person?.firstName + ' ' + participant.person?.lastName || 'Unbekannt'}</strong>
-                          </td>
-                          <td>
-                            <span className={`status-badge status-${participant.status}`}>
-                              {participant.status === 'accepted' ? '✓ Zugesagt' : '✗ Abgesagt'}
-                            </span>
+                            <div className="participant-info">
+                              <strong>{participant.person?.fullName || participant.person?.firstName + ' ' + participant.person?.lastName || 'Unbekannt'}</strong>
+                            </div>
                           </td>
                         </tr>
                       ));
@@ -515,71 +509,76 @@ const UserDashboard = ({ user, onLogout }) => {
           )}
         </div>
       </div>
+      </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="user-dashboard">
-        <div className="dashboard-header">
-          <h1>Lade Dashboard...</h1>
+      <div className="user-dashboard-background">
+        <div className="user-dashboard">
+          <div className="dashboard-header">
+            <h1>Lade Dashboard...</h1>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="user-dashboard">
-      <div className="dashboard-header">
-        <div className="user-info">
-          <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
-          <h1>Willkommen, {user.fullName}!</h1>
+    <div className="user-dashboard-background">
+      <div className="user-dashboard">
+        <div className="dashboard-header">
+          <div className="user-info">
+            <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+            <h1>Willkommen, {user.fullName}!</h1>
+          </div>
+          <button className="logout-button" onClick={handleLogout}>
+            Abmelden
+          </button>
         </div>
-        <button className="logout-button" onClick={handleLogout}>
-          Abmelden
-        </button>
-      </div>
 
-      {error && <div className="error-message">{error}</div>}
+        {error && <div className="error-message">{error}</div>}
 
-      {/* Year Filter */}
-      <div className="year-filter-section">
-        <label htmlFor="user-year-select">Jahr:</label>
-        <select 
-          id="user-year-select"
-          value={selectedYear} 
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
-          className="year-select"
-        >
-          {getAvailableYears().map(year => (
-            <option key={year} value={year}>{year}</option>
-          ))}
-        </select>
-      </div>
+        {/* Year Filter */}
+        <div className="year-filter-section">
+          <label htmlFor="user-year-select">Jahr:</label>
+          <select 
+            id="user-year-select"
+            value={selectedYear} 
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            className="year-select"
+          >
+            {getAvailableYears().map(year => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+          </select>
+        </div>
 
-      <div className="events-grid">
-        {getFilteredEvents().map((event) => {
-          return (
-            <div key={event.id} className="event-card" onClick={() => handleEventClick(event)}>
-              <div className="event-header">
-                <h3>{event.name}</h3>
-              </div>
-              
-              <div className="event-details">
-                <div className="event-date">
-                  📅 {EventUtils.getDateRange(event.dateFrom, event.dateTo)}
+        <div className="events-grid">
+          {getFilteredEvents().map((event) => {
+            return (
+              <div key={event.id} className="event-card" onClick={() => handleEventClick(event)}>
+                <div className="event-header">
+                  <h3>{event.name}</h3>
                 </div>
-                <div className="event-location">
-                  📍 {event.location}
-                </div>
-                <div className="event-description">
-                  {event.description}
+                
+                <div className="event-details">
+                  <div className="event-date">
+                    📅 {EventUtils.getDateRange(event.dateFrom, event.dateTo)}
+                  </div>
+                  <div className="event-location">
+                    📍 {event.location}
+                  </div>
+                  <div className="event-description">
+                    {event.description}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
+            );
         })}
       </div>
+    </div>
     </div>
   );
 };

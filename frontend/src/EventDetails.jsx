@@ -214,94 +214,9 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
       <div className="event-details-content">
         <EventCard event={event} />
         
-        {/* Zeitslots Display */}
-        {event.timeSlots && event.timeSlots.length > 0 && (
-          <div className="timeslots-display">
-            <h3>Zeitslots</h3>
-            <div className="timeslots-grid">
-              {(() => {
-                // First group by date, then by category
-                const groupedByDate = event.timeSlots.reduce((acc, timeSlot) => {
-                  const date = timeSlot.date || event.dateFrom;
-                  if (!acc[date]) {
-                    acc[date] = {};
-                  }
-                  const category = timeSlot.category || 'Ohne Kategorie';
-                  if (!acc[date][category]) {
-                    acc[date][category] = [];
-                  }
-                  acc[date][category].push(timeSlot);
-                  return acc;
-                }, {});
-
-                // Sort dates chronologically
-                const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
-                  return a.localeCompare(b);
-                });
-
-                return sortedDates.map(date => {
-                  const categories = groupedByDate[date];
-                  const sortedCategories = Object.keys(categories).sort();
-
-                  return (
-                    <div key={date} className="timeslot-date-section">
-                      <h3 className="date-header">
-                        {new Date(date).toLocaleDateString('de-DE', { 
-                          weekday: 'long', 
-                          year: 'numeric', 
-                          month: 'long', 
-                          day: 'numeric' 
-                        })}
-                      </h3>
-                      
-                      {sortedCategories.map(category => {
-                        const slots = categories[category];
-                        
-                        // Sort slots by time within each category
-                        const sortedSlots = slots.sort((a, b) => {
-                          return a.timeFrom.localeCompare(b.timeFrom);
-                        });
-                        
-                        return (
-                          <div key={category} className="timeslot-category-group">
-                            <h4 className="category-title">{category}</h4>
-                            {sortedSlots.map((timeSlot) => (
-                              <div key={timeSlot.id} className="timeslot-card">
-                                <div 
-                                  className="timeslot-header clickable" 
-                                  onClick={() => handleTimeSlotClick(timeSlot)}
-                                  title="Zeitslot bearbeiten"
-                                >
-                                  <h4>{timeSlot.name}</h4>
-                                  <span className="timeslot-time">{timeSlot.timeFrom} - {timeSlot.timeTo}</span>
-                                </div>
-                                <div 
-                                  className="timeslot-participants clickable"
-                                  onClick={() => handleParticipantsClick(timeSlot)}
-                                  title="Teilnehmer verwalten"
-                                >
-                                  <span className="participant-count">
-                                    {timeSlot.participants?.length || 0} / {timeSlot.maxParticipants} Teilnehmer
-                                  </span>
-                                  {timeSlot.isFull && <span className="full-badge">Voll</span>}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                });
-              })()}
-            </div>
-          </div>
-        )}
-
-        {/* Detailed Participants Overview Table */}
         {event.timeSlots && event.timeSlots.length > 0 && (
           <div className="participants-overview">
-            <h3>Detaillierte Übersicht - Zeitslots & Teilnehmer</h3>
+            <h3>Zeitslots & Teilnehmer</h3>
             {(() => {
               // Group by date first, then by category
               const groupedByDate = event.timeSlots.reduce((acc, timeSlot) => {

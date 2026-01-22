@@ -3,18 +3,27 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #333;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url('/login-background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   padding: 20px;
+  margin: 0;
 }
 
 .login-box {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   border-radius: 15px;
   padding: 40px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   max-width: 600px;
   width: 100%;
   text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .login-header {
@@ -84,7 +93,8 @@
   border-radius: 8px;
   font-size: 16px;
   transition: all 0.2s ease;
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(5px);
 }
 
 .login-input:focus {
@@ -98,14 +108,15 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   border: 2px solid #e9ecef;
   border-top: none;
   border-radius: 0 0 8px 8px;
   max-height: 200px;
   overflow-y: auto;
   z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .suggestion-item {
@@ -164,7 +175,7 @@
 @media (max-width: 768px) {
   .login-box {
     padding: 30px 20px;
-    margin: 20px;
+    margin: 0;
   }
 
   .persons-grid {
