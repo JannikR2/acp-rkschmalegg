@@ -3,6 +3,7 @@ import { EventUtils } from './apiService';
 import './UserDashboard.css';
 
 const LOGO_URL = 'https://tse4.mm.bing.net/th/id/OIP.UORK-u3V7UVpyTeEcb0y_QHaHa?rs=1&pid=ImgDetMain&o=7&rm=3';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 const UserDashboard = ({ user, onLogout }) => {
   const [events, setEvents] = useState([]);
@@ -22,7 +23,7 @@ const UserDashboard = ({ user, onLogout }) => {
     try {
       setLoading(true);
       // Only fetch published events for regular users
-      const eventsResponse = await fetch('http://localhost:3000/api/events?status=published');
+      const eventsResponse = await fetch(`${API_BASE_URL}/api/events?status=published`);
       const eventsResult = await eventsResponse.json();
       
       if (eventsResult.success) {
@@ -45,14 +46,14 @@ const UserDashboard = ({ user, onLogout }) => {
     for (const event of eventsList) {
       try {
         // First get the timeslots for this event
-        const timeSlotsResponse = await fetch(`http://localhost:3000/api/events/${event.id}/timeslots`);
+        const timeSlotsResponse = await fetch(`${API_BASE_URL}/api/events/${event.id}/timeslots`);
         const timeSlotsResult = await timeSlotsResponse.json();
         
         if (timeSlotsResult.success && timeSlotsResult.data.length > 0) {
           // For each timeslot, get participation data
           for (const timeSlot of timeSlotsResult.data) {
             try {
-              const participationResponse = await fetch(`http://localhost:3000/api/events/${event.id}/timeslots/${timeSlot.id}/participation`);
+              const participationResponse = await fetch(`${API_BASE_URL}/api/events/${event.id}/timeslots/${timeSlot.id}/participation`);
               const participationResult = await participationResponse.json();
               
               if (participationResult.success) {
@@ -89,7 +90,7 @@ const UserDashboard = ({ user, onLogout }) => {
 
   const updateTimeSlotParticipation = async (eventId, timeSlotId, status) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/events/${eventId}/timeslots/${timeSlotId}/participation`, {
+      const response = await fetch(`${API_BASE_URL}/api/events/${eventId}/timeslots/${timeSlotId}/participation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

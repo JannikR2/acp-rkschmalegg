@@ -1,13 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_ENDPOINTS = {
+  base: `${API_BASE_URL}/api`
+};
 
 // API service for handling all backend communication
 class ApiService {
   // Get all events (with optional status filter)
   async getAllEvents(status = null) {
     try {
-      const url = status ? `${API_BASE_URL}/events?status=${status}` : `${API_BASE_URL}/events`;
+      const url = status ? `${API_ENDPOINTS.base}/events?status=${status}` : `${API_ENDPOINTS.base}/events`;
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
@@ -19,7 +22,7 @@ class ApiService {
   // Get specific event by ID
   async getEventById(id) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/events/${id}`);
+      const response = await axios.get(`${API_ENDPOINTS.base}/events/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching event:', error);
@@ -30,7 +33,7 @@ class ApiService {
   // Create new event
   async createEvent(eventData) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/events`, eventData);
+      const response = await axios.post(`${API_ENDPOINTS.base}/events`, eventData);
       return response.data;
     } catch (error) {
       console.error('Error creating event:', error);
@@ -41,7 +44,7 @@ class ApiService {
   // Update existing event
   async updateEvent(id, eventData) {
     try {
-      const response = await axios.put(`${API_BASE_URL}/events/${id}`, eventData);
+      const response = await axios.put(`${API_ENDPOINTS.base}/events/${id}`, eventData);
       return response.data;
     } catch (error) {
       console.error('Error updating event:', error);
