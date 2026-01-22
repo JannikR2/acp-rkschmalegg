@@ -434,6 +434,23 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95em;
+  table-layout: fixed;
+}
+
+.overview-table th.col-zeitslot {
+  width: 25%;
+}
+
+.overview-table th.col-zeit {
+  width: 20%;
+}
+
+.overview-table th.col-belegung {
+  width: 15%;
+}
+
+.overview-table th.col-teilnehmer {
+  width: 40%;
 }
 
 .participants-overview .overview-table thead {
@@ -453,6 +470,22 @@
   padding: 12px 16px;
   border-bottom: 1px solid #e0e0e0;
   vertical-align: top;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: left;
+}
+
+.overview-table td.col-zeitslot,
+.overview-table td.col-zeit,
+.overview-table td.col-belegung {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overview-table td.col-teilnehmer {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .overview-table tbody tr:hover {
@@ -535,7 +568,7 @@
 }
 
 .no-participants {
-  text-align: center;
+  text-align: left !important;
   color: #95a5a6;
   font-style: italic;
   padding: 20px !important;

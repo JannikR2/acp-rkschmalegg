@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import apiService from '../apiService';
 import EventListItem from '../EventListItem';
 import EventDetails from '../EventDetails';
@@ -13,19 +13,76 @@ const LOGO_URL = 'https://tse4.mm.bing.net/th/id/OIP.UORK-u3V7UVpyTeEcb0y_QHaHa?
 
 const AdminPage = () => {
   const navigate = useNavigate();
+  const { eventId, timeslotId } = useParams();
+  const location = useLocation();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [selectedTimeSlotState, setSelectedTimeSlotState] = useState(null);
   const [showParticipants, setShowParticipants] = useState(false);
-  const [currentView, setCurrentView] = useState('list');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
+  // Determine current view based on URL path
+  const getCurrentView = () => {
+    const path = location.pathname;
+    if (path.includes('/persons')) return 'persons';
+    if (path.includes('/create')) return 'create';
+    if (path.includes('/edit')) return 'edit';
+    if (path.includes('/timeslots')) return 'timeslots';
+    if (eventId) return 'details';
+    return 'list';
+  };
+
+  const currentView = getCurrentView();
+
   useEffect(() => {
     loadEvents();
   }, [selectedYear]);
+
+  useEffect(() => {
+    // Load specific event when eventId is in URL
+    if (eventId && events.length > 0) {
+      loadEventById(eventId);
+    } else {
+      setSelectedEvent(null);
+    }
+  }, [eventId, events]);
+
+  useEffect(() => {
+    // Handle timeslot-specific logic
+    if (timeslotId && selectedEvent) {
+      const timeSlot = selectedEvent.timeSlots?.find(ts => ts.id === timeslotId);
+      if (timeSlot) {
+        setSelectedTimeSlot(timeSlot);
+        if (location.pathname.includes('/participants')) {
+          setShowParticipants(true);
+          setSelectedTimeSlotState(timeSlot);
+        }
+      }
+    } else {
+      setSelectedTimeSlot(null);
+      setShowParticipants(false);
+      setSelectedTimeSlotState(null);
+    }
+  }, [timeslotId, selectedEvent, location.pathname]);
+
+  const loadEventById = async (id) => {
+    try {
+      const response = await apiService.getEventById(id);
+      if (response.success) {
+        setSelectedEvent(response.data);
+      } else {
+        setError('Event nicht gefunden');
+        navigate('/admin');
+      }
+    } catch (error) {
+      console.error('Error loading event:', error);
+      setError('Fehler beim Laden des Events');
+      navigate('/admin');
+    }
+  };
 
   const loadEvents = async () => {
     try {
@@ -62,8 +119,7 @@ const AdminPage = () => {
   }
 
   const handleEventClick = (event) => {
-    setSelectedEvent(event);
-    setCurrentView('details');
+    navigate(`/admin/events/${event.id}`);
   };
 
   const handleLogout = () => {
@@ -71,18 +127,24 @@ const AdminPage = () => {
   };
 
   const handleNavigationClick = (view) => {
-    setCurrentView(view);
-    setSelectedEvent(null);
+    if (view === 'list') {
+      navigate('/admin');
+    } else if (view === 'persons') {
+      navigate('/admin/persons');
+    }
     setError(null);
   };
 
   const handleBackToList = () => {
-    setSelectedEvent(null);
-    setCurrentView('list');
+    navigate('/admin');
   };
 
   const handleBackToEventDetails = () => {
-    setCurrentView('details');
+    if (selectedEvent) {
+      navigate(`/admin/events/${selectedEvent.id}`);
+    } else {
+      navigate('/admin');
+    }
   };
 
   const handlePersonSelect = (person) => {
@@ -102,7 +164,7 @@ const AdminPage = () => {
       
       if (response.success) {
         await loadEvents();
-        setCurrentView('list');
+        navigate('/admin');
       } else {
         setError('Fehler beim Erstellen des Events');
       }
@@ -113,8 +175,11 @@ const AdminPage = () => {
   };
 
   const handleUpdateEvent = (event) => {
-    setSelectedEvent(event);
-    setCurrentView('edit');
+    if (!event || !event.id) {
+      setError('Event nicht gefunden');
+      return;
+    }
+    navigate(`/admin/events/${event.id}/edit`);
   };
 
   const handleSaveUpdatedEvent = async (eventData, status = null) => {
@@ -129,7 +194,7 @@ const AdminPage = () => {
       
       if (response.success) {
         await loadEvents();
-        setCurrentView('list');
+        navigate(`/admin/events/${selectedEvent.id}`);
       } else {
         setError('Fehler beim Aktualisieren des Events');
       }
@@ -146,7 +211,7 @@ const AdminPage = () => {
       
       if (response.success) {
         await loadEvents();
-        setCurrentView('list');
+        navigate('/admin');
       } else {
         setError('Fehler beim Löschen des Events');
       }
@@ -157,13 +222,14 @@ const AdminPage = () => {
   };
 
   const handleManageTimeSlots = (event) => {
-    setSelectedEvent(event);
-    setCurrentView('timeslots');
+    if (!event || !event.id) {
+      setError('Event nicht gefunden');
+      return;
+    }
+    navigate(`/admin/events/${event.id}/timeslots`);
   };
 
   const handleBackFromTimeSlots = async () => {
-    setSelectedTimeSlot(null);
-    setCurrentView('details');
     // Refresh the selected event data to show updates
     if (selectedEvent?.id) {
       try {
@@ -176,23 +242,26 @@ const AdminPage = () => {
       } catch (error) {
         console.error('Error refreshing event data:', error);
       }
+      navigate(`/admin/events/${selectedEvent.id}`);
+    } else {
+      navigate('/admin');
     }
   };
 
   const handleEditTimeSlot = (event, timeSlot) => {
-    setSelectedEvent(event);
-    setSelectedTimeSlot(timeSlot);
-    setSelectedTimeSlotState(null); // Clear participants state
-    setShowParticipants(false); // Ensure we're not showing participants
-    setCurrentView('timeslots');
+    if (!event || !event.id || !timeSlot || !timeSlot.id) {
+      setError('Event oder Zeitslot nicht gefunden');
+      return;
+    }
+    navigate(`/admin/events/${event.id}/timeslots/${timeSlot.id}`);
   };
 
   const handleManageParticipantsFromDetails = (event, timeSlot) => {
-    setSelectedEvent(event);
-    setSelectedTimeSlot(null); // Clear edit state
-    setSelectedTimeSlotState(timeSlot);
-    setShowParticipants(true);
-    setCurrentView('timeslots');
+    if (!event || !event.id || !timeSlot || !timeSlot.id) {
+      setError('Event oder Zeitslot nicht gefunden');
+      return;
+    }
+    navigate(`/admin/events/${event.id}/timeslots/${timeSlot.id}/participants`);
   };
 
   if (loading) {
@@ -209,6 +278,27 @@ const AdminPage = () => {
   }
 
   if (currentView === 'details') {
+    if (!selectedEvent) {
+      return (
+        <>
+          <header className="App-header">
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Zeiterfassung RK Schmalegg</h1>
+            </div>
+          </header>
+          <main className="App-main">
+            <div className="error-message">
+              Event nicht gefunden
+            </div>
+            <button onClick={handleBackToList} className="back-button">
+              ← Zurück zur Übersicht
+            </button>
+          </main>
+        </>
+      );
+    }
+
     return (
       <>
         <header className="App-header">
@@ -223,7 +313,7 @@ const AdminPage = () => {
             onBack={handleBackToList}
             onUpdate={handleUpdateEvent}
             onDelete={handleDeleteEvent}
-            onManageTimeSlots={() => handleManageTimeSlots(selectedEvent)}
+            onManageTimeSlots={() => selectedEvent && handleManageTimeSlots(selectedEvent)}
             onEditTimeSlot={handleEditTimeSlot}
             onManageParticipants={handleManageParticipantsFromDetails}
           />
@@ -233,6 +323,27 @@ const AdminPage = () => {
   }
 
   if (currentView === 'timeslots') {
+    if (!selectedEvent) {
+      return (
+        <>
+          <header className="App-header">
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Zeiterfassung RK Schmalegg</h1>
+            </div>
+          </header>
+          <main className="App-main">
+            <div className="error-message">
+              Event nicht gefunden
+            </div>
+            <button onClick={handleBackToList} className="back-button">
+              ← Zurück zur Übersicht
+            </button>
+          </main>
+        </>
+      );
+    }
+
     return (
       <>
         <header className="App-header">
@@ -312,6 +423,27 @@ const AdminPage = () => {
   }
 
   if (currentView === 'edit') {
+    if (!selectedEvent) {
+      return (
+        <>
+          <header className="App-header">
+            <div className="header-title-with-logo">
+              <img src={LOGO_URL} alt="RK Schmalegg Logo" className="header-logo" />
+              <h1>Zeiterfassung RK Schmalegg</h1>
+            </div>
+          </header>
+          <main className="App-main">
+            <div className="error-message">
+              Event nicht gefunden
+            </div>
+            <button onClick={handleBackToList} className="back-button">
+              ← Zurück zur Übersicht
+            </button>
+          </main>
+        </>
+      );
+    }
+
     return (
       <>
         <header className="App-header">
@@ -386,7 +518,7 @@ const AdminPage = () => {
                 </select>
               </div>
             </div>
-            <button className="add-event-button" onClick={() => setCurrentView('create')}>
+            <button className="add-event-button" onClick={() => navigate('/admin/events/create')}>
               + Neues Event
             </button>
           </div>
