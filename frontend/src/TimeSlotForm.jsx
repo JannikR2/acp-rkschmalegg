@@ -246,8 +246,6 @@ const TimeSlotForm = ({ onSave, onCancel, timeSlot, isEditing = false, presetCat
                     id={`date-${index}`}
                     value={slot.date || ''}
                     onChange={(e) => updateTimeSlot(index, 'date', e.target.value)}
-                    min={event.dateFrom}
-                    max={event.dateTo || event.dateFrom}
                     className={errors[`${index}-date`] ? 'error' : ''}
                   />
                   {!slot.date && (

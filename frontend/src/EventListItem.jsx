@@ -24,11 +24,6 @@ const EventListItem = ({ event, onClick, isAdmin = false }) => {
         </div>
         
         <div className="event-list-detail">
-          <span className="detail-icon">🕐</span>
-          <span>{EventUtils.getTimeRange(event.timeFrom, event.timeTo)}</span>
-        </div>
-        
-        <div className="event-list-detail">
           <span className="detail-icon">📍</span>
           <span>{event.location}</span>
         </div>

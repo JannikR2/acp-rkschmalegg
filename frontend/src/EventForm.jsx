@@ -8,8 +8,6 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
     description: '',
     dateFrom: '',
     dateTo: '',
-    timeFrom: '',
-    timeTo: '',
     location: ''
   });
 
@@ -26,8 +24,6 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
         description: event.description || '',
         dateFrom: event.dateFrom || '',
         dateTo: event.dateTo || '',
-        timeFrom: event.timeFrom || '',
-        timeTo: event.timeTo || '',
         location: event.location || ''
       });
       
@@ -58,8 +54,6 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
     if (!formData.name.trim()) newErrors.name = 'Name ist erforderlich';
     if (!formData.description.trim()) newErrors.description = 'Beschreibung ist erforderlich';
     if (!formData.dateFrom) newErrors.dateFrom = 'Startdatum ist erforderlich';
-    if (!formData.timeFrom) newErrors.timeFrom = 'Startzeit ist erforderlich';
-    if (!formData.timeTo) newErrors.timeTo = 'Endzeit ist erforderlich';
     if (!formData.location.trim()) newErrors.location = 'Ort ist erforderlich';
 
     // If dateTo is not provided, use dateFrom
@@ -70,27 +64,12 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
       }));
     }
 
-    // Validate time and date range
-    if (formData.timeFrom && formData.timeTo) {
-      const [fromHour, fromMin] = formData.timeFrom.split(':').map(Number);
-      const [toHour, toMin] = formData.timeTo.split(':').map(Number);
-      
-      const fromMinutes = fromHour * 60 + fromMin;
-      const toMinutes = toHour * 60 + toMin;
-      
-      // Check if end date is before start date
-      const startDate = new Date(formData.dateFrom);
-      const endDate = new Date(formData.dateTo || formData.dateFrom);
-      
-      if (endDate < startDate) {
-        newErrors.dateTo = 'Enddatum muss nach dem Startdatum liegen';
-      }
-
-      // Check time range only if it's the same day
-      const isSameDay = formData.dateFrom === (formData.dateTo || formData.dateFrom);
-      if (isSameDay && toMinutes <= fromMinutes) {
-        newErrors.timeTo = 'Endzeit muss nach der Startzeit liegen';
-      }
+    // Validate date range
+    const startDate = new Date(formData.dateFrom);
+    const endDate = new Date(formData.dateTo || formData.dateFrom);
+    
+    if (endDate < startDate) {
+      newErrors.dateTo = 'Enddatum muss nach dem Startdatum liegen';
     }
 
     // Validate time slots
@@ -295,34 +274,6 @@ const EventForm = ({ event, onSave, onCancel, isEditing = false }) => {
               onChange={handleChange}
               placeholder="Optional (falls mehrtägig)"
             />
-          </div>
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="timeFrom">Startzeit *</label>
-            <input
-              type="time"
-              id="timeFrom"
-              name="timeFrom"
-              value={formData.timeFrom}
-              onChange={handleChange}
-              className={errors.timeFrom ? 'error' : ''}
-            />
-            {errors.timeFrom && <span className="error-text">{errors.timeFrom}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="timeTo">Endzeit *</label>
-            <input
-              type="time"
-              id="timeTo"
-              name="timeTo"
-              value={formData.timeTo}
-              onChange={handleChange}
-              className={errors.timeTo ? 'error' : ''}
-            />
-            {errors.timeTo && <span className="error-text">{errors.timeTo}</span>}
           </div>
         </div>
 
