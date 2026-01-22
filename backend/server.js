@@ -4,7 +4,7 @@ import * as dataService from './data.js'
 import * as userService from './userManagement.js'
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: true, // Allow all origins for now - can be restricted later
   optionsSuccessStatus: 200,
 }
 
@@ -420,8 +420,10 @@ app.post('/api/events/:eventId/timeslots/:timeSlotId/participation', (req, res) 
   }
 })
 
-app.listen(3000, () => {
-  console.log('Server running on port 3000')
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
   console.log('API Endpoints:')
   console.log('  Events:')
   console.log('    GET    /api/events         - Alle Events abrufen')
