@@ -127,10 +127,6 @@ const UserDashboard = ({ user, onLogout }) => {
       .map(p => p.timeSlot);
   };
 
-  const formatTime = (timeString) => {
-    return timeString.substring(0, 5);
-  };
-
   const handleEventClick = (event) => {
     setSelectedEvent(event);
   };
@@ -179,9 +175,6 @@ const UserDashboard = ({ user, onLogout }) => {
             <div className="event-info">
               <div className="event-date">
                 📅 {EventUtils.getDateRange(selectedEvent.dateFrom, selectedEvent.dateTo)}
-              </div>
-              <div className="event-time">
-                🕐 {formatTime(selectedEvent.timeFrom)} - {formatTime(selectedEvent.timeTo)}
               </div>
               <div className="event-location">
                 📍 {selectedEvent.location}
@@ -493,9 +486,6 @@ const UserDashboard = ({ user, onLogout }) => {
               <div className="event-details">
                 <div className="event-date">
                   📅 {EventUtils.getDateRange(event.dateFrom, event.dateTo)}
-                </div>
-                <div className="event-time">
-                  🕐 {formatTime(event.timeFrom)} - {formatTime(event.timeTo)}
                 </div>
                 <div className="event-location">
                   📍 {event.location}
