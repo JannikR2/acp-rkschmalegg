@@ -348,11 +348,10 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                             <table className="overview-table">
                               <thead>
                                 <tr>
-                                  <th>Zeitslot</th>
-                                  <th>Zeit</th>
-                                  <th>Belegung</th>
-                                  <th>Teilnehmer</th>
-                                  <th>Status</th>
+                                  <th className="col-zeitslot">Zeitslot</th>
+                                  <th className="col-zeit">Zeit</th>
+                                  <th className="col-belegung">Belegung</th>
+                                  <th className="col-teilnehmer">Teilnehmer</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -368,7 +367,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                           <td>
                             <span className="capacity">0 / {timeSlot.maxParticipants}</span>
                           </td>
-                          <td colSpan="2" className="no-participants">
+                          <td colSpan="1" className="no-participants">
                             <em>Noch keine Teilnehmer</em>
                           </td>
                         </tr>
@@ -398,16 +397,7 @@ const EventDetails = ({ event, onBack, onUpdate, onDelete, onManageTimeSlots, on
                         <td>
                           <div className="participant-info">
                             <strong>{participant.person?.fullName || participant.person?.firstName + ' ' + participant.person?.lastName || 'Unbekannt'}</strong>
-                            <div className="participant-details">
-                              {participant.person?.email && <span>📧 {participant.person.email}</span>}
-                              {participant.person?.phone && <span>📞 {participant.person.phone}</span>}
-                            </div>
                           </div>
-                        </td>
-                        <td>
-                          <span className={`status-badge status-${participant.status}`}>
-                            {participant.status === 'accepted' ? '✓ Zugesagt' : '✗ Abgesagt'}
-                          </span>
                         </td>
                       </tr>
                     ));
